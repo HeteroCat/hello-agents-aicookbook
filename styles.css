@@ -1,0 +1,316 @@
+/**
+ * Hello-Agents 智能体学习平台样式文件
+ * 实现了侧边栏导航和内容区域的布局设计
+ * 包含深色主题配色方案和响应式布局
+ */
+
+/* 全局样式重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 主容器样式：整个页面的根容器 */
+.cyber-college {
+  display: flex;
+  align-items: flex-start;
+  background: #18181b;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+}
+
+/* 左侧导航栏容器：包含Logo和菜单列表 */
+.logo-menus {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  background: #1d1d1f;
+  padding: 48px 24px;
+  height: 100vh;
+  gap: 48px;
+  min-width: 250px;
+  flex-shrink: 0;
+}
+
+/* Logo区域样式：品牌标识和名称的容器 */
+.logo-container {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  gap: 12px;
+  margin-right: 11px;
+}
+
+/* Logo图标样式 */
+.logo {
+  flex-shrink: 0;
+  width: 41px;
+  height: 32px;
+  overflow: hidden;
+}
+
+/* 品牌名称文字样式 */
+.hello-agents {
+  flex-shrink: 0;
+  width: 138px;
+  letter-spacing: 0;
+  color: #ffffff;
+  font-family: ABeeZee, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* 菜单列表容器：包含所有章节导航项 */
+.menus {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: calc(100vh - 120px);
+  padding-right: 8px;
+}
+
+/* 自定义滚动条样式 */
+.menus::-webkit-scrollbar {
+  width: 6px;
+}
+
+.menus::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.menus::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.menus::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* 活跃菜单项样式：当前选中的前言菜单 */
+.menu.active-menu {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  border-radius: 4px;
+  background: #242424;
+}
+
+/* 活跃菜单内容容器 */
+.menu-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  padding: 12px 16px;
+  width: 202px;
+  min-width: 202px;
+  height: 44px;
+  background: linear-gradient(90deg, #ffde00 -62.38%, rgba(188, 164, 0, 0.2) -5.54%, rgba(153, 133, 0, 0) 53.71%);
+}
+
+/* 菜单图标容器 */
+.menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px;
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+}
+
+/* 图标包装器 */
+.icon-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+}
+
+/* 向量图标元素 */
+.vector {
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+.vector:nth-child(2) {
+  margin-top: 6px;
+}
+
+/* 活跃菜单文字样式 */
+.menu-text {
+  width: 138px;
+  letter-spacing: 0;
+  color: #ffffff;
+  font-family: ABeeZee, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* 普通菜单项样式：标准章节导航项 */
+.menu-item {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+/* 框架类型菜单项样式 */
+.menu-item-frame {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu-item-frame:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+/* 特殊菜单项样式：用于第九章和第十七章 */
+.menu-item-special {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  align-self: stretch;
+  justify-content: space-between;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.menu-item-special:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+/* 菜单图标图片样式 */
+.menu-icon-img {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* 框架图标样式 */
+.frame-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  overflow: hidden;
+}
+
+/* 普通菜单文字样式 */
+.menu-text-normal {
+  flex-grow: 1;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* 特殊菜单文字样式 */
+.menu-text-special {
+  flex-shrink: 0;
+  width: 138px;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+/* 右侧内容区域样式：显示章节内容的主要区域 */
+.content-area {
+  flex: 1;
+  height: 100vh;
+  background: #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 内容文字样式：居中显示的内容标题 */
+.content-text {
+  text-align: center;
+  line-height: 28px;
+  letter-spacing: 0;
+  color: #ffffff;
+  font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  background: transparent;
+}
+
+/* 响应式设计：适配不同屏幕尺寸 */
+@media (max-width: 1200px) {
+  .logo-menus {
+    min-width: 200px;
+    padding: 24px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cyber-college {
+    flex-direction: column;
+  }
+  
+  .logo-menus {
+    width: 100%;
+    height: auto;
+    min-height: 200px;
+    padding: 16px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .menus {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 70%;
+  }
+  
+  .menu-item,
+  .menu-item-frame,
+  .menu-item-special,
+  .menu.active-menu {
+    flex: 0 0 auto;
+    min-width: auto;
+    padding: 8px 12px;
+  }
+  
+  .content-area {
+    height: calc(100vh - 200px);
+  }
+}
