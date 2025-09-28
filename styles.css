@@ -97,6 +97,26 @@
   background: rgba(255, 255, 255, 0.5);
 }
 
+/* 可点击菜单项的通用样式 */
+.clickable-menu {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  padding: 8px;
+  margin: -8px;
+}
+
+/* 可点击菜单项的悬停效果 */
+.clickable-menu:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(4px);
+}
+
+/* 可点击菜单项的点击效果 */
+.clickable-menu:active {
+  transform: translateX(2px) scale(0.98);
+}
+
 /* 活跃菜单项样式：当前选中的前言菜单 */
 .menu.active-menu {
   display: flex;
@@ -254,21 +274,48 @@
   flex: 1;
   height: 100vh;
   background: #18181b;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 内容容器样式：包含实际内容的容器 */
+#content-container {
+  padding: 24px;
+  max-width: none;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
 }
 
 /* 内容文字样式：居中显示的内容标题 */
 .content-text {
-  text-align: center;
-  line-height: 28px;
+  text-align: left;
+  line-height: 1.6;
   letter-spacing: 0;
   color: #ffffff;
   font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: normal;
   background: transparent;
+}
+
+/* 自定义滚动条样式 - 右侧内容区域 */
+.content-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-area::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.content-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 /* 响应式设计：适配不同屏幕尺寸 */

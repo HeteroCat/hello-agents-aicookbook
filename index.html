@@ -12,7 +12,7 @@
         <!-- 左侧导航栏：包含Logo和章节菜单 -->
         <div class="logo-menus">
             <!-- Logo区域：显示品牌标识和名称 -->
-            <div class="logo-container">
+            <div class="logo-container clickable-menu" data-content="helloagent">
                 <img src=".figma/image/mg1oo5nw-m6pbhq0.svg" class="logo" alt="Hello-Agents Logo" />
                 <p class="hello-agents">Hello-Agents</p>
             </div>
@@ -20,7 +20,7 @@
             <!-- 菜单列表：包含前言和各章节导航 -->
             <div class="menus">
                 <!-- 前言菜单项：当前选中状态，带有特殊样式 -->
-                <div class="menu active-menu">
+                <div class="menu active-menu clickable-menu" data-content="前言">
                     <div class="menu-content">
                         <div class="menu-icon">
                             <div class="icon-wrapper">
@@ -37,19 +37,19 @@
                 </div>
                 
                 <!-- 第一章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu" data-content="第一章 初识智能体">
                     <img src=".figma/image/mg1oo5nw-sqpnfu6.svg" class="menu-icon-img" alt="第一章图标" />
                     <p class="menu-text-normal">第一章</p>
                 </div>
                 
                 <!-- 第二章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu" data-content="第二章 智能体发展史">
                     <img src=".figma/image/mg1oo5nw-vva4hk8.svg" class="menu-icon-img" alt="第二章图标" />
                     <p class="menu-text-normal">第二章</p>
                 </div>
                 
                 <!-- 第三章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu" data-content="第三章 大模型基础">
                     <img src=".figma/image/mg1oo5nw-h2l99md.svg" class="menu-icon-img" alt="第三章图标" />
                     <p class="menu-text-normal">第三章</p>
                 </div>
@@ -142,8 +142,79 @@
         
         <!-- 右侧内容区域：显示当前选中章节的内容 -->
         <div class="content-area">
-            <p class="content-text">内容</p>
+            <div id="content-container" class="content-text">
+                <p>请点击左侧菜单选择要查看的内容</p>
+            </div>
         </div>
     </div>
+
+    <!-- JavaScript脚本：实现动态内容加载功能 -->
+    <script>
+        /**
+         * 动态加载HTML文件内容到右侧内容区域
+         * @param {string} fileName - 要加载的HTML文件名（不含扩展名）
+         */
+        function loadContent(fileName) {
+            const contentContainer = document.getElementById('content-container');
+            
+            // 显示加载状态
+            contentContainer.innerHTML = '<p>正在加载内容...</p>';
+            
+            // 使用fetch API加载HTML文件
+            fetch(`html/${fileName}.html`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // 解析HTML内容，提取body部分
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const bodyContent = doc.body.innerHTML;
+                    
+                    // 将内容插入到容器中
+                    contentContainer.innerHTML = bodyContent;
+                })
+                .catch(error => {
+                    console.error('加载内容失败:', error);
+                    contentContainer.innerHTML = `<p>加载失败：${error.message}</p>`;
+                });
+        }
+
+        /**
+         * 更新菜单项的选中状态
+         * @param {HTMLElement} selectedMenu - 被选中的菜单项
+         */
+        function updateActiveMenu(selectedMenu) {
+            // 移除所有菜单项的active-menu类
+            document.querySelectorAll('.clickable-menu').forEach(menu => {
+                menu.classList.remove('active-menu');
+            });
+            
+            // 为选中的菜单项添加active-menu类
+            selectedMenu.classList.add('active-menu');
+        }
+
+        // 页面加载完成后初始化事件监听器
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有可点击的菜单项添加点击事件监听器
+            document.querySelectorAll('.clickable-menu').forEach(menu => {
+                menu.addEventListener('click', function() {
+                    const contentName = this.getAttribute('data-content');
+                    
+                    // 更新菜单选中状态
+                    updateActiveMenu(this);
+                    
+                    // 加载对应的内容
+                    loadContent(contentName);
+                });
+            });
+            
+            // 默认加载前言内容
+            loadContent('前言');
+        });
+    </script>
 </body>
 </html>

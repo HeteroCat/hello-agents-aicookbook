@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前言</title>
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* 根元素样式 */
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #64748b;
+            --accent-color: #f59e0b;
+            --background-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        /* 基础样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--background-color);
+            font-size: 16px;
+        }
+
+        /* 容器样式 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3b82f6 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .header .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* 主要内容区域 */
+        .main-content {
+            background: var(--background-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .content {
+            padding: 3rem;
+            max-width: none;
+        }
+
+        /* 标题样式 */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary);
+            font-weight: 600;
+            line-height: 1.3;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.25rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.2rem;
+            width: 4px;
+            height: 1.5rem;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+        }
+
+        /* 段落样式 */
+        p {
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            line-height: 1.8;
+        }
+
+        /* 强调文本 */
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        em {
+            color: var(--accent-color);
+            font-style: italic;
+        }
+
+        /* 列表样式 */
+        ul, ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        ul li {
+            list-style-type: none;
+            position: relative;
+        }
+
+        ul li::before {
+            content: '•';
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: -1.5rem;
+        }
+
+        /* 引用样式 */
+        blockquote {
+            border-left: 4px solid var(--primary-color);
+            background: var(--surface-color);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            position: relative;
+        }
+
+        blockquote::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary-color);
+            position: absolute;
+            top: -0.5rem;
+            left: 1rem;
+            opacity: 0.3;
+        }
+
+        /* 代码样式 */
+        code {
+            background: var(--surface-color);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            box-shadow: var(--shadow-md);
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: inherit;
+        }
+
+        /* 表格样式 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: var(--background-color);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: var(--surface-color);
+        }
+
+        /* 图片样式 */
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            margin: 1.5rem 0;
+        }
+
+        /* 链接样式 */
+        a {
+            color: var(--primary-color);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            border-bottom-color: var(--primary-color);
+            color: #1d4ed8;
+        }
+
+        /* 分割线样式 */
+        hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 3rem 0;
+        }
+
+        /* 页脚样式 */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 3rem;
+        }
+
+        /* 目录样式 */
+        .toc {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .toc h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 1rem;
+        }
+
+        .toc ul {
+            margin: 0;
+        }
+
+        .toc a {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 2rem 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.875rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            h3 {
+                font-size: 1.25rem;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.75rem 0.5rem;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .header {
+                background: none !important;
+                color: var(--text-primary) !important;
+                box-shadow: none !important;
+            }
+
+            .main-content {
+                box-shadow: none !important;
+            }
+
+            a {
+                color: var(--text-primary) !important;
+                text-decoration: underline !important;
+            }
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--surface-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>前言</h1>
+            <p class="subtitle">Hello-Agents 智能体系统学习教程</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <main class="main-content">
+            <div class="content">
+                <h1 id="_1">前言</h1>
+<p>自2022年底以来，以 ChatGPT 为代表的大语言模型（Large Language Model, LLM）如同一场技术海啸，彻底改变了我们与人工智能交互的方式。LLM 强大的自然语言理解和生成能力，让我们看到了通往通用人工智能（AGI）的曙光。然而，当最初的惊艳沉淀下来，开发者们开始探索下一个前沿：如何让 AI 不仅仅是一个“有问必答”的工具，而是成为一个能自主规划、调用工具、解决复杂问题的“行动者”？</p>
+<p>答案，就是 智能体（Agent）。</p>
+<p>如果说2024年是“百模大战”的元年，那么2025年无疑开启了“Agent元年”。我们看到，技术的焦点正从训练更大、更强的基础模型，转向如何构建更聪明、更高效的智能体应用。单个智能体已经能胜任特定领域的任务，而由多个智能体分工、协作、甚至辩论，共同完成一个宏大目标的多智能体系统（Multi-Agent System, MAS），则被视为释放 LLM 全部潜能、解决真实世界复杂问题的关键钥匙。</p>
+<p>然而，当前的生态中存在一个明显的断层：一方面是层出不穷的 Agent 框架和应用，令人眼花缭乱；另一方面，却是系统性知识的极度匮乏。大多数教程聚焦于某个特定框架的 API 调用，学习者往往“知其然，而不知其所以然”，在面对复杂需求时，依然感到力不从心。我们缺少一本能够穿透框架表象，从第一性原理出发，系统讲解智能体设计、构建与协作的实战指南。</p>
+<p>鉴于此，我们发起了这个名为Hello-Agents的开源项目。本书的目标，是授人以渔。我们不仅会带你领略智能体领域最前沿的技术，更会引导你深入其核心架构，理解其经典范式，并最终亲手构建起属于自己的多智能体应用。我们相信，最好的学习方式就是动手实践。</p>
+<p>希望这本书能成为你探索智能体浩瀚世界的起点，帮助你从一名 LLM 的“使用者”，蜕变为一名智能系统的“构建者”。让我们一起，迎接正在到来的智能革命。</p>
+<h2 id="_2">写给读者的建议</h2>
+<p>欢迎你，未来的智能系统构建者！在开启这段激动人心的旅程之前，请允许我们给你一些小小的建议。</p>
+<p>本书内容兼顾理论与实战，旨在帮助你系统性地掌握从单个智能体到多智能体系统的设计与开发全流程。因此，本书尤其适合有一定编程基础的 AI开发者、软件工程师、在校学生 以及对前沿 AI 技术抱有浓厚兴趣的自学者。</p>
+<p>在阅读本书之前，我们希望你：</p>
+<p>具备扎实的 Python 编程能力。</p>
+<p>对大语言模型有基本的概念性了解（例如，知道如何获取LLM的API）。</p>
+<p>请放心，你无需具备深厚的算法或模型训练背景，本书的重点是应用与构建。</p>
+<p>本书的内容被精心划分为五个部分，构成了一条平滑的学习曲线：</p>
+<p>第一部分（基础篇）： 我们将为你铺垫人工智能与 LLM 的核心知识，让你对智能体的诞生背景有宏观的认识。</p>
+<p>第二部分（单体篇）： 这是你动手实践的开始。我们将带你从零开始，构建一个功能完备的单体智能，深入理解其内部的“心智”结构。</p>
+<p>第三部分（高级篇）： 在这里，你的智能体将“学会”思考（CoT）、拥有记忆和工具（RAG），并掌握智能体之间的通信协议，最终进化为多智能体系统。</p>
+<p>第四部分（实战篇）： 这是本书的核心价值所在。你将通过一系列精心设计的综合项目（如智能旅行助手、自动化研究智能体等），将所学知识融会贯通，在实战中淬炼真金。</p>
+<p>第五部分（展望篇）： 旅程的终点是新的起点。你将亲手打造属于你的“毕业作品”，为你的学习之旅画上一个圆满的句号。</p>
+<p>纸上得来终觉浅，绝知此事要躬行。智能体是一个高度依赖实践的领域，因此我们强烈建议你亲手运行、调试、甚至重构本书提供的每一份代码。更重要的是，我们鼓励你举一反三，将所学技术应用到自己感兴趣的真实场景中，这才是学习的最终目的。</p>
+<p>最后，作为一个开源项目，我们热忱欢迎你的参与和贡献。当你遇到问题时，可以在我们的社区中提问；当你有了新的想法或发现时，也欢迎你随时加入到项目的共建中来。</p>
+<p>感谢你选择本书，祝你学习愉快，探索无限！</p>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2025 Hello-Agents Project. 本文档基于 Markdown 自动生成。</p>
+        </footer>
+    </div>
+</body>
+</html>
