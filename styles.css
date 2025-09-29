@@ -76,6 +76,7 @@
   overflow-y: auto;
   max-height: calc(100vh - 120px);
   padding-right: 8px;
+  padding-bottom: 40px;
 }
 
 /* 自定义滚动条样式 */
@@ -117,64 +118,72 @@
   transform: translateX(2px) scale(0.98);
 }
 
-/* 活跃菜单项样式：当前选中的前言菜单 */
-.menu.active-menu {
+/* 活跃菜单项样式 */
+.clickable-menu.active-menu {
+  background: linear-gradient(135deg, #ffde00, #ffd700);
+  color: #000000;
+}
+
+.clickable-menu.active-menu .menu-text,
+.clickable-menu.active-menu .menu-text-normal,
+.clickable-menu.active-menu .menu-text-special {
+  color: #000000;
+}
+
+/* 前言菜单项样式 */
+.menu {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   align-self: stretch;
-  border-radius: 4px;
-  background: #242424;
+  cursor: pointer;
+  padding: 12px 16px;
+  min-height: 44px;
+  gap: 12px;
 }
 
-/* 活跃菜单内容容器 */
+/* 前言菜单内容容器 */
 .menu-content {
   display: flex;
-  flex-grow: 1;
   align-items: center;
-  justify-content: space-between;
-  border-radius: 4px;
-  padding: 12px 16px;
-  width: 202px;
-  min-width: 202px;
-  height: 44px;
-  background: linear-gradient(90deg, #ffde00 -62.38%, rgba(188, 164, 0, 0.2) -5.54%, rgba(153, 133, 0, 0) 53.71%);
+  gap: 12px;
+  width: 100%;
 }
 
 /* 菜单图标容器 */
 .menu-icon {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 3px;
+  justify-content: center;
   width: 20px;
   min-width: 20px;
   height: 20px;
+  flex-shrink: 0;
 }
 
-/* 图标包装器 */
+/* 图标包装器 - 四点图标布局 */
 .icon-wrapper {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 1px;
   align-items: center;
-  align-self: stretch;
+  justify-items: center;
+  width: 14px;
+  height: 14px;
 }
 
 /* 向量图标元素 */
 .vector {
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   background: #ffffff;
   border-radius: 50%;
 }
 
-.vector:nth-child(2) {
-  margin-top: 6px;
-}
-
-/* 活跃菜单文字样式 */
+/* 菜单文字样式 */
 .menu-text {
-  width: 138px;
+  flex-grow: 1;
   letter-spacing: 0;
   color: #ffffff;
   font-family: ABeeZee, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
@@ -182,7 +191,7 @@
   font-weight: normal;
 }
 
-/* 普通菜单项样式：标准章节导航项 */
+/* 普通菜单项样式 */
 .menu-item {
   display: flex;
   flex-shrink: 0;
@@ -192,6 +201,7 @@
   padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
 }
 
 .menu-item:hover {
@@ -209,6 +219,7 @@
   padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
 }
 
 .menu-item-frame:hover {
@@ -216,16 +227,17 @@
   border-radius: 4px;
 }
 
-/* 特殊菜单项样式：用于第九章和第十七章 */
+/* 特殊菜单项样式 */
 .menu-item-special {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   align-self: stretch;
-  justify-content: space-between;
+  gap: 12px;
   padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 44px;
 }
 
 .menu-item-special:hover {
@@ -260,8 +272,7 @@
 
 /* 特殊菜单文字样式 */
 .menu-text-special {
-  flex-shrink: 0;
-  width: 138px;
+  flex-grow: 1;
   letter-spacing: 0;
   color: rgba(255, 255, 255, 0.8);
   font-family: "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
@@ -269,7 +280,7 @@
   font-weight: normal;
 }
 
-/* 右侧内容区域样式：显示章节内容的主要区域 */
+/* 右侧内容区域样式 */
 .content-area {
   flex: 1;
   height: 100vh;
@@ -278,7 +289,7 @@
   overflow-x: hidden;
 }
 
-/* 内容容器样式：包含实际内容的容器 */
+/* 内容容器样式 */
 #content-container {
   padding: 24px;
   max-width: none;
@@ -287,7 +298,7 @@
   box-sizing: border-box;
 }
 
-/* 内容文字样式：居中显示的内容标题 */
+/* 内容文字样式 */
 .content-text {
   text-align: left;
   line-height: 1.6;
@@ -324,40 +335,113 @@
     min-width: 200px;
     padding: 24px 16px;
   }
+  
+  .content-area {
+    padding: 0 16px;
+  }
 }
 
 @media (max-width: 768px) {
   .cyber-college {
     flex-direction: column;
+    height: auto;
+    min-height: 100vh;
   }
   
   .logo-menus {
     width: 100%;
     height: auto;
-    min-height: 200px;
+    min-height: auto;
     padding: 16px;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .logo-container {
+    justify-content: center;
+    margin-right: 0;
   }
   
   .menus {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 8px;
-    max-width: 70%;
+    max-height: none;
+    justify-content: center;
+    padding-right: 0;
   }
   
   .menu-item,
   .menu-item-frame,
   .menu-item-special,
-  .menu.active-menu {
+  .menu {
     flex: 0 0 auto;
     min-width: auto;
     padding: 8px 12px;
+    margin: 2px;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+  
+  .menu-content {
+    width: auto;
+    min-width: auto;
+    padding: 8px 12px;
+    height: auto;
+  }
+  
+  .menu-text,
+  .menu-text-normal,
+  .menu-text-special {
+    font-size: 12px;
+    width: auto;
   }
   
   .content-area {
-    height: calc(100vh - 200px);
+    height: auto;
+    min-height: calc(100vh - 200px);
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-menus {
+    padding: 12px;
+    gap: 16px;
+  }
+  
+  .hello-agents {
+    font-size: 14px;
+    width: auto;
+  }
+  
+  .menus {
+    gap: 6px;
+  }
+  
+  .menu-item,
+  .menu-item-frame,
+  .menu-item-special,
+  .menu {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  
+  .menu-content {
+    padding: 6px 10px;
+  }
+  
+  .menu-text,
+  .menu-text-normal,
+  .menu-text-special {
+    font-size: 11px;
+  }
+  
+  #content-container {
+    padding: 16px;
   }
 }

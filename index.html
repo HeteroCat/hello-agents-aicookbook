@@ -5,6 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello-Agents - 智能体学习平台</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* 加载动画样式 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffde00;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* 内容淡入动画 */
+        .content-fade-in {
+            animation: contentFadeIn 0.5s ease-out;
+        }
+
+        @keyframes contentFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- 主容器：包含侧边栏和内容区域的智能体学习平台页面 -->
@@ -19,15 +52,13 @@
             
             <!-- 菜单列表：包含前言和各章节导航 -->
             <div class="menus">
-                <!-- 前言菜单项：当前选中状态，带有特殊样式 -->
-                <div class="menu active-menu clickable-menu" data-content="前言">
+                <!-- 前言菜单项 -->
+                <div class="menu clickable-menu" data-content="前言">
                     <div class="menu-content">
                         <div class="menu-icon">
                             <div class="icon-wrapper">
                                 <div class="vector"></div>
                                 <div class="vector"></div>
-                            </div>
-                            <div class="icon-wrapper">
                                 <div class="vector"></div>
                                 <div class="vector"></div>
                             </div>
@@ -55,95 +86,95 @@
                 </div>
                 
                 <!-- 第四章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-chrknz2.svg" class="frame-icon" alt="第四章图标" />
                     <p class="menu-text-normal">第四章</p>
                 </div>
                 
                 <!-- 第五章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-395gvyy.svg" class="menu-icon-img" alt="第五章图标" />
                     <p class="menu-text-normal">第五章</p>
                 </div>
                 
                 <!-- 第六章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-pjqyezx.svg" class="menu-icon-img" alt="第六章图标" />
                     <p class="menu-text-normal">第六章</p>
                 </div>
                 
                 <!-- 第七章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-7z70s30.svg" class="menu-icon-img" alt="第七章图标" />
                     <p class="menu-text-normal">第七章</p>
                 </div>
                 
                 <!-- 第八章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-2smoepr.svg" class="frame-icon" alt="第八章图标" />
                     <p class="menu-text-normal">第八章</p>
                 </div>
                 
-                <!-- 第九章菜单项：特殊布局样式 -->
-                <div class="menu-item-special">
+                <!-- 第九章菜单项 -->
+                <div class="menu-item-special clickable-menu">
                     <img src=".figma/image/mg1oo5nw-rca57gr.svg" class="frame-icon" alt="第九章图标" />
                     <p class="menu-text-special">第九章</p>
                 </div>
                 
                 <!-- 第十章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-hy0zmso.svg" class="menu-icon-img" alt="第十章图标" />
                     <p class="menu-text-normal">第十章</p>
                 </div>
                 
                 <!-- 第十一章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-tlmkjnh.svg" class="frame-icon" alt="第十一章图标" />
                     <p class="menu-text-normal">第十一章</p>
                 </div>
                 
                 <!-- 第十二章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-cdwa1hs.svg" class="frame-icon" alt="第十二章图标" />
                     <p class="menu-text-normal">第十二章</p>
                 </div>
                 
                 <!-- 第十三章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-o93mkug.svg" class="frame-icon" alt="第十三章图标" />
                     <p class="menu-text-normal">第十三章</p>
                 </div>
                 
                 <!-- 第十四章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-vqqt1hx.svg" class="menu-icon-img" alt="第十四章图标" />
                     <p class="menu-text-normal">第十四章</p>
                 </div>
                 
                 <!-- 第十五章菜单项 -->
-                <div class="menu-item">
+                <div class="menu-item clickable-menu">
                     <img src=".figma/image/mg1oo5nw-fq5kf2k.svg" class="menu-icon-img" alt="第十五章图标" />
                     <p class="menu-text-normal">第十五章</p>
                 </div>
                 
                 <!-- 第十六章菜单项 -->
-                <div class="menu-item-frame">
+                <div class="menu-item-frame clickable-menu">
                     <img src=".figma/image/mg1oo5nw-4s13g18.svg" class="frame-icon" alt="第十六章图标" />
                     <p class="menu-text-normal">第十六章</p>
                 </div>
                 
-                <!-- 第十七章菜单项：特殊布局样式 -->
-                <div class="menu-item-special">
+                <!-- 第十七章菜单项 -->
+                <div class="menu-item-special clickable-menu">
                     <img src=".figma/image/mg1oo5nw-0ku7j3d.svg" class="frame-icon" alt="第十七章图标" />
                     <p class="menu-text-special">第十七章</p>
                 </div>
             </div>
         </div>
         
-        <!-- 右侧内容区域：显示当前选中章节的内容 -->
+        <!-- 右侧内容区域：显示选中章节的具体内容 -->
         <div class="content-area">
-            <div id="content-container" class="content-text">
-                <p>请点击左侧菜单选择要查看的内容</p>
+            <div id="content-container" class="content-text" style="overflow: hidden;">
+                <!-- 页面加载时默认显示helloagent.html内容 -->
             </div>
         </div>
     </div>
@@ -151,35 +182,98 @@
     <!-- JavaScript脚本：实现动态内容加载功能 -->
     <script>
         /**
+         * 文件名映射表：将菜单项名称映射到实际的HTML文件名
+         */
+        const fileNameMapping = {
+            'helloagent': 'helloagent.html',
+            '前言': '前言.html',
+            '第一章 初识智能体': '第一章_初识智能体.html',
+            '第二章 智能体发展史': '第二章_智能体发展史.html',
+            '第三章 大模型基础': '第三章_大模型基础.html'
+        };
+
+        /**
          * 动态加载HTML文件内容到右侧内容区域
          * @param {string} fileName - 要加载的HTML文件名（不含扩展名）
          */
         function loadContent(fileName) {
             const contentContainer = document.getElementById('content-container');
             
-            // 显示加载状态
-            contentContainer.innerHTML = '<p>正在加载内容...</p>';
+            // 获取实际的文件名
+            const actualFileName = fileNameMapping[fileName];
             
-            // 使用fetch API加载HTML文件
-            fetch(`html/${fileName}.html`)
+            if (!actualFileName) {
+                // 如果没有对应的文件，显示暂未开放的提示
+                contentContainer.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.8);">
+                        <div style="font-size: 48px; margin-bottom: 20px;">🚧</div>
+                        <h3 style="color: #ffffff; margin-bottom: 16px;">内容建设中</h3>
+                        <p style="margin-bottom: 20px;">
+                            "${fileName}" 的内容正在准备中<br>
+                            敬请期待后续更新
+                        </p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 显示加载状态
+            contentContainer.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.8);">
+                    <div class="loading-spinner"></div>
+                    <p>正在加载 "${fileName}" 内容...</p>
+                </div>
+            `;
+            
+            // 使用fetch API加载HTML文件（从test目录）
+            fetch(`test/${actualFileName}`)
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
                     return response.text();
                 })
                 .then(html => {
-                    // 解析HTML内容，提取body部分
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const bodyContent = doc.body.innerHTML;
+                    // 直接在iframe中显示完整的HTML内容，保持原始样式
+                    const iframe = document.createElement('iframe');
+                    iframe.style.width = '100%';
+                    iframe.style.height = '100vh';
+                    iframe.style.border = 'none';
+                    iframe.style.background = 'white';
                     
-                    // 将内容插入到容器中
-                    contentContainer.innerHTML = bodyContent;
+                    // 清空容器并插入iframe
+                    contentContainer.innerHTML = '';
+                    contentContainer.appendChild(iframe);
+                    
+                    // 将HTML内容写入iframe
+                    iframe.contentDocument.open();
+                    iframe.contentDocument.write(html);
+                    iframe.contentDocument.close();
                 })
                 .catch(error => {
                     console.error('加载内容失败:', error);
-                    contentContainer.innerHTML = `<p>加载失败：${error.message}</p>`;
+                    contentContainer.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.8);">
+                            <div style="font-size: 48px; color: #ef4444; margin-bottom: 20px;">⚠️</div>
+                            <h3 style="color: #ffffff; margin-bottom: 16px;">加载失败</h3>
+                            <p style="margin-bottom: 20px;">
+                                无法加载 "${fileName}" 的内容<br>
+                                错误信息: ${error.message}
+                            </p>
+                            <button onclick="loadContent('${fileName}')" style="
+                                background: #ffde00;
+                                color: #000;
+                                border: none;
+                                padding: 8px 16px;
+                                border-radius: 20px;
+                                font-weight: 500;
+                                cursor: pointer;
+                                font-size: 12px;
+                            ">
+                                🔄 重试
+                            </button>
+                        </div>
+                    `;
                 });
         }
 
@@ -196,24 +290,28 @@
             // 为选中的菜单项添加active-menu类
             selectedMenu.classList.add('active-menu');
         }
-
-        // 页面加载完成后初始化事件监听器
+        
+        // 页面加载完成后的初始化
         document.addEventListener('DOMContentLoaded', function() {
-            // 为所有可点击的菜单项添加点击事件监听器
+            // 为所有可点击菜单项添加事件监听器
             document.querySelectorAll('.clickable-menu').forEach(menu => {
                 menu.addEventListener('click', function() {
                     const contentName = this.getAttribute('data-content');
-                    
-                    // 更新菜单选中状态
-                    updateActiveMenu(this);
-                    
-                    // 加载对应的内容
-                    loadContent(contentName);
+                    if (contentName) {
+                        loadContent(contentName);
+                        updateActiveMenu(this);
+                    }
                 });
             });
             
-            // 默认加载前言内容
-            loadContent('前言');
+            // 默认加载helloagent内容
+            loadContent('helloagent');
+            
+            // 设置默认选中状态
+            const defaultMenu = document.querySelector('[data-content="helloagent"]');
+            if (defaultMenu) {
+                updateActiveMenu(defaultMenu);
+            }
         });
     </script>
 </body>
