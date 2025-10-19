@@ -4,7 +4,7 @@
 
 ![Hello-Agents Logo](https://img.shields.io/badge/Hello--Agents-智能体学习平台-blue?style=for-the-badge&logo=robot)
 
-🤖 **Hello-Agents 教程的html版本学习平台**
+🤖 **Hello-Agents 教程的HTML版本学习平台**
 
 从基础理论到实际应用，全面掌握多智能体系统的设计与实现
 
