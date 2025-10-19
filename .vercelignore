@@ -1,0 +1,10 @@
+node_modules
+build
+dist
+.git
+.trae
+.log
+.figma/1_897/
+.figma/*.png
+.figma/*.jpg
+.figma/*.jpeg

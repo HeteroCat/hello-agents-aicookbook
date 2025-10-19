@@ -1,0 +1,25 @@
+{
+  "name": "hello-agents-aicookbook",
+  "version": "1.0.0",
+  "description": "Hello-Agents 教程的html版本学习平台",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000",
+    "build": "echo 'Static site - no build needed'",
+    "start": "python -m http.server 8000"
+  },
+  "keywords": [
+    "ai",
+    "agents",
+    "tutorial",
+    "learning",
+    "html"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "homepage": "."
+}
