@@ -4,7 +4,7 @@
 
 ![Hello-Agents Logo](https://img.shields.io/badge/Hello--Agents-智能体学习平台-blue?style=for-the-badge&logo=robot)
 
-🤖 **Hello-Agents 教程的ai版本学习平台**
+🤖 **Hello-Agents 教程的html版本学习平台**
 
 从基础理论到实际应用，全面掌握多智能体系统的设计与实现
 
@@ -207,7 +207,8 @@ hello-agents-aicookbook/
 <div align="center">
 
 **⭐ 如果这个项目对你有帮助，请给我们一个 Star！**
-**⭐ Power by HeteroCat[https://github.com/HeteroCat]**
+
+**⭐ Power by [HeteroCat](https://github.com/HeteroCat)**
 
 [🏠 返回首页](https://github.com/datawhalechina/Hello-Agents) | [📖 开始学习](http://localhost:8000) | [💬 加入讨论](https://github.com/datawhalechina/Hello-Agents/discussions)
 
