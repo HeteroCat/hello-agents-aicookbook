@@ -3,1224 +3,1186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第二章 智能体发展史 - Hello Agent</title>
-    
-    <!-- Tailwind CSS -->
+    <title>第二章 智能体发展史 - Hello Agents 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        /* 自定义样式 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
         .text-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         
-        .hover-lift {
-            transition: all 0.3s ease;
-        }
-        
-        .hover-lift:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.6s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .code-block {
-            background: #1e293b;
-            color: #e2e8f0;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            overflow-x: auto;
-        }
-        
-        .code-block .keyword { color: #f472b6; }
-        .code-block .string { color: #34d399; }
-        .code-block .comment { color: #94a3b8; }
-        .code-block .function { color: #60a5fa; }
-        
-        /* Dark mode styles */
+        /* 深色模式样式 */
         .dark {
             background-color: #0f172a;
             color: #e2e8f0;
         }
         
         .dark .bg-white {
-            background-color: #1e293b !important;
+            background-color: #1e293b;
         }
         
-        .dark .text-gray-900 {
-            color: #e2e8f0 !important;
-        }
-        
-        .dark .text-gray-700 {
-            color: #cbd5e1 !important;
+        .dark .text-gray-800 {
+            color: #e2e8f0;
         }
         
         .dark .text-gray-600 {
-            color: #94a3b8 !important;
+            color: #94a3b8;
         }
         
         .dark .border-gray-200 {
-            border-color: #374151 !important;
+            border-color: #334155;
         }
         
-        .dark .bg-blue-50 {
-            background-color: #1e3a8a !important;
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+
+        .prose-custom {
+            line-height: 1.75;
+            max-width: none;
+            color: #374151;
+        }
+        .dark .prose-custom {
+            color: #e5e7eb;
+        }
+        .prose-custom h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .prose-custom h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin: 2.5rem 0 1.5rem 0;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        .dark .prose-custom h2 {
+            color: #f9fafb;
+            border-color: #374151;
+        }
+        .prose-custom h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 2rem 0 1rem 0;
+            color: #374151;
+        }
+        .dark .prose-custom h3 {
+            color: #e5e7eb;
+        }
+        .prose-custom h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 1.5rem 0 0.75rem 0;
+            color: #4b5563;
+        }
+        .dark .prose-custom h4 {
+            color: #d1d5db;
+        }
+        .code-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+        .dark .code-block {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+        .image-container {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .image-container img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        .image-caption {
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        .dark .image-caption {
+            color: #9ca3af;
+        }
+        .table-container {
+            margin: 2rem 0;
+            overflow-x: auto;
+            border-radius: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        .dark .table-container {
+            border-color: #374151;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th,
+        .table-container td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .dark .table-container th,
+        .dark .table-container td {
+            border-color: #374151;
+        }
+        .table-container th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        .dark .table-container th {
+            background: #1f2937;
+            color: #f9fafb;
+        }
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
         }
         
-        .dark .text-blue-800 {
-            color: #93c5fd !important;
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
         }
         
-        .dark .text-blue-700 {
-            color: #bfdbfe !important;
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .back-to-top:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
         }
         
-        .dark .bg-gradient-to-r.from-blue-50.to-purple-50 {
-            background: linear-gradient(to right, #1e3a8a, #581c87) !important;
+        /* 引用块样式 */
+        .quote-block {
+            background: #f8fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-style: italic;
+            position: relative;
+        }
+        .dark .quote-block {
+            background: #1e293b;
+            border-color: #764ba2;
+        }
+        .quote-block::before {
+            content: '"';
+            font-size: 4rem;
+            color: #667eea;
+            position: absolute;
+            top: -0.5rem;
+            left: 1rem;
+            line-height: 1;
         }
         
-        .dark .border-blue-200 {
-            border-color: #1e40af !important;
+        /* 强调文本样式 */
+        .highlight-text {
+            background: linear-gradient(135deg, #667eea20, #764ba220);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
         }
         
-        .dark .bg-indigo-50 {
-            background-color: #312e81 !important;
+        /* 时间线样式 */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
         }
-        
-        .dark .text-indigo-800 {
-            color: #a5b4fc !important;
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.5rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
         }
-        
-        .dark .text-indigo-700 {
-            color: #c7d2fe !important;
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
         }
-        
-        .dark .border-indigo-400 {
-            border-color: #4338ca !important;
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -0.5rem;
+            top: 0.5rem;
+            width: 1rem;
+            height: 1rem;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 3px #667eea20;
         }
-        
-        .dark .bg-green-50 {
-            background-color: #14532d !important;
-        }
-        
-        .dark .text-green-800 {
-            color: #86efac !important;
-        }
-        
-        .dark .text-green-700 {
-            color: #bbf7d0 !important;
-        }
-        
-        .dark .border-green-400 {
-            border-color: #16a34a !important;
-        }
-        
-        .dark .bg-yellow-50 {
-            background-color: #713f12 !important;
-        }
-        
-        .dark .text-yellow-800 {
-            color: #fde047 !important;
-        }
-        
-        .dark .text-yellow-700 {
-            color: #facc15 !important;
-        }
-        
-        .dark .border-yellow-400 {
-            border-color: #ca8a04 !important;
-        }
-        
-        .dark .bg-red-50 {
-            background-color: #7f1d1d !important;
-        }
-        
-        .dark .text-red-800 {
-            color: #fca5a5 !important;
-        }
-        
-        .dark .text-red-700 {
-            color: #fecaca !important;
-        }
-        
-        .dark .border-red-200 {
-            border-color: #dc2626 !important;
-        }
-        
-        .dark .bg-purple-50 {
-            background-color: #581c87 !important;
-        }
-        
-        .dark .text-purple-800 {
-            color: #d8b4fe !important;
-        }
-        
-        .dark .text-purple-700 {
-            color: #e9d5ff !important;
-        }
-        
-        .dark .border-purple-200 {
-            border-color: #7c3aed !important;
-        }
-        
-        .dark .bg-orange-50 {
-            background-color: #9a3412 !important;
-        }
-        
-        .dark .text-orange-800 {
-            color: #fed7aa !important;
-        }
-        
-        .dark .text-orange-700 {
-            color: #fdba74 !important;
-        }
-        
-        .dark .border-orange-200 {
-            border-color: #ea580c !important;
+        .dark .timeline-item::before {
+            border-color: #1e293b;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900 transition-colors duration-300">
-    <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-2xl font-bold text-gradient">Hello Agent</h1>
-                    </div>
-                    <div class="hidden md:ml-6 md:flex md:space-x-8">
-                        <a href="#introduction" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
-                            <i class="fas fa-home mr-2"></i>概述
-                        </a>
-                        <a href="#symbolic-ai" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
-                            <i class="fas fa-cogs mr-2"></i>符号主义
-                        </a>
-                        <a href="#rule-based-chatbot" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
-                            <i class="fas fa-robot mr-2"></i>规则聊天机器人
-                        </a>
-                        <a href="#multi-agent" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
-                            <i class="fas fa-users mr-2"></i>多智能体
-                        </a>
-                        <a href="#learning-paradigms" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
-                            <i class="fas fa-graduation-cap mr-2"></i>学习范式
-                        </a>
-                    </div>
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
+    <!-- 导航栏 -->
+    <nav class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-robot text-2xl text-gradient"></i>
+                    <h1 class="text-xl font-bold text-gradient">Hello-Agents</h1>
                 </div>
-                <div class="flex items-center">
-                    <button id="theme-toggle" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
-                        <i class="fas fa-moon text-xl"></i>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-moon dark:fa-sun text-gray-600 dark:text-gray-300"></i>
                     </button>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold text-gradient mb-4">第二章 智能体发展史</h1>
-            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-                从符号主义到现代AI：探索智能体技术的演进历程与核心思想
-            </p>
-        </div>
+    <!-- 返回顶部按钮 -->
+    <button class="back-to-top" id="backToTop" title="返回顶部">
+        <i class="fas fa-arrow-up"></i>
+    </button>
 
-        <div class="space-y-8">
-            <!-- 章节介绍 -->
-            <section id="introduction" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                <div class="prose max-w-none">
-                    <p class="text-lg leading-relaxed mb-6">
-                        为了深刻理解现代智能体为何呈现出如今的形态，以及其核心设计思想的由来，本章将回溯历史：从人工智能领域的古典时代出发，探寻最早的"智能"如何在逻辑与符号的规则体系中被定义；继而见证从单一、集中的智能模型到分布式、协作式智能思想的重大转折；最终理解"学习"范式如何彻底改变了智能体获取能力的方式，并催生出我们今天所见的现代智能体。
-                    </p>
+    <!-- 主要内容 -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <article class="prose-custom fade-in">
+            <!-- 章节标题 -->
+            <header class="mb-12 text-center">
+                <h1 class="mb-4">第二章 智能体发展史</h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                    从符号主义的理性探索到现代大语言模型的涌现智能，智能体的发展历程见证了人工智能领域的思想变革与技术突破。
+                </p>
+            </header>
 
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-00.png" alt="AI智能体的演进阶梯" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.1 AI智能体的演进阶梯</p>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
-                        <p class="text-lg text-blue-800 font-semibold">
-                            如图2.1所示，<strong>每一个新范式的出现，都是为了解决上一代范式的核心"痛点"或根本局限。</strong> 而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的"局限"，而这又为下一代范式的诞生埋下了伏笔。理解这一"问题驱动"的迭代历程，能帮助我们更深刻地把握现代智能体技术选型背后的深层原因与历史必然性。
-                        </p>
-                    </div>
+            <!-- 引言 -->
+            <section id="introduction" class="mb-12">
+                <p class="text-lg leading-relaxed mb-6">
+                    在第一章中，我们初步认识了智能体的基本概念和核心组件。然而，要真正理解现代智能体的设计理念和技术架构，我们需要回溯历史，探寻其思想根源和演进脉络。
+                </p>
+                <p class="text-lg leading-relaxed mb-8">
+                    智能体的发展史，实际上就是人工智能领域对"智能"本质认知不断深化的历程。从早期符号主义试图用逻辑规则模拟人类推理，到联结主义通过神经网络学习模式识别，再到现代大语言模型展现的涌现智能——每一次范式转换都深刻影响着智能体的设计思路。
+                </p>
+                <div class="quote-block">
+                    本章将带你穿越时空，见证智能体从概念萌芽到技术成熟的完整历程，理解不同时代的技术选择背后的深层逻辑，为掌握现代智能体技术奠定坚实的历史基础。
                 </div>
+                
+                <div class="image-container">
+                    <img src="../docs/images/2-figures/1757246501849-00.png" alt="AI智能体的演进阶梯" />
+                    <p class="image-caption">图 2.1 AI智能体的演进阶梯</p>
+                </div>
+                
+                <p class="mb-6">
+                    如图2.1所示，<strong>每一个新范式的出现，都是为了解决上一代范式的核心"痛点"或根本局限。</strong> 而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的"局限"，而这又为下一代范式的诞生埋下了伏笔。理解这一"问题驱动"的迭代历程，能帮助我们更深刻地把握现代智能体技术选型背后的深层原因与历史必然性。
+                </p>
             </section>
 
-            <!-- 2.1 基于符号与逻辑的早期智能体 -->
-            <section id="symbolic-ai" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                <h2 class="text-3xl font-bold mb-6 text-gradient">
-                    <i class="fas fa-cogs mr-3"></i>2.1 基于符号与逻辑的早期智能体
-                </h2>
+            <!-- 2.1 符号主义的探索与局限 -->
+            <section id="symbolic-ai" class="mb-12">
+                <h2>2.1 符号主义的探索与局限</h2>
+                <p class="mb-6">
+                    人工智能的历史始于一个雄心勃勃的设想：如果人类的智能本质上是对符号的操作和逻辑推理，那么我们是否可以通过编程让计算机模拟这一过程，从而实现机器智能？这一思想流派被称为<span class="highlight-text">符号主义（Symbolism）</span>，它主导了人工智能研究的前几十年。
+                </p>
+                <p class="mb-6">
+                    符号主义的核心假设可以概括为<strong>"物理符号系统假设"</strong>：智能行为的必要和充分条件是能够操作物理符号系统。换句话说，智能就是符号操作，而符号操作就能产生智能。基于这一假设，早期的AI研究者们开始构建各种基于符号推理的系统，试图让机器像人类一样"思考"。
+                </p>
                 
-                <div class="prose max-w-none">
-                    <p class="text-lg leading-relaxed mb-6">
-                        人工智能领域的早期探索，深受数理逻辑和计算机科学基本原理的影响。在那个时代，研究者们普遍持有一种信念：人类的智能，尤其是逻辑推理能力，可以被形式化的符号体系所捕捉和复现。这一核心思想催生了人工智能的第一个重要范式——符号主义（Symbolicism），也被称为"逻辑AI"或"传统AI"。
+                <div class="image-container">
+                    <img src="../docs/images/2-figures/1757246501849-0.png" alt="符号主义AI的核心理念" />
+                    <p class="image-caption">图 2.2 符号主义AI的核心理念：通过符号操作实现智能</p>
+                </div>
+
+                <!-- 2.1.1 专家系统的兴起 -->
+                <section id="expert-systems" class="mb-10">
+                    <h3>2.1.1 专家系统的兴起</h3>
+                    <p class="mb-6">
+                        20世纪70年代，符号主义的第一个重大成功来自<span class="highlight-text">专家系统（Expert Systems）</span>。这类系统试图将特定领域专家的知识和推理过程编码成计算机程序，使机器能够在该领域内做出专家级别的判断和决策。
+                    </p>
+                    <p class="mb-6">
+                        最著名的早期专家系统是<strong>MYCIN</strong>，由斯坦福大学在1970年代开发，用于诊断血液感染疾病并推荐抗生素治疗方案。MYCIN的核心架构包含三个关键组件：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>知识库（Knowledge Base）</strong>：包含约600条医学规则，每条规则都以"IF-THEN"的形式表达医学知识</li>
+                        <li><strong>推理引擎（Inference Engine）</strong>：负责根据当前症状和检测结果，在知识库中搜索匹配的规则并进行逻辑推理</li>
+                        <li><strong>解释系统（Explanation System）</strong>：能够向用户解释系统的推理过程和结论依据</li>
+                    </ul>
+                    <p class="mb-6">
+                        MYCIN的一个典型规则示例如下：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>IF: 
+    1) 感染部位是血液
+    2) 患者年龄大于10岁
+    3) 细菌培养结果为革兰氏阳性球菌
+    4) 细菌形态为链状排列
+THEN: 
+    病原体很可能是链球菌 (置信度: 0.8)</code></pre>
+                    </div>
+                    <p class="mb-6">
+                        令人印象深刻的是，MYCIN在诊断准确性上达到了与人类专家相当的水平，在某些测试中甚至超过了一般医生的表现。这一成功极大地鼓舞了AI研究界，专家系统迅速扩展到其他领域，如地质勘探、化学分析、工程设计等。
+                    </p>
+                </section>
+
+                <!-- 2.1.2 SHRDLU：理解与行动的先驱 -->
+                <section id="shrdlu" class="mb-10">
+                    <h3>2.1.2 SHRDLU：理解与行动的先驱</h3>
+                    <p class="mb-6">
+                        如果说MYCIN展示了符号主义在知识推理方面的潜力，那么<strong>SHRDLU</strong>则展现了其在自然语言理解和行动规划方面的可能性。SHRDLU由MIT的Terry Winograd在1970年开发，是一个能够理解自然语言指令并在虚拟积木世界中执行操作的程序。
+                    </p>
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-1.png" alt="SHRDLU系统界面" />
+                        <p class="image-caption">图 2.1 SHRDLU系统的积木世界界面</p>
+                    </div>
+                    <p class="mb-6">
+                        SHRDLU的工作环境是一个简化的三维积木世界，包含不同颜色、形状和大小的积木。用户可以用自然语言与系统对话，要求它移动积木、回答问题或解释行为。以下是一个典型的人机对话示例：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>用户: 把红色的金字塔放在蓝色的方块上
+SHRDLU: 好的 (执行动作)
+
+用户: 现在把它放在绿色方块旁边
+SHRDLU: 好的 (执行动作)
+
+用户: 什么支撑着绿色的金字塔？
+SHRDLU: 蓝色的方块
+
+用户: 有多少个方块不在盒子里？
+SHRDLU: 四个</code></pre>
+                    </div>
+                    <p class="mb-6">
+                        SHRDLU的成功在于它实现了多个AI子领域的集成：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>自然语言解析</strong>：将英语句子转换为内部的符号表示</li>
+                        <li><strong>语义理解</strong>：理解指代关系（如"它"指向什么对象）和空间关系</li>
+                        <li><strong>规划与执行</strong>：将高层目标分解为具体的动作序列</li>
+                        <li><strong>世界建模</strong>：维护对积木世界当前状态的完整表示</li>
+                    </ul>
+                    <p class="mb-6">
+                        然而，SHRDLU的成功也暴露了符号主义方法的一个根本性限制：它只能在一个极度简化、完全可控的"玩具世界"中工作。一旦脱离这个封闭的积木环境，系统就完全无法应对真实世界的复杂性和不确定性。
+                    </p>
+                </section>
+
+                <!-- 2.1.3 符号主义面临的挑战 -->
+                <section id="symbolic-challenges" class="mb-10">
+                    <h3>2.1.3 符号主义面临的挑战</h3>
+                    <p class="mb-6">
+                        尽管专家系统和SHRDLU等早期成功案例展现了符号主义的潜力，但随着研究的深入，这一范式面临的根本性挑战逐渐显现：
                     </p>
 
-                    <p class="text-lg leading-relaxed mb-6">
-                        在符号主义看来，智能行为的核心是基于一套明确规则对符号进行操作。因此，一个智能体可以被视为一个物理符号系统：它通过内部的符号来表示外部世界，并通过逻辑推理来规划行动。这个时代的智能体，其"智慧"完全来源于设计者预先编码的知识库和推理规则，而非通过自主学习获得。
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">知识获取瓶颈</h4>
+                    <p class="mb-6">
+                        构建一个有效的专家系统需要将领域专家的知识完全显式化并编码为规则。然而，人类专家的很多知识是<span class="highlight-text">隐性的（Tacit Knowledge）</span>——他们知道如何做，但很难准确描述自己是如何做的。例如，一个经验丰富的医生在诊断时会综合考虑患者的神态、语调、体态等微妙信息，但这些"直觉"很难转化为明确的IF-THEN规则。
                     </p>
 
-                    <!-- 2.1.1 物理符号系统假说 -->
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.1.1 物理符号系统假说</h3>
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">常识推理的困难</h4>
+                    <p class="mb-6">
+                        人类的智能很大程度上依赖于对世界的<span class="highlight-text">常识性理解</span>。我们知道水往低处流、物体不能同时出现在两个地方、人需要呼吸才能生存等基本事实。然而，要将这些看似简单的常识编码为逻辑规则却异常困难。道格拉斯·莱纳特（Douglas Lenat）领导的Cyc项目试图构建一个包含人类常识的庞大知识库，经过几十年的努力，仍然远未达到预期目标。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">框架问题</h4>
+                    <p class="mb-6">
+                        在动态环境中，智能体需要推理哪些事实在行动后保持不变，哪些会发生改变。这被称为<span class="highlight-text">框架问题（Frame Problem）</span>。例如，当机器人移动一个杯子时，杯子的位置改变了，但杯子的颜色、房间里其他物体的位置、今天的日期等成千上万的事实都保持不变。如何有效地表示和推理这种"默认不变性"成为符号主义系统的重大挑战。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">组合爆炸</h4>
+                    <p class="mb-6">
+                        随着问题规模的增长，可能的状态空间和推理路径呈指数级增长，导致<span class="highlight-text">组合爆炸</span>。即使是相对简单的问题，穷举所有可能的推理路径也可能需要天文数字般的计算时间。
+                    </p>
+
+                    <p class="mb-6">
+                        这些挑战的根源在于符号主义的一个基本假设：智能可以通过操作抽象符号来实现，而无需考虑这些符号与真实世界的具体联系。然而，真实世界的复杂性、模糊性和动态性远超出了纯符号系统所能处理的范围。正是在这种背景下，研究者们开始探索其他的智能实现路径。
+                    </p>
                     
-                    <p class="text-lg leading-relaxed mb-6">
-                        符号主义时代的理论根据，是1976年由<strong>艾伦·纽厄尔（Allen Newell）</strong>和<strong>赫伯特·西蒙（Herbert A. Simon）</strong>共同提出的<strong>物理符号系统假说（Physical Symbol System Hypothesis, PSSH）</strong><sup>[1]</sup>。这两位图灵奖得主通过这一假说，为在计算机上实现通用人工智能提供了理论指导和判定标准。
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-2.png" alt="符号主义面临的核心挑战" />
+                        <p class="image-caption">图 2.3 符号主义面临的核心挑战</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 2.2 ELIZA：规则驱动的对话系统 -->
+            <section id="eliza" class="mb-12">
+                <h2>2.2 ELIZA：规则驱动的对话系统</h2>
+                <p class="mb-6">
+                    在符号主义的探索历程中，有一个系统虽然简单，却产生了深远的影响——<strong>ELIZA</strong>。这个由MIT的约瑟夫·魏岑鲍姆（Joseph Weizenbaum）在1966年开发的程序，是最早的聊天机器人之一，它通过简单的模式匹配和文本替换技术，模拟心理治疗师与患者的对话。
+                </p>
+                <p class="mb-6">
+                    ELIZA的意义不仅在于它展示了早期自然语言处理的可能性，更重要的是，它揭示了符号主义方法的本质特征和根本局限。通过深入分析ELIZA的工作机制并亲手实现一个简化版本，我们可以直观地理解规则驱动系统的能力边界。
+                </p>
+
+                <!-- 2.2.1 ELIZA的工作机制 -->
+                <section id="eliza-mechanism" class="mb-10">
+                    <h3>2.2.1 ELIZA的工作机制</h3>
+                    <p class="mb-6">
+                        ELIZA的核心思想极其简单：通过<span class="highlight-text">模式匹配（Pattern Matching）</span>识别用户输入中的关键词或短语，然后根据预定义的规则生成相应的回复。整个系统基于以下几个关键组件：
                     </p>
 
-                    <div class="bg-indigo-50 border-l-4 border-indigo-400 p-6 my-8 rounded-r-lg">
-                        <h4 class="text-lg font-semibold text-indigo-800 mb-3">该假说包含两个核心论断：</h4>
-                        <ol class="text-indigo-700 space-y-2 list-decimal list-inside">
-                            <li><strong>充分性论断</strong>：任何一个物理符号系统，都具备产生通用智能行为的充分手段。</li>
-                            <li><strong>必要性论断</strong>：任何一个能够展现通用智能行为的系统，其本质必然是一个物理符号系统。</li>
-                        </ol>
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">模式-响应规则库</h4>
+                    <p class="mb-6">
+                        ELIZA的"智能"完全来源于一套精心设计的模式-响应规则。每条规则包含一个输入模式和一组可能的响应模板。例如：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>模式: "我感到 (.*)"
+响应模板: 
+- "你为什么感到 {1}？"
+- "感到 {1} 让你想到了什么？"
+- "你经常感到 {1} 吗？"
+
+模式: "我的 (.*) 让我 (.*)"
+响应模板:
+- "告诉我更多关于你的 {1} 的事情"
+- "你的 {1} 如何让你 {2}？"</code></pre>
                     </div>
 
-                    <p class="text-lg leading-relaxed mb-6">
-                        这里的物理符号系统指的是一个能够在物理世界中存在的系统，它由一组可被区分的符号和一系列对这些符号进行操作的过程组成，其构成元素如图2.2所示。这些符号可以组合成更复杂的结构（例如表达式），而过程则可以创建、修改、复制和销毁这些符号结构。
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">代词转换机制</h4>
+                    <p class="mb-6">
+                        为了维持对话的自然性，ELIZA会自动转换人称代词。当用户说"我很困惑"时，系统会将其转换为"你很困惑"来构造回复。这种简单的语法变换给用户造成了系统"理解"对话内容的错觉。
                     </p>
 
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-0.png" alt="物理符号系统的构成元素" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.2 物理符号系统的构成元素</p>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 mb-8">
-                        <p class="text-lg text-purple-800 font-semibold text-center">
-                            简而言之，PSSH大胆地宣称：<strong>智能的本质，就是符号的计算与处理。</strong>
-                        </p>
-                    </div>
-
-                    <p class="text-lg leading-relaxed mb-6">
-                        这个假说具有深远的影响。它将对人类心智这一模糊、复杂的哲学问题的研究，转化为了一个可以在计算机上进行工程化实现的具体问题。它为早期人工智能研究者注入了强大的信心，即只要我们能找到正确的方式来表示知识并设计出有效的推理算法，就一定能创造出与人类媲美的机器智能。整个符号主义时代的研究，从专家系统到自动规划，几乎都是在这一假说的指引下展开的。
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">关键词优先级</h4>
+                    <p class="mb-6">
+                        不同的关键词被赋予不同的优先级。例如，"母亲"、"父亲"等家庭关系词汇通常具有较高优先级，因为它们在心理治疗对话中往往更重要。
                     </p>
 
-                    <!-- 2.1.2 专家系统 -->
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.1.2 专家系统</h3>
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">通用回退机制</h4>
+                    <p class="mb-6">
+                        当输入无法匹配任何特定模式时，系统会使用通用的回退响应，如"请继续说下去"、"这很有趣，告诉我更多"等，以维持对话的连续性。
+                    </p>
+
+                    <p class="mb-6">
+                        以下是一个典型的ELIZA对话示例：
+                    </p>
+                    <div class="code-block">
+                        <pre><code>用户: 我感到很沮丧
+ELIZA: 你为什么感到沮丧？
+
+用户: 我的工作让我很焦虑
+ELIZA: 告诉我更多关于你的工作的事情
+
+用户: 我觉得我无法胜任
+ELIZA: 你为什么觉得你无法胜任？
+
+用户: 我的老板总是批评我
+ELIZA: 你的老板如何影响你？</code></pre>
+                    </div>
                     
-                    <p class="text-lg leading-relaxed mb-6">
-                        在物理符号系统假说的指导下，符号主义时代最具代表性的成果是<strong>专家系统（Expert Systems）</strong>。专家系统是一类基于知识的程序，它们试图在特定领域内模拟人类专家的决策过程。这些系统将专家的知识编码为一系列"如果-那么"规则，并通过推理引擎来处理这些规则，从而为用户提供专业建议或解决方案。
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-3.png" alt="ELIZA的工作流程" />
+                        <p class="image-caption">图 2.4 ELIZA的工作流程：从模式匹配到响应生成</p>
+                    </div>
+                </section>
+
+                <!-- 2.2.2 构建一个简化版ELIZA -->
+                <section id="eliza-implementation" class="mb-10">
+                    <h3>2.2.2 构建一个简化版ELIZA</h3>
+                    <p class="mb-6">
+                        为了深入理解ELIZA的工作原理，让我们动手实现一个简化版本。这个实践将帮助我们直观地感受规则驱动系统的能力与局限。
                     </p>
 
-                    <div class="bg-green-50 border-l-4 border-green-400 p-6 my-8 rounded-r-lg">
-                        <h4 class="text-lg font-semibold text-green-800 mb-3">专家系统的典型架构包括：</h4>
-                        <ul class="text-green-700 space-y-2 list-disc list-inside">
-                            <li><strong>知识库（Knowledge Base）</strong>：存储领域专家的知识，通常以规则的形式表示</li>
-                            <li><strong>推理引擎（Inference Engine）</strong>：负责根据知识库中的规则进行逻辑推理</li>
-                            <li><strong>工作内存（Working Memory）</strong>：存储当前问题的事实和中间推理结果</li>
-                            <li><strong>用户界面（User Interface）</strong>：与用户交互，获取输入并展示结果</li>
-                            <li><strong>解释模块（Explanation Module）</strong>：解释系统的推理过程和结论</li>
-                        </ul>
+                    <div class="code-block">
+                        <pre><code>import re
+import random
+
+# 定义模式-响应规则库
+rules = {
+    r'我需要 (.*)': [
+        "你为什么需要 {}？",
+        "拥有 {} 对你来说有多重要？",
+        "如果你得到了 {}，会发生什么？"
+    ],
+    r'我感到 (.*)': [
+        "你为什么感到 {}？",
+        "感到 {} 让你想到了什么？",
+        "你经常感到 {} 吗？",
+        "当你感到 {} 时，你会做什么？"
+    ],
+    r'我是 (.*)': [
+        "你为什么说你是 {}？",
+        "你喜欢成为 {} 吗？",
+        "你认为成为 {} 意味着什么？"
+    ],
+    r'我的 (.*) 是 (.*)': [
+        "告诉我更多关于你的 {} 的事情",
+        "你的 {} 为什么是 {}？",
+        "你对你的 {} 感觉如何？"
+    ],
+    r'我想 (.*)': [
+        "你为什么想 {}？",
+        "如果你 {}，会怎么样？",
+        "你真的想 {} 吗？"
+    ],
+    r'我记得 (.*)': [
+        "你经常想起 {} 吗？",
+        "除了 {}，你还记得什么？",
+        "为什么你现在想到了 {}？"
+    ],
+    r'我的母亲 (.*)': [
+        "告诉我更多关于你母亲的事情",
+        "你和你母亲的关系如何？",
+        "你母亲如何影响你？"
+    ],
+    r'我的父亲 (.*)': [
+        "你的父亲在你生活中扮演什么角色？",
+        "告诉我更多关于你父亲的事情",
+        "你和你父亲相处得怎么样？"
+    ],
+    r'(.*)？': [
+        "你为什么问这个问题？",
+        "这个问题对你来说重要吗？",
+        "你觉得答案是什么？",
+        "你为什么想知道这个？"
+    ],
+    r'.*': [  # 通配符规则，匹配任何输入
+        "请继续说下去",
+        "这很有趣，告诉我更多",
+        "我明白了，然后呢？",
+        "你能详细说说吗？",
+        "这让你有什么感受？"
+    ]
+}
+
+# 代词转换字典
+pronoun_swap = {
+    "我": "你", "你": "我", "我的": "你的", "你的": "我的",
+    "我是": "你是", "你是": "我是", "我会": "你会", "你会": "我会",
+    "我有": "你有", "你有": "我有", "我想": "你想", "你想": "我想",
+    "我觉得": "你觉得", "你觉得": "我觉得", "我们": "你们", "你们": "我们",
+    "i": "you", "you": "i", "my": "your", "your": "my",
+    "i'm": "you are", "you're": "i am", "i've": "you have", 
+    "you've": "i have", "i'll": "you will", "you'll": "i will",
+    "i've": "you have", "i'll": "you will", "yours": "mine",
+    "mine": "yours"
+}
+
+def swap_pronouns(phrase):
+    """
+    对输入短语中的代词进行第一/第二人称转换
+    """
+    words = phrase.lower().split()
+    swapped_words = [pronoun_swap.get(word, word) for word in words]
+    return " ".join(swapped_words)
+
+def respond(user_input):
+    """
+    根据规则库生成响应
+    """
+    for pattern, responses in rules.items():
+        match = re.search(pattern, user_input, re.IGNORECASE)
+        if match:
+            # 捕获匹配到的部分
+            captured_group = match.group(1) if match.groups() else ''
+            # 进行代词转换
+            swapped_group = swap_pronouns(captured_group)
+            # 从模板中随机选择一个并格式化
+            response = random.choice(responses).format(swapped_group)
+            return response
+    # 如果没有匹配任何特定规则，使用最后的通配符规则
+    return random.choice(rules[r'.*'])
+
+# 主聊天循环
+if __name__ == '__main__':
+    print("Therapist: Hello! How can I help you today?")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["quit", "exit", "bye"]:
+            print("Therapist: Goodbye. It was nice talking to you.")
+            break
+        response = respond(user_input)
+        print(f"Therapist: {response}")</code></pre>
                     </div>
 
-                    <!-- MYCIN系统 -->
-                    <h4 class="text-xl font-bold mb-4 text-indigo-700">MYCIN：医疗诊断的先驱</h4>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        <strong>MYCIN</strong>是专家系统历史上最著名的成功案例之一，由斯坦福大学的Edward Shortliffe在1970年代开发。MYCIN专门用于诊断血液感染疾病并推荐抗生素治疗方案。该系统包含了约600条启发式规则，这些规则是从医学专家的知识中提取出来的。
-                    </p>
-
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-1.png" alt="MYCIN系统的架构" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.3 MYCIN系统的架构</p>
+                    <p class="mb-6">运行示例：</p>
+                    <div class="code-block">
+                        <pre><code>Therapist: Hello! How can I help you today?
+You: I am feeling sad today.
+Therapist: How long have you been feeling sad today?
+You: I need some help with my project.
+Therapist: Are you sure you need some help with your project?
+You: My mother is not happy with my work.
+Therapist: Tell me more about your mother.
+You: quit
+Therapist: Goodbye. It was nice talking to you.</code></pre>
                     </div>
 
-                    <p class="text-lg leading-relaxed mb-6">
-                        MYCIN的一个重要创新是引入了<strong>不确定性推理</strong>。由于医学诊断往往涉及不完整或不确定的信息，MYCIN使用了一种称为"确定性因子"（Certainty Factor, CF）的方法来处理不确定性。每条规则都有一个CF值，表示该规则结论的可信度。
+                    <p class="mb-6">
+                        通过上述的编程实践，我们可以直观地总结出规则驱动系统的根本局限性，这些局限正是对符号主义理论挑战的直接印证：
                     </p>
-
-                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8">
-                        <h5 class="text-lg font-semibold text-blue-800 mb-3">MYCIN规则示例：</h5>
-                        <div class="bg-white p-4 rounded-lg border font-mono text-sm">
-                            <p class="text-blue-600 mb-2">IF:</p>
-                            <ul class="text-gray-700 ml-4 mb-4 space-y-1">
-                                <li>1) 感染是原发性菌血症，AND</li>
-                                <li>2) 感染部位是无菌的，AND</li>
-                                <li>3) 怀疑入口是胃肠道</li>
-                            </ul>
-                            <p class="text-blue-600 mb-2">THEN:</p>
-                            <p class="text-gray-700 ml-4">有0.7的确定性因子认为致病菌是肠道细菌</p>
-                        </div>
-                    </div>
-
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-2.png" alt="MYCIN的推理过程示例" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.4 MYCIN的推理过程示例</p>
-                    </div>
-
-                    <p class="text-lg leading-relaxed mb-6">
-                        MYCIN在测试中表现出色，其诊断准确率甚至超过了一些医学专家。然而，尽管技术上成功，MYCIN从未在实际临床环境中得到广泛应用，这主要是由于法律责任、医生接受度和系统维护等非技术因素。
-                    </p>
-
-                    <!-- SHRDLU系统 -->
-                    <h4 class="text-xl font-bold mb-4 text-indigo-700">SHRDLU：自然语言理解的里程碑</h4>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        另一个符号主义时代的重要成果是<strong>SHRDLU</strong>，由MIT的Terry Winograd在1968-1970年间开发。SHRDLU是一个能够理解自然语言指令并在虚拟"积木世界"中执行操作的程序。
-                    </p>
-
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-3.png" alt="SHRDLU的积木世界界面" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.5 SHRDLU的积木世界界面</p>
-                    </div>
-
-                    <p class="text-lg leading-relaxed mb-6">
-                        SHRDLU的"世界"由一个桌面和若干不同形状、大小、颜色的积木组成。用户可以用英语与系统对话，要求它移动积木、回答关于积木世界状态的问题，甚至进行一些抽象的推理。
-                    </p>
-
-                    <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-400 mb-8">
-                        <h5 class="text-lg font-semibold text-yellow-800 mb-3">SHRDLU对话示例：</h5>
-                        <div class="space-y-3">
-                            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
-                                <p class="text-blue-600 font-semibold">用户：</p>
-                                <p class="text-gray-700">"Pick up a big red block."</p>
-                            </div>
-                            <div class="bg-white p-3 rounded border-l-4 border-green-400">
-                                <p class="text-green-600 font-semibold">SHRDLU：</p>
-                                <p class="text-gray-700">"OK." (执行动作)</p>
-                            </div>
-                            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
-                                <p class="text-blue-600 font-semibold">用户：</p>
-                                <p class="text-gray-700">"Grasp the pyramid."</p>
-                            </div>
-                            <div class="bg-white p-3 rounded border-l-4 border-green-400">
-                                <p class="text-green-600 font-semibold">SHRDLU：</p>
-                                <p class="text-gray-700">"I don't understand which pyramid you mean."</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <p class="text-lg leading-relaxed mb-6">
-                        SHRDLU的成功在于它将语言理解、知识表示、推理和行动规划巧妙地结合在一个统一的符号系统中。它能够：
-                    </p>
-
-                    <ul class="text-lg leading-relaxed mb-6 space-y-2 list-disc list-inside ml-6">
-                        <li>解析复杂的英语句子并理解其含义</li>
-                        <li>维护对积木世界当前状态的内部表示</li>
-                        <li>规划实现目标所需的动作序列</li>
-                        <li>处理指代消解（如"它"、"那个"等代词）</li>
-                        <li>回答关于过去动作和当前状态的问题</li>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>缺乏语义理解</strong>：系统不理解词义。例如，面对"I am <strong>not</strong> happy"的输入，它仍会机械地匹配规则并生成语义不通的回应，因为它无法理解否定词"not"的作用。</li>
+                        <li><strong>无上下文记忆</strong>：系统是<strong>无状态的（Stateless）</strong>，每次回应仅基于当前单句输入，无法进行连贯的多轮对话。</li>
+                        <li><strong>规则的扩展性问题</strong>：尝试增加更多规则会导致规则库的规模爆炸式增长，规则间的冲突与优先级管理将变得极其复杂，最终导致系统难以维护。</li>
                     </ul>
 
-                    <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
-                         <p class="text-lg text-green-800 font-semibold text-center">
-                             多智能体思想的提出，<strong>为现代AI系统的分布式架构和协作机制奠定了重要的理论基础</strong>，其影响一直延续到今天的大型AI系统设计中。
-                         </p>
-                     </div>
-                 </div>
-             </section>
-
-             <!-- 2.4 学习范式的革命：从规则到数据驱动 -->
-             <section id="learning-paradigms" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                 <h2 class="text-3xl font-bold mb-6 text-gradient">
-                     <i class="fas fa-graduation-cap mr-3"></i>2.4 学习范式的革命：从规则到数据驱动
-                 </h2>
-                 
-                 <div class="prose max-w-none">
-                     <p class="text-lg leading-relaxed mb-6">
-                         如果说多智能体思想解决了智能系统的<strong>架构问题</strong>，那么学习范式的革命则解决了更为根本的<strong>知识获取问题</strong>。传统符号主义依赖人工编码的规则和知识，而新兴的学习范式让机器能够从数据中自动获取知识和能力。
-                     </p>
-
-                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.1 从规则编程到机器学习</h3>
-                     
-                     <p class="text-lg leading-relaxed mb-6">
-                         传统的符号主义AI面临的最大挑战之一就是<strong>知识获取瓶颈</strong>。将人类专家的知识转化为机器可理解的规则是一个极其困难和耗时的过程。而机器学习的出现，为这一问题提供了全新的解决方案。
-                     </p>
-
-                     <div class="grid md:grid-cols-2 gap-8 mb-8">
-                         <div class="bg-red-50 border border-red-200 rounded-xl p-6">
-                             <h4 class="text-xl font-bold text-red-800 mb-4">
-                                 <i class="fas fa-code mr-2"></i>传统规则编程
-                             </h4>
-                             <ul class="text-red-700 space-y-3">
-                                 <li><strong>知识来源</strong>：人类专家的经验和直觉</li>
-                                 <li><strong>表示方式</strong>：显式的if-then规则</li>
-                                 <li><strong>获取方式</strong>：知识工程师手工编码</li>
-                                 <li><strong>更新机制</strong>：人工修改和维护</li>
-                                 <li><strong>适应性</strong>：静态，难以适应新情况</li>
-                             </ul>
-                         </div>
-
-                         <div class="bg-green-50 border border-green-200 rounded-xl p-6">
-                             <h4 class="text-xl font-bold text-green-800 mb-4">
-                                 <i class="fas fa-brain mr-2"></i>机器学习范式
-                             </h4>
-                             <ul class="text-green-700 space-y-3">
-                                 <li><strong>知识来源</strong>：大量的训练数据</li>
-                                 <li><strong>表示方式</strong>：隐式的模型参数</li>
-                                 <li><strong>获取方式</strong>：算法自动学习</li>
-                                 <li><strong>更新机制</strong>：持续学习和优化</li>
-                                 <li><strong>适应性</strong>：动态，能适应新数据</li>
-                             </ul>
-                         </div>
-                     </div>
-
-                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.2 强化学习：智能体的自主学习</h3>
-                     
-                     <p class="text-lg leading-relaxed mb-6">
-                         在各种机器学习方法中，<strong>强化学习（Reinforcement Learning, RL）</strong>对智能体发展的影响最为深远。强化学习让智能体能够通过与环境的交互来学习最优策略，这种学习方式更接近人类和动物的学习过程。
-                     </p>
-
-                     <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
-                         <h4 class="text-lg font-semibold text-blue-800 mb-3">强化学习的核心要素：</h4>
-                         <div class="grid md:grid-cols-2 gap-6">
-                             <div>
-                                 <h5 class="font-semibold text-blue-700 mb-2">基本组件：</h5>
-                                 <ul class="text-blue-600 space-y-1 text-sm">
-                                     <li>• <strong>智能体（Agent）</strong>：学习和决策的主体</li>
-                                     <li>• <strong>环境（Environment）</strong>：智能体所处的外部世界</li>
-                                     <li>• <strong>状态（State）</strong>：环境的当前情况描述</li>
-                                     <li>• <strong>动作（Action）</strong>：智能体可执行的操作</li>
-                                     <li>• <strong>奖励（Reward）</strong>：环境给予的反馈信号</li>
-                                 </ul>
-                             </div>
-                             <div>
-                                 <h5 class="font-semibold text-blue-700 mb-2">学习目标：</h5>
-                                 <ul class="text-blue-600 space-y-1 text-sm">
-                                     <li>• <strong>策略优化</strong>：找到最优的行动策略</li>
-                                     <li>• <strong>价值估计</strong>：评估状态和动作的价值</li>
-                                     <li>• <strong>探索与利用</strong>：平衡尝试新动作和利用已知知识</li>
-                                     <li>• <strong>长期回报</strong>：最大化累积奖励</li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-
-                     <div class="text-center my-8">
-                         <img src="../docs/images/2-figures/1757246501849-5.png" alt="强化学习的交互循环" class="mx-auto rounded-lg shadow-md max-w-full">
-                         <p class="text-sm text-gray-600 mt-2">图 2.7 强化学习中智能体与环境的交互循环</p>
-                     </div>
-
-                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.3 深度学习的突破</h3>
-                     
-                     <p class="text-lg leading-relaxed mb-6">
-                         2010年代，深度学习的兴起为AI带来了革命性的变化。深度神经网络强大的表示学习能力，让机器能够从原始数据中自动提取有用的特征，这极大地扩展了机器学习的应用范围。
-                     </p>
-
-                     <div class="grid md:grid-cols-3 gap-6 mb-8">
-                         <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                             <div class="text-center mb-4">
-                                 <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                     <i class="fas fa-eye text-white text-2xl"></i>
-                                 </div>
-                                 <h4 class="text-lg font-bold text-purple-800">计算机视觉</h4>
-                             </div>
-                             <p class="text-purple-700 text-sm text-center">
-                                 卷积神经网络（CNN）在图像识别、目标检测等任务上取得突破性进展
-                             </p>
-                         </div>
-
-                         <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
-                             <div class="text-center mb-4">
-                                 <div class="w-16 h-16 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                     <i class="fas fa-comments text-white text-2xl"></i>
-                                 </div>
-                                 <h4 class="text-lg font-bold text-indigo-800">自然语言处理</h4>
-                             </div>
-                             <p class="text-indigo-700 text-sm text-center">
-                                 循环神经网络（RNN）和Transformer架构推动了语言理解的重大进步
-                             </p>
-                         </div>
-
-                         <div class="bg-teal-50 border border-teal-200 rounded-xl p-6">
-                             <div class="text-center mb-4">
-                                 <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
-                                     <i class="fas fa-gamepad text-white text-2xl"></i>
-                                 </div>
-                                 <h4 class="text-lg font-bold text-teal-800">游戏AI</h4>
-                             </div>
-                             <p class="text-teal-700 text-sm text-center">
-                                 深度强化学习在围棋、电子游戏等复杂决策任务中展现超人表现
-                             </p>
-                         </div>
-                     </div>
-
-                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.4 大语言模型的涌现</h3>
-                     
-                     <p class="text-lg leading-relaxed mb-6">
-                         2017年Transformer架构的提出，以及随后大语言模型（LLM）的发展，标志着AI进入了一个全新的时代。预训练-微调范式的成功，展示了从大规模无标注数据中学习通用知识的巨大潜力。
-                     </p>
-
-                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200 mb-8">
-                         <h4 class="text-lg font-semibold text-amber-800 mb-4">
-                             <i class="fas fa-rocket mr-2"></i>预训练-微调范式的革命性意义
-                         </h4>
-                         <div class="grid md:grid-cols-2 gap-6">
-                             <div>
-                                 <h5 class="font-semibold text-amber-700 mb-3">预训练阶段：</h5>
-                                 <ul class="text-amber-600 space-y-2 text-sm">
-                                     <li>• 使用大规模无标注文本数据</li>
-                                     <li>• 学习语言的通用表示和模式</li>
-                                     <li>• 掌握语法、语义和常识知识</li>
-                                     <li>• 形成强大的语言理解基础</li>
-                                 </ul>
-                             </div>
-                             <div>
-                                 <h5 class="font-semibold text-amber-700 mb-3">微调阶段：</h5>
-                                 <ul class="text-amber-600 space-y-2 text-sm">
-                                     <li>• 使用特定任务的少量标注数据</li>
-                                     <li>• 快速适应具体的应用场景</li>
-                                     <li>• 优化特定任务的性能表现</li>
-                                     <li>• 实现高效的知识迁移</li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-
-                     <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 mb-8">
-                         <h4 class="text-lg font-semibold text-purple-800 mb-3">
-                             <i class="fas fa-star mr-2"></i>大语言模型的涌现能力
-                         </h4>
-                         <p class="text-purple-700 mb-4">
-                             当模型规模达到一定程度时，会出现一些在小模型中不存在的能力，这些被称为"涌现能力"：
-                         </p>
-                         <div class="grid md:grid-cols-2 gap-4">
-                             <div class="bg-white p-4 rounded-lg border border-purple-200">
-                                 <h5 class="font-semibold text-purple-800 mb-2">上下文学习</h5>
-                                 <p class="text-purple-700 text-sm">仅通过少量示例就能学会新任务，无需参数更新</p>
-                             </div>
-                             <div class="bg-white p-4 rounded-lg border border-purple-200">
-                                 <h5 class="font-semibold text-purple-800 mb-2">思维链推理</h5>
-                                 <p class="text-purple-700 text-sm">能够进行逐步推理，解决复杂的逻辑问题</p>
-                             </div>
-                         </div>
-                     </div>
-
-                     <div class="text-center my-8">
-                         <img src="../docs/images/2-figures/1757246501849-6.png" alt="大语言模型的发展历程" class="mx-auto rounded-lg shadow-md max-w-full">
-                         <p class="text-sm text-gray-600 mt-2">图 2.8 大语言模型的发展历程和能力演进</p>
-                     </div>
-
-                     <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
-                         <p class="text-lg text-blue-800 font-semibold text-center">
-                             学习范式的革命，<strong>从根本上改变了智能体获取能力的方式</strong>，为现代AI系统的强大能力奠定了基础。
-                         </p>
-                     </div>
-                 </div>
-             </section>
-
-             <!-- 章节总结 -->
-             <section id="chapter-summary" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                 <h2 class="text-3xl font-bold mb-6 text-gradient">
-                     <i class="fas fa-bookmark mr-3"></i>章节总结
-                 </h2>
-                 
-                 <div class="prose max-w-none">
-                     <p class="text-lg leading-relaxed mb-6">
-                         本章回顾了智能体技术从符号主义到现代AI系统的发展历程。我们见证了三次重大的范式转变，每一次都解决了前一代技术的核心局限，同时为智能体的发展开辟了新的道路。
-                     </p>
-
-                     <div class="grid md:grid-cols-3 gap-6 mb-8">
-                         <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
-                             <h3 class="text-lg font-semibold text-blue-800 mb-3">
-                                 <i class="fas fa-cogs mr-2"></i>符号主义时代
-                             </h3>
-                             <ul class="text-blue-700 space-y-2 text-sm">
-                                 <li>• 建立了AI的理论基础</li>
-                                 <li>• 展示了逻辑推理的可能性</li>
-                                 <li>• 暴露了知识获取的瓶颈</li>
-                                 <li>• 为后续发展提供了重要启示</li>
-                             </ul>
-                         </div>
-
-                         <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
-                             <h3 class="text-lg font-semibold text-green-800 mb-3">
-                                 <i class="fas fa-users mr-2"></i>多智能体思想
-                             </h3>
-                             <ul class="text-green-700 space-y-2 text-sm">
-                                 <li>• 提出了分布式智能的概念</li>
-                                 <li>• 强调了协作和专业化</li>
-                                 <li>• 影响了现代系统架构设计</li>
-                                 <li>• 为可扩展性提供了解决方案</li>
-                             </ul>
-                         </div>
-
-                         <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
-                             <h3 class="text-lg font-semibold text-purple-800 mb-3">
-                                 <i class="fas fa-graduation-cap mr-2"></i>学习范式革命
-                             </h3>
-                             <ul class="text-purple-700 space-y-2 text-sm">
-                                 <li>• 解决了知识获取的根本问题</li>
-                                 <li>• 实现了从数据到智能的转化</li>
-                                 <li>• 催生了现代AI的强大能力</li>
-                                 <li>• 开启了通用人工智能的可能</li>
-                             </ul>
-                         </div>
-                     </div>
-
-                     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl text-center mb-8">
-                         <h3 class="text-2xl font-bold mb-4">
-                             <i class="fas fa-lightbulb mr-3"></i>核心洞察
-                         </h3>
-                         <div class="grid md:grid-cols-2 gap-6 text-left">
-                             <div>
-                                 <h4 class="font-semibold mb-2">技术演进规律：</h4>
-                                 <ul class="space-y-1 text-sm">
-                                     <li>• 每个新范式都解决了前代的核心痛点</li>
-                                     <li>• 技术发展遵循"问题驱动"的迭代模式</li>
-                                     <li>• 突破往往来自跨学科的思想融合</li>
-                                 </ul>
-                             </div>
-                             <div>
-                                 <h4 class="font-semibold mb-2">设计原则启示：</h4>
-                                 <ul class="space-y-1 text-sm">
-                                     <li>• 智能是涌现的而非完全设计的</li>
-                                     <li>• 学习能力比预编程规则更重要</li>
-                                     <li>• 适应性是智能系统的核心特征</li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-
-                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
-                         <h3 class="text-xl font-bold text-amber-800 mb-4 text-center">
-                             <i class="fas fa-arrow-right mr-2"></i>展望未来
-                         </h3>
-                         <p class="text-amber-700 text-center">
-                             理解智能体发展的历史脉络，有助于我们更好地把握技术发展的趋势，
-                             并为构建下一代智能体系统提供重要的理论指导和实践启示。
-                             在接下来的章节中，我们将深入探讨现代智能体的核心技术和实现方法。
-                         </p>
-                     </div>
-                 </div>
-             </section>
-         </div>
-     </main>
-
-     <script>
-         // 主题切换功能
-         const themeToggle = document.getElementById('theme-toggle');
-         const body = document.body;
-         const themeIcon = themeToggle.querySelector('i');
-
-         // 检查系统主题偏好
-         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-         const savedTheme = localStorage.getItem('theme');
-         
-         // 初始化主题
-         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-             body.classList.add('dark');
-             themeIcon.classList.remove('fa-moon');
-             themeIcon.classList.add('fa-sun');
-         }
-
-         themeToggle.addEventListener('click', () => {
-             body.classList.toggle('dark');
-             
-             if (body.classList.contains('dark')) {
-                 themeIcon.classList.remove('fa-moon');
-                 themeIcon.classList.add('fa-sun');
-                 localStorage.setItem('theme', 'dark');
-             } else {
-                 themeIcon.classList.remove('fa-sun');
-                 themeIcon.classList.add('fa-moon');
-                 localStorage.setItem('theme', 'light');
-             }
-         });
-
-         // 平滑滚动到锚点
-         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-             anchor.addEventListener('click', function (e) {
-                 e.preventDefault();
-                 const target = document.querySelector(this.getAttribute('href'));
-                 if (target) {
-                     target.scrollIntoView({
-                         behavior: 'smooth',
-                         block: 'start'
-                     });
-                 }
-             });
-         });
-
-         // 添加页面加载动画
-         window.addEventListener('load', () => {
-             document.querySelectorAll('.fade-in').forEach((element, index) => {
-                 setTimeout(() => {
-                     element.style.opacity = '1';
-                     element.style.transform = 'translateY(0)';
-                 }, index * 100);
-             });
-         });
-
-         // 监听系统主题变化
-         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-             if (!localStorage.getItem('theme')) {
-                 if (e.matches) {
-                     body.classList.add('dark');
-                     themeIcon.classList.remove('fa-moon');
-                     themeIcon.classList.add('fa-sun');
-                 } else {
-                     body.classList.remove('dark');
-                     themeIcon.classList.remove('fa-sun');
-                     themeIcon.classList.add('fa-moon');
-                 }
-             }
-         });
-
-         // 代码复制功能
-         document.querySelectorAll('.code-block').forEach(codeBlock => {
-             const button = document.createElement('button');
-             button.className = 'absolute top-2 right-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors opacity-0 group-hover:opacity-100';
-             button.textContent = '复制代码';
-             button.addEventListener('click', () => {
-                 const code = codeBlock.querySelector('code').textContent;
-                 navigator.clipboard.writeText(code).then(() => {
-                     button.textContent = '已复制!';
-                     button.classList.add('bg-green-500');
-                     setTimeout(() => {
-                         button.textContent = '复制代码';
-                         button.classList.remove('bg-green-500');
-                     }, 2000);
-                 });
-             });
-             codeBlock.style.position = 'relative';
-             codeBlock.classList.add('group');
-             codeBlock.appendChild(button);
-         });
-
-         // 图片懒加载和错误处理
-         document.querySelectorAll('img').forEach(img => {
-             img.addEventListener('load', function() {
-                 this.style.opacity = '1';
-             });
-             
-             img.addEventListener('error', function() {
-                 this.style.display = 'none';
-                 const placeholder = document.createElement('div');
-                 placeholder.className = 'bg-gray-200 dark:bg-gray-700 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400';
-                 placeholder.innerHTML = '<i class="fas fa-image text-4xl mb-2"></i><br>图片加载失败';
-                 this.parentNode.insertBefore(placeholder, this);
-             });
-         });
-     </script>
- </body>
- </html>
-                            SHRDLU被认为是早期人工智能的一个重大成就，它展示了符号主义方法在受限领域内的强大能力。
-                        </p>
-                    </div>
-
-                    <!-- 2.1.3 符号主义面临的根本挑战 -->
-                    <h3 class="text-2xl font-bold mb-6 text-purple-700">2.1.3 符号主义面临的根本挑战</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        尽管符号主义在特定领域取得了显著成功，但随着研究的深入，这一范式的根本局限性逐渐显现。这些挑战不仅是技术层面的，更是认知和哲学层面的，它们最终导致了AI研究重心的转移。
+                    <p class="mb-6">
+                        然而，尽管存在这些显而易见的缺陷，ELIZA在当时却产生了著名的<span class="highlight-text">"ELIZA效应"</span>，许多用户相信它能理解自己。这种智能的幻觉主要源于其巧妙的对话策略（如扮演被动的提问者、使用开放式模板）以及人类天生的情感投射心理。
                     </p>
 
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-database text-white text-xl"></i>
-                                </div>
-                                <h4 class="text-xl font-bold text-red-800">知识获取瓶颈</h4>
-                            </div>
-                            <p class="text-red-700 leading-relaxed">
-                                将人类专家的隐性知识转化为明确的规则极其困难。专家往往无法完全表达他们的决策过程，而知识工程师也难以捕捉所有相关的细节和例外情况。
-                            </p>
-                        </div>
-
-                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-lightbulb text-white text-xl"></i>
-                                </div>
-                                <h4 class="text-xl font-bold text-orange-800">常识问题</h4>
-                            </div>
-                            <p class="text-orange-700 leading-relaxed">
-                                人类拥有大量的常识知识，这些知识通常是隐含的、难以形式化的。要让机器具备人类水平的智能，需要编码数百万条常识规则，这在实践中几乎不可能实现。
-                            </p>
-                        </div>
-
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-frame text-white text-xl"></i>
-                                </div>
-                                <h4 class="text-xl font-bold text-yellow-800">框架问题</h4>
-                            </div>
-                            <p class="text-yellow-700 leading-relaxed">
-                                在动态环境中，系统需要确定哪些事实在行动后保持不变，哪些会发生变化。这个看似简单的问题在复杂环境中变得极其困难，需要大量的计算资源。
-                            </p>
-                        </div>
-
-                        <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-4">
-                                    <i class="fas fa-exclamation-triangle text-white text-xl"></i>
-                                </div>
-                                <h4 class="text-xl font-bold text-purple-800">系统脆弱性</h4>
-                            </div>
-                            <p class="text-purple-700 leading-relaxed">
-                                符号系统往往缺乏鲁棒性，面对超出预设规则范围的情况时容易失效。它们无法优雅地处理不完整、不确定或矛盾的信息。
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-xl border border-red-200 mb-8">
-                        <p class="text-lg text-red-800 font-semibold text-center">
-                            这些根本性挑战表明，<strong>纯粹的符号操作可能不足以实现真正的通用人工智能</strong>，从而为后续范式的出现奠定了基础。
-                        </p>
-                    </div>
-                </div>
+                    <p class="mb-6">
+                        ELIZA的实践清晰地揭示了符号主义方法的核心矛盾：系统看似智能的表现，完全依赖于设计者预先编码的规则。然而，面对真实世界语言的无限可能性，这种穷举式的方法注定不可扩展。系统没有真正的理解，只是在执行符号操作，这正是其脆弱性的根源。
+                    </p>
+                </section>
             </section>
 
-            <!-- 2.2 构建一个规则驱动的聊天机器人 -->
-            <section id="rule-based-chatbot" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                <h2 class="text-3xl font-bold mb-6 text-gradient">
-                    <i class="fas fa-robot mr-3"></i>2.2 构建一个规则驱动的聊天机器人
-                </h2>
-                
-                <div class="prose max-w-none">
-                    <p class="text-lg leading-relaxed mb-6">
-                        为了更好地理解符号主义时代智能体的工作原理，让我们通过构建一个简单的规则驱动聊天机器人来体验这一范式的核心思想。我们将以著名的<strong>ELIZA</strong>程序为灵感，实现一个基于模式匹配和文本替换的对话系统。
-                    </p>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.1 ELIZA的设计原理</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        ELIZA由MIT的Joseph Weizenbaum在1964-1966年间开发，是历史上第一个能够进行自然语言对话的计算机程序。ELIZA的核心思想极其简单却又巧妙：通过<strong>模式匹配</strong>和<strong>文本替换</strong>来模拟心理治疗师的对话风格。
-                    </p>
-
-                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
-                        <h4 class="text-lg font-semibold text-blue-800 mb-3">ELIZA的工作原理：</h4>
-                        <ol class="text-blue-700 space-y-2 list-decimal list-inside">
-                            <li><strong>模式识别</strong>：在用户输入中寻找预定义的关键词或模式</li>
-                            <li><strong>文本转换</strong>：根据匹配的模式，应用相应的转换规则</li>
-                            <li><strong>回应生成</strong>：生成看似理解用户意图的回应</li>
-                            <li><strong>代词转换</strong>：将"我"转换为"你"，"我的"转换为"你的"等</li>
-                        </ol>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.2 Python实现</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        下面我们用Python来实现一个简化版的ELIZA系统：
-                    </p>
-
-                    <div class="code-block mb-8">
-<pre><code><span class="comment"># ELIZA聊天机器人实现</span>
-<span class="keyword">import</span> re
-<span class="keyword">import</span> random
-
-<span class="comment"># 定义模式匹配规则</span>
-rules = {
-    <span class="string">r'.*我需要(.*).*'</span>: [
-        <span class="string">'为什么你需要{0}？'</span>,
-        <span class="string">'你真的需要{0}吗？'</span>,
-        <span class="string">'如果你得到了{0}会怎样？'</span>
-    ],
-    <span class="string">r'.*我感到(.*).*'</span>: [
-        <span class="string">'告诉我更多关于这种{0}的感觉。'</span>,
-        <span class="string">'你经常感到{0}吗？'</span>,
-        <span class="string">'什么时候你会感到{0}？'</span>
-    ],
-    <span class="string">r'.*我的(.*).*'</span>: [
-        <span class="string">'你的{0}对你很重要吗？'</span>,
-        <span class="string">'告诉我更多关于你的{0}。'</span>,
-        <span class="string">'你的{0}怎么了？'</span>
-    ],
-    <span class="string">r'.*我是(.*).*'</span>: [
-        <span class="string">'你为什么认为你是{0}？'</span>,
-        <span class="string">'做{0}让你感觉如何？'</span>,
-        <span class="string">'你想成为{0}吗？'</span>
-    ],
-    <span class="string">r'.*因为(.*).*'</span>: [
-        <span class="string">'这是真正的原因吗？'</span>,
-        <span class="string">'还有其他原因吗？'</span>,
-        <span class="string">'这个原因对你意味着什么？'</span>
-    ]
-}
-
-<span class="comment"># 代词转换字典</span>
-pronoun_swap = {
-    <span class="string">'我'</span>: <span class="string">'你'</span>,
-    <span class="string">'我的'</span>: <span class="string">'你的'</span>,
-    <span class="string">'你'</span>: <span class="string">'我'</span>,
-    <span class="string">'你的'</span>: <span class="string">'我的'</span>,
-    <span class="string">'我们'</span>: <span class="string">'你们'</span>,
-    <span class="string">'我们的'</span>: <span class="string">'你们的'</span>
-}
-
-<span class="keyword">def</span> <span class="function">swap_pronouns</span>(text):
-    <span class="string">"""转换代词"""</span>
-    <span class="keyword">for</span> original, replacement <span class="keyword">in</span> pronoun_swap.items():
-        text = text.replace(original, replacement)
-    <span class="keyword">return</span> text
-
-<span class="keyword">def</span> <span class="function">respond</span>(user_input):
-    <span class="string">"""生成回应"""</span>
-    user_input = user_input.strip().lower()
-    
-    <span class="comment"># 遍历所有规则</span>
-    <span class="keyword">for</span> pattern, responses <span class="keyword">in</span> rules.items():
-        match = re.match(pattern, user_input)
-        <span class="keyword">if</span> match:
-            <span class="comment"># 提取匹配的组</span>
-            groups = match.groups()
-            <span class="comment"># 转换代词</span>
-            processed_groups = [swap_pronouns(group) <span class="keyword">for</span> group <span class="keyword">in</span> groups]
-            <span class="comment"># 随机选择一个回应模板</span>
-            response_template = random.choice(responses)
-            <span class="comment"># 格式化回应</span>
-            <span class="keyword">return</span> response_template.format(*processed_groups)
-    
-    <span class="comment"># 默认回应</span>
-    default_responses = [
-        <span class="string">'请告诉我更多。'</span>,
-        <span class="string">'我理解。'</span>,
-        <span class="string">'继续说下去。'</span>,
-        <span class="string">'这很有趣，请继续。'</span>,
-        <span class="string">'你能详细说明一下吗？'</span>
-    ]
-    <span class="keyword">return</span> random.choice(default_responses)
-
-<span class="comment"># 主对话循环</span>
-<span class="keyword">def</span> <span class="function">main</span>():
-    print(<span class="string">"ELIZA: 你好，我是ELIZA。请告诉我你的问题。"</span>)
-    print(<span class="string">"(输入'退出'结束对话)"</span>)
-    
-    <span class="keyword">while</span> <span class="keyword">True</span>:
-        user_input = input(<span class="string">"\n你: "</span>)
-        
-        <span class="keyword">if</span> user_input.lower() <span class="keyword">in</span> [<span class="string">'退出'</span>, <span class="string">'再见'</span>, <span class="string">'bye'</span>]:
-            print(<span class="string">"ELIZA: 再见，希望我们的对话对你有帮助。"</span>)
-            <span class="keyword">break</span>
-        
-        response = respond(user_input)
-        print(<span class="string">f"ELIZA: {response}"</span>)
-
-<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
-    main()
-</code></pre>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.3 运行示例</h3>
-                    
-                    <div class="bg-gray-50 p-6 rounded-xl border mb-8">
-                        <h5 class="text-lg font-semibold text-gray-800 mb-3">对话示例：</h5>
-                        <div class="space-y-2 font-mono text-sm">
-                            <p><span class="text-blue-600">ELIZA:</span> 你好，我是ELIZA。请告诉我你的问题。</p>
-                            <p><span class="text-green-600">你:</span> 我感到很焦虑</p>
-                            <p><span class="text-blue-600">ELIZA:</span> 告诉我更多关于这种焦虑的感觉。</p>
-                            <p><span class="text-green-600">你:</span> 我需要找到一份工作</p>
-                            <p><span class="text-blue-600">ELIZA:</span> 为什么你需要找到一份工作？</p>
-                            <p><span class="text-green-600">你:</span> 因为我没有收入</p>
-                            <p><span class="text-blue-600">ELIZA:</span> 这是真正的原因吗？</p>
-                        </div>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.4 规则驱动系统的局限性</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        通过这个简单的实现，我们可以清楚地看到规则驱动系统的特点和局限：
-                    </p>
-
-                    <div class="grid md:grid-cols-3 gap-6 mb-8">
-                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center mr-3">
-                                    <i class="fas fa-brain text-white"></i>
-                                </div>
-                                <h4 class="text-lg font-bold text-red-800">缺乏语义理解</h4>
-                            </div>
-                            <p class="text-red-700 text-sm">
-                                系统只是进行表面的模式匹配，并不真正理解用户话语的含义。它无法区分"我感到高兴"和"我感到悲伤"在情感上的根本差异。
-                            </p>
-                        </div>
-
-                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
-                                    <i class="fas fa-memory text-white"></i>
-                                </div>
-                                <h4 class="text-lg font-bold text-orange-800">无上下文记忆</h4>
-                            </div>
-                            <p class="text-orange-700 text-sm">
-                                每次回应都是独立的，系统无法记住之前的对话内容，无法进行连贯的多轮对话。
-                            </p>
-                        </div>
-
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
-                                    <i class="fas fa-expand-arrows-alt text-white"></i>
-                                </div>
-                                <h4 class="text-lg font-bold text-yellow-800">扩展性问题</h4>
-                            </div>
-                            <p class="text-yellow-700 text-sm">
-                                随着规则数量的增加，系统变得越来越难以维护，规则之间可能产生冲突，性能也会下降。
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-yellow-50 to-red-50 p-6 rounded-xl border border-yellow-200 mb-8">
-                        <h4 class="text-lg font-semibold text-yellow-800 mb-3">
-                            <i class="fas fa-lightbulb mr-2"></i>ELIZA效应
-                        </h4>
-                        <p class="text-yellow-700">
-                            有趣的是，尽管ELIZA的工作原理极其简单，但许多用户在与它交互时会产生一种错觉，认为系统真的理解了他们的话语。这种现象被称为<strong>"ELIZA效应"</strong>，它揭示了人类倾向于将智能归因于计算机行为的心理特征。这一效应至今仍然影响着人们对AI系统能力的认知。
-                        </p>
-                    </div>
+            <!-- 2.3 马文·明斯基的心智社会 -->
+            <section id="society-of-mind" class="mb-12">
+                <h2>2.3 马文·明斯基的心智社会</h2>
+                <p class="mb-6">
+                    符号主义的探索和ELIZA的实践，共同指向了一个问题：通过预设规则构建的、单一的、集中的推理引擎，似乎难以通向真正的智能。无论规则库多么庞大，系统在面对真实世界的模糊性、复杂性和无穷变化时，总是显得僵化而脆弱。这一困境促使一些顶尖的思考者开始反思人工智能最底层的设计哲学。
+                </p>
+                <p class="mb-6">
+                    其中，<strong>马文·明斯基（Marvin Minsky）</strong>没有继续尝试为单一推理核心添加更多规则，而是在他的<strong>《心智社会》（The Society of Mind）</strong>一书中提出了一个革命性的问题：
+                </p>
+                <div class="quote-block">
+                    "What magical trick makes us intelligent? The trick is that there is no trick. The power of intelligence stems from our vast diversity, not from any single, perfect principle."
                 </div>
+
+                <!-- 2.3.1 对单一整体智能模型的反思 -->
+                <section id="single-intelligence" class="mb-10">
+                    <h3>2.3.1 对单一整体智能模型的反思</h3>
+                    <p class="mb-6">
+                        20世纪70至80年代，符号主义的局限性日益明显。专家系统虽然在高度垂直的领域取得了成功，但它们无法拥有儿童般的常识；SHRDLU虽然能在一个封闭的积木世界中表现出色，但它无法理解这个世界之外的任何事情；ELIZA虽然能模仿对话，但它对对话内容本身一无所知。
+                    </p>
+                    <p class="mb-6">
+                        这些系统都遵循着一种<span class="highlight-text">自上而下（Top-down）</span>的设计思路：一个全知全能的中央处理器，根据一套统一的逻辑规则来处理信息和做出决策。
+                    </p>
+                    <p class="mb-6">
+                        面对这种普遍的失败，明斯基开始提出一系列根本性的问题：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>"理解"是什么？</strong> 当我们说我们理解一个故事时，这是一种单一的能力吗？还是说，它其实是视觉化能力、逻辑推理能力、情感共鸣能力、社会关系常识等数十种不同心智过程协同工作的结果？</li>
+                        <li><strong>"常识"是什么？</strong> 常识是一个包含了数百万条逻辑规则的庞大知识库吗（如Cyc项目的尝试）？还是说，它是一种分布式的、由无数具体经验和简单规则片段交织而成的网络？</li>
+                        <li><strong>智能体应该如何构建？</strong> 我们是否应该继续追求一个完美的、统一的逻辑系统，还是应该承认，智能本身就是"不完美"的、由许多功能各异、甚至会彼此冲突的简单部分组成的大杂烩？</li>
+                    </ul>
+                    <p class="mb-6">
+                        这些问题直指单一整体智能模型的核心弊端。该类模型试图用一种统一的表示和推理机制来解决所有问题，但这与我们观察到的自然智能（尤其是人类智能）的运作方式相去甚远。明斯基认为，强行将多样化的心智活动塞进一个僵化的逻辑框架中，正是导致早期人工智能研究停滞不前的根源。
+                    </p>
+                    <p class="mb-6">
+                        正是基于这样的反思，明斯基提出了一个颠覆性的构想，他不再将心智视为一个金字塔式的层级结构，而是将其看作一个扁平化的、充满了互动与协作的"社会"。
+                    </p>
+                </section>
+
+                <!-- 2.3.2 作为协作体的智能 -->
+                <section id="collaborative-intelligence" class="mb-10">
+                    <h3>2.3.2 作为协作体的智能</h3>
+                    <p class="mb-6">
+                        在明斯基的理论框架中，智能体的定义与我们第一章讨论的现代智能体有所不同。这里的智能体指的是一个极其简单的、专门化的心智过程，它自身是"无心"的。例如，一个负责识别线条的<code>LINE-FINDER</code>智能体，或一个负责抓握的<code>GRASP</code>智能体。
+                    </p>
+                    <p class="mb-6">
+                        这些简单的智能体被组织起来，形成功能更强大的<span class="highlight-text">机构（Agency）</span>。一个机构是一组协同工作的智能体，旨在完成一个更复杂的任务。例如，一个负责搭积木的<code>BUILD</code>机构，可能由<code>SEE</code>、<code>FIND</code>、<code>GET</code>、<code>PUT</code>等多个下层智能体或机构组成。它们之间通过去中心化的激活与抑制信号相互影响，形成动态的控制流。
+                    </p>
+                    <p class="mb-6">
+                        <span class="highlight-text">涌现（Emergence）</span>是理解心智社会理论的关键。复杂的、有目的性的智能行为，并非由某个高级智能体预先规划，而是从大量简单的底层智能体之间的局部交互中自发产生的。
+                    </p>
+                    <p class="mb-6">
+                        让我们以经典的"搭建积木塔"任务为例，来说明这一过程，如图2.6所示。当一个高层目标（如"我要搭一个塔"）出现时，它会激活一个名为<code>BUILD-TOWER</code>的高层机构。
+                    </p>
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-4.png" alt="心智社会中搭建积木塔行为的涌现机制示意图" />
+                        <p class="image-caption">图 2.6 "心智社会"中搭建积木塔行为的涌现机制示意图</p>
+                    </div>
+                    <ol class="list-decimal pl-6 mb-6 space-y-2">
+                        <li><code>BUILD-TOWER</code>机构并不知道如何执行具体的物理动作，它的唯一作用是激活它的下属机构，比如<code>BUILDER</code>。</li>
+                        <li><code>BUILDER</code>机构同样很简单，它可能只包含一个循环逻辑：只要塔还没搭完，就激活<code>ADD-BLOCK</code>机构。</li>
+                        <li><code>ADD-BLOCK</code>机构则负责协调更具体的子任务，它会依次激活<code>FIND-BLOCK</code>、<code>GET-BLOCK</code>和<code>PUT-ON-TOP</code>这三个子机构。</li>
+                        <li>每一个子机构又由更底层的智能体构成。例如，<code>GET-BLOCK</code>机构会激活视觉系统中的<code>SEE-SHAPE</code>智能体、运动系统中的<code>REACH</code>和<code>GRASP</code>智能体。</li>
+                    </ol>
+                    <p class="mb-6">
+                        在这个过程中，没有任何一个智能体或机构拥有整个任务的全局规划。<code>GRASP</code>只负责抓握，它不知道什么是塔；<code>BUILDER</code>只负责循环，它不知道如何控制手臂。然而，当这个由无数"无心"的智能体组成的社会，通过简单的激活和抑制规则相互作用时，一个看似高度智能的行为——搭建积木塔，就自然而然地涌现了出来。
+                    </p>
+                </section>
+
+                <!-- 2.3.3 对多智能体系统的理论启发 -->
+                <section id="multi-agent-inspiration" class="mb-10">
+                    <h3>2.3.3 对多智能体系统的理论启发</h3>
+                    <p class="mb-6">
+                        心智社会理论最深远的影响，在于它为<span class="highlight-text">分布式人工智能（Distributed Artificial Intelligence, DAI）</span>以及后来的<span class="highlight-text">多智能体系统（Multi-Agent System, MAS）</span>提供了重要的概念基础。它引出研究者们的思考：
+                    </p>
+                    <div class="quote-block">
+                        如果一个心智内部的智能，是通过大量简单智能体的协作而涌现的，那么，在多个独立的、物理上分离的计算实体（计算机、机器人）之间，是否也能通过协作涌现出更强大的"群体智能"？
+                    </div>
+                    <p class="mb-6">
+                        这个问题的提出，直接将研究焦点从"如何构建一个全能的单一智能体"转向了"如何设计一个高效协作的智能体群体"。具体而言，心智社会在以下几个方面直接启发了多智能体系统的研究：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>去中心化控制（Decentralized Control）</strong>：理论的核心在于不存在中央控制器。这一思想被MAS领域完全继承，如何设计没有中心节点的协调机制和任务分配策略，成为了MAS的核心研究课题之一。</li>
+                        <li><strong>涌现式计算（Emergent Computation）</strong>：复杂问题的解决方案可以从简单的局部交互规则中自发产生。这启发了MAS中大量基于涌现思想的算法，如蚁群算法、粒子群优化等，用于解决复杂的优化和搜索问题。</li>
+                        <li><strong>智能体的社会性（Agent Sociality）</strong>：明斯基的理论强调了智能体之间的交互（激活、抑制）。MAS领域将其进一步扩展，系统地研究智能体之间的通信语言（如ACL）、交互协议（如契约网）、协商策略、信任模型乃至组织结构，从而构建起真正的计算社会。</li>
+                        <li><strong>异构性与专门化（Heterogeneity and Specialization）</strong>：心智社会中的每个智能体都有特定的功能，这启发了MAS中异构智能体的设计思想。不同的智能体可以有不同的能力、知识和推理机制，通过分工合作来解决复杂问题。</li>
+                    </ul>
+                    <p class="mb-6">
+                        然而，心智社会理论也面临着实现上的挑战。如何设计有效的激活和抑制机制？如何避免智能体之间的冲突导致系统陷入混乱？如何确保涌现出的行为是有意义和可控的？这些问题至今仍是多智能体系统研究的核心议题。
+                    </p>
+                    <p class="mb-6">
+                        尽管如此，明斯基的心智社会理论为我们提供了一个全新的视角来理解智能的本质。它告诉我们，智能不是一个单一的、完美的算法，而是一个复杂的、动态的、充满矛盾和协作的社会过程。这一洞察不仅深刻影响了人工智能的理论发展，也为现代多智能体系统和分布式AI的实践提供了重要的指导思想。
+                    </p>
+                    
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-6.png" alt="从单一智能体到多智能体系统的演进" />
+                        <p class="image-caption">图 2.7 从单一智能体到多智能体系统的演进</p>
+                    </div>
+                </section>
             </section>
 
-            <!-- 2.3 从单体到协作：多智能体思想的萌芽 -->
-            <section id="multi-agent" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
-                <h2 class="text-3xl font-bold mb-6 text-gradient">
-                    <i class="fas fa-users mr-3"></i>2.3 从单体到协作：多智能体思想的萌芽
-                </h2>
+            <!-- 2.4 学习范式的演进与现代智能体 -->
+            <section id="learning-paradigm" class="mb-12">
+                <h2>2.4 学习范式的演进与现代智能体</h2>
+                <p class="mb-6">
+                    符号主义的探索和明斯基的心智社会理论，共同揭示了一个重要问题：仅仅依靠预编程的规则和符号操作，很难构建出真正智能的系统。真正的智能需要<span class="highlight-text">学习能力</span>——从经验中获取知识、适应新环境、改进性能的能力。
+                </p>
+                <p class="mb-6">
+                    从20世纪80年代开始，人工智能领域经历了一系列学习范式的变革，每一次变革都深刻影响了智能体的设计思路。让我们追溯这一演进历程，理解现代智能体技术的理论根基。
+                </p>
+
+                <!-- 2.4.1 从符号到联结 -->
+                <section id="connectionism" class="mb-10">
+                    <h3>2.4.1 从符号到联结</h3>
+                    <p class="mb-6">
+                        20世纪80年代中期，<span class="highlight-text">联结主义（Connectionism）</span>的兴起标志着AI研究范式的重大转变。与符号主义试图模拟高层认知过程不同，联结主义从大脑的神经网络结构中寻找灵感，认为智能来源于大量简单处理单元（神经元）之间的连接和交互。
+                </p>
+                    <p class="mb-6">
+                        这一转变的理论基础是<strong>分布式表示（Distributed Representation）</strong>的概念。在符号系统中，一个概念（如"猫"）通常用一个离散的符号来表示。而在联结主义系统中，"猫"这个概念是通过网络中多个神经元的激活模式来表示的——没有单一的"猫神经元"，而是一个分布式的激活模式对应着"猫"的概念。
+                    </p>
+                    <p class="mb-6">
+                        联结主义的核心优势在于其<span class="highlight-text">学习能力</span>。通过调整神经元之间连接的权重，网络可以从数据中学习模式，而不需要人工编程规则。1986年，Rumelhart等人重新发现并推广了<strong>反向传播算法</strong>，使得多层神经网络的训练成为可能，这直接推动了联结主义的复兴。
+                    </p>
+                    <p class="mb-6">
+                        然而，早期的神经网络也面临着严重的限制：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>计算资源限制</strong>：训练大型网络需要巨大的计算资源，当时的硬件条件无法支撑</li>
+                        <li><strong>数据稀缺</strong>：缺乏大规模的标注数据集来训练复杂模型</li>
+                        <li><strong>理论不完善</strong>：对深层网络的训练机制和表示能力缺乏深入理解</li>
+                    </ul>
+                    <p class="mb-6">
+                        这些限制导致了20世纪90年代的"AI寒冬"，研究重心转向了其他方向。
+                    </p>
+                </section>
+
+                <!-- 2.4.2 基于强化学习的智能体 -->
+                <section id="reinforcement-learning" class="mb-10">
+                    <h3>2.4.2 基于强化学习的智能体</h3>
+                    <p class="mb-6">
+                        在联结主义遭遇挫折的同时，另一个重要的学习范式悄然兴起——<span class="highlight-text">强化学习（Reinforcement Learning, RL）</span>。与监督学习需要大量标注数据不同，强化学习通过与环境的交互来学习，这更接近生物学习的本质。
+                    </p>
+                    <p class="mb-6">
+                        强化学习的核心思想可以用<strong>马尔可夫决策过程（MDP）</strong>来描述：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>状态（State）</strong>：智能体对环境的观察</li>
+                        <li><strong>动作（Action）</strong>：智能体可以执行的行为</li>
+                        <li><strong>奖励（Reward）</strong>：环境对智能体行为的反馈</li>
+                        <li><strong>策略（Policy）</strong>：智能体选择动作的规则</li>
+                    </ul>
+                    <p class="mb-6">
+                        智能体的目标是学习一个最优策略，使得长期累积奖励最大化。这种学习方式不需要明确的"正确答案"，而是通过试错和奖励信号来改进行为。
+                    </p>
+                    <p class="mb-6">
+                        强化学习在智能体设计中的重要性体现在以下几个方面：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>自主学习</strong>：智能体可以在没有人类监督的情况下改进性能</li>
+                        <li><strong>适应性</strong>：能够适应动态变化的环境</li>
+                        <li><strong>目标导向</strong>：通过奖励机制明确学习目标</li>
+                        <li><strong>序列决策</strong>：考虑行为的长期后果，而不仅仅是即时效果</li>
+                    </ul>
+                    <p class="mb-6">
+                        经典的强化学习算法包括Q-learning、SARSA、Actor-Critic等。这些算法在游戏、机器人控制、资源分配等领域取得了显著成功。
+                    </p>
+                    
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-7.png" alt="强化学习的基本循环" />
+                        <p class="image-caption">图 2.8 强化学习的基本循环：智能体与环境的交互</p>
+                    </div>
+                </section>
+
+                <!-- 2.4.3 基于大规模数据的预训练 -->
+                <section id="pretraining" class="mb-10">
+                    <h3>2.4.3 基于大规模数据的预训练</h3>
+                    <p class="mb-6">
+                        进入21世纪后，三个关键因素的汇聚重新点燃了深度学习的火焰：<strong>大数据</strong>、<strong>强大的计算资源</strong>（特别是GPU）、以及<strong>改进的算法</strong>。这导致了一个新的学习范式的出现：<span class="highlight-text">预训练-微调（Pre-training & Fine-tuning）</span>。
+                    </p>
+                    <p class="mb-6">
+                        这一范式的核心思想是：首先在大规模无标注数据上进行<strong>自监督预训练</strong>，学习通用的表示和知识，然后在特定任务的小规模标注数据上进行<strong>微调</strong>，适应具体应用。
+                    </p>
+                    <p class="mb-6">
+                        预训练-微调范式的发展经历了几个重要阶段：
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">计算机视觉领域的突破</h4>
+                    <p class="mb-6">
+                        2012年，AlexNet在ImageNet竞赛中的胜利标志着深度学习时代的到来。研究者发现，在ImageNet这样的大规模数据集上预训练的卷积神经网络，学到的特征表示具有很强的通用性，可以通过微调应用到其他视觉任务上。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">自然语言处理的革命</h4>
+                    <p class="mb-6">
+                        2018年，BERT（Bidirectional Encoder Representations from Transformers）的出现彻底改变了NLP领域。BERT通过在大规模文本语料上进行掩码语言模型预训练，学习了丰富的语言表示，然后可以通过简单的微调在各种NLP任务上取得最佳性能。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">大语言模型的涌现</h4>
+                    <p class="mb-6">
+                        随着模型规模的不断增大，研究者发现了一个令人惊讶的现象：当模型参数达到一定规模时，会出现<span class="highlight-text">涌现能力（Emergent Abilities）</span>——模型展现出训练时未明确优化的新能力。
+                    </p>
+                    <p class="mb-6">
+                        GPT系列模型的发展完美诠释了这一现象：
+                    </p>
+                    <ul class="list-disc pl-6 mb-6 space-y-2">
+                        <li><strong>GPT-1（2018）</strong>：1.17亿参数，展示了无监督预训练的潜力</li>
+                        <li><strong>GPT-2（2019）</strong>：15亿参数，展现了令人印象深刻的文本生成能力</li>
+                        <li><strong>GPT-3（2020）</strong>：1750亿参数，展现了少样本学习和上下文学习能力</li>
+                        <li><strong>GPT-4（2023）</strong>：参数规模未公开，展现了多模态理解和复杂推理能力</li>
+                    </ul>
+                </section>
+
+                <!-- 2.4.4 基于大语言模型的智能体 -->
+                <section id="llm-agents" class="mb-10">
+                    <h3>2.4.4 基于大语言模型的智能体</h3>
+                    <p class="mb-6">
+                        大语言模型的涌现能力为智能体设计带来了革命性的变化。与传统的基于规则或强化学习的智能体不同，<span class="highlight-text">基于LLM的智能体</span>具有以下独特优势：
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">上下文学习（In-Context Learning）</h4>
+                    <p class="mb-6">
+                        LLM可以在推理时通过上下文示例学习新任务，无需重新训练。这使得智能体可以快速适应新的场景和需求。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">思维链推理（Chain-of-Thought Reasoning）</h4>
+                    <p class="mb-6">
+                        通过引导LLM逐步分解复杂问题，可以显著提升其推理能力。这为构建能够处理复杂任务的智能体提供了新的可能。
+                    </p>
+
+                    <h4 class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300">工具使用能力</h4>
+                    <p class="mb-6">
+                        现代LLM展现出了使用外部工具的能力，如调用API、执行代码、搜索信息等。这使得智能体的能力边界大大扩展。
+                    </p>
+
+                    <p class="mb-6">
+                        基于LLM的智能体通常采用以下架构：
+                    </p>
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-5.png" alt="基于LLM的智能体架构" />
+                        <p class="image-caption">图 2.7 基于LLM的智能体架构：感知-思考-行动-观察循环</p>
+                    </div>
+                    <ol class="list-decimal pl-6 mb-6 space-y-2">
+                        <li><strong>感知（Perception）</strong>：接收和处理来自环境的信息</li>
+                        <li><strong>思考（Thought）</strong>：基于当前状态和历史经验进行推理</li>
+                        <li><strong>行动（Action）</strong>：选择并执行适当的动作</li>
+                        <li><strong>观察（Observation）</strong>：获取行动结果的反馈</li>
+                    </ol>
+                    <p class="mb-6">
+                        这种架构实现了从被动的问答系统到主动的智能体的转变，为构建真正自主的AI系统奠定了基础。
+                    </p>
+                </section>
+
+                <!-- 2.4.5 智能体发展关键节点概览 -->
+                <section id="timeline" class="mb-10">
+                    <h3>2.4.5 智能体发展关键节点概览</h3>
+                    <p class="mb-6">
+                        为了更好地理解智能体发展的历史脉络，让我们通过时间线的方式回顾关键的里程碑事件：
+                    </p>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">1950s-1960s：符号主义奠基</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 1956年达特茅斯会议，人工智能正式诞生<br>
+                                • 物理符号系统假设提出<br>
+                                • 早期专家系统概念形成
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">1960s-1970s：早期智能体探索</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 1966年ELIZA发布，展示对话系统可能性<br>
+                                • 1970年SHRDLU展现理解与行动结合<br>
+                                • 专家系统如MYCIN取得实际应用成功
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">1980s：范式转换期</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 1986年《心智社会》出版，提出分布式智能理论<br>
+                                • 反向传播算法推广，联结主义复兴<br>
+                                • 强化学习理论体系逐步完善
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">1990s-2000s：多元化发展</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 多智能体系统研究兴起<br>
+                                • 强化学习在游戏和控制领域取得突破<br>
+                                • 互联网普及为数据收集提供新机遇
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">2010s：深度学习革命</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 2012年AlexNet引发深度学习热潮<br>
+                                • 2016年AlphaGo击败人类围棋冠军<br>
+                                • 2018年BERT革新自然语言处理
+                            </p>
+                        </div>
+                        <div class="timeline-item">
+                            <h4 class="font-semibold text-lg mb-2">2020s：大模型时代</h4>
+                            <p class="text-gray-600 dark:text-gray-300">
+                                • 2020年GPT-3展现涌现能力<br>
+                                • 2022年ChatGPT引发AI应用热潮<br>
+                                • 基于LLM的智能体成为研究热点
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="image-container">
+                        <img src="../docs/images/2-figures/1757246501849-8.png" alt="智能体发展的历史时间线" />
+                        <p class="image-caption">图 2.9 智能体发展的历史时间线：从符号主义到大模型时代</p>
+                    </div>
+                </section>
+            </section>
+
+            <!-- 2.5 本章小结 -->
+            <section id="summary" class="mb-12">
+                <h2>2.5 本章小结</h2>
+                <p class="mb-6">
+                    通过回顾智能体发展的历史脉络，我们可以清晰地看到人工智能领域思想演进的轨迹。从符号主义的理性探索，到联结主义的生物启发，再到现代大语言模型的涌现智能，每一次范式转换都深刻影响着智能体的设计理念和技术实现。
+                </p>
+                <p class="mb-6">
+                    <strong>符号主义时期</strong>的贡献在于建立了人工智能的理论基础，提出了用计算机模拟人类智能的可能性。ELIZA和SHRDLU等早期系统展示了规则驱动方法的潜力，但也暴露了其在处理真实世界复杂性方面的根本局限。
+                </p>
+                <p class="mb-6">
+                    <strong>明斯基的心智社会理论</strong>为我们提供了理解智能本质的新视角。它告诉我们，智能不是单一的、完美的算法，而是多个简单组件协作涌现的结果。这一思想直接启发了后来的多智能体系统研究，为分布式人工智能奠定了理论基础。
+                </p>
+                <p class="mb-6">
+                    <strong>学习范式的演进</strong>展现了从规则驱动到数据驱动的转变。联结主义重新发现了神经网络的价值，强化学习提供了自主学习的框架，而预训练-微调范式则充分利用了大数据时代的优势。
+                </p>
+                <p class="mb-6">
+                    <strong>现代大语言模型</strong>的出现标志着智能体技术的新纪元。基于LLM的智能体不仅具备了强大的语言理解和生成能力，还展现出了上下文学习、工具使用、复杂推理等涌现能力，为构建真正自主的AI系统开辟了新的道路。
+                </p>
+                <div class="quote-block">
+                    历史告诉我们，智能体技术的发展不是线性的进步，而是螺旋式的上升。每一次看似的"失败"都为后续的突破积累了宝贵的经验和洞察。理解这一历史进程，不仅有助于我们把握当前技术的本质和局限，更能启发我们思考未来智能体发展的可能方向。
+                </div>
+                <p class="mb-6">
+                    在下一章中，我们将深入探讨现代智能体的核心技术组件，了解如何将历史积淀的理论智慧转化为实际可用的技术系统。
+                </p>
                 
-                <div class="prose max-w-none">
-                    <p class="text-lg leading-relaxed mb-6">
-                        随着符号主义局限性的逐渐显现，AI研究者们开始思考一个根本性问题：<strong>智能是否必须集中在单一的、庞大的系统中？</strong> 这一反思催生了一个革命性的想法——也许智能更像是多个简单组件协作的结果，而非单一复杂系统的产物。
-                    </p>
+                <div class="image-container">
+                    <img src="../docs/images/2-figures/1757246501849-9.png" alt="智能体技术发展的核心里程碑" />
+                    <p class="image-caption">图 2.10 智能体技术发展的核心里程碑：从理论到实践的演进</p>
+                </div>
 
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.1 马文·明斯基的《心智社会》</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        1986年，MIT的马文·明斯基（Marvin Minsky）出版了具有里程碑意义的著作《心智社会》（The Society of Mind）。在这本书中，明斯基提出了一个颠覆性的观点：<strong>人类的智能并非来自单一的"智能模块"，而是由大量简单的、相互协作的"智能体"组成的社会。</strong>
-                    </p>
+                <!-- 参考文献 -->
+                <h3 class="text-xl font-semibold mb-4 mt-8">参考文献</h3>
+                <div class="text-sm text-gray-600 dark:text-gray-400 space-y-2">
+                    <p>1. Newell, A., & Simon, H. A. (1976). Computer science as empirical inquiry: Symbols and search. Communications of the ACM, 19(3), 113-126.</p>
+                    <p>2. Weizenbaum, J. (1966). ELIZA—a computer program for the study of natural language communication between man and machine. Communications of the ACM, 9(1), 36-45.</p>
+                    <p>3. Winograd, T. (1972). Understanding natural language. Cognitive psychology, 3(1), 1-191.</p>
+                    <p>4. Minsky, M. (1986). The society of mind. Simon and Schuster.</p>
+                    <p>5. Rumelhart, D. E., Hinton, G. E., & Williams, R. J. (1986). Learning representations by back-propagating errors. Nature, 323(6088), 533-536.</p>
+                    <p>6. Sutton, R. S., & Barto, A. G. (2018). Reinforcement learning: An introduction. MIT press.</p>
+                    <p>7. Vaswani, A., et al. (2017). Attention is all you need. Advances in neural information processing systems, 30.</p>
+                    <p>8. Brown, T., et al. (2020). Language models are few-shot learners. Advances in neural information processing systems, 33, 1877-1901.</p>
+                    <p>9. Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. Advances in Neural Information Processing Systems, 35, 24824-24837.</p>
+                    <p>10. Yao, S., et al. (2022). ReAct: Synergizing reasoning and acting in language models. arXiv preprint arXiv:2210.03629.</p>
+                </div>
+            </section>
+        </article>
+    </main>
 
-                    <div class="bg-indigo-50 border-l-4 border-indigo-400 p-6 my-8 rounded-r-lg">
-                        <h4 class="text-lg font-semibold text-indigo-800 mb-3">明斯基的核心观点：</h4>
-                        <ul class="text-indigo-700 space-y-2 list-disc list-inside">
-                            <li><strong>智能的分布性</strong>：没有单一的"智能中心"，智能是分布式的</li>
-                            <li><strong>简单组件的复杂行为</strong>：复杂的智能行为可以从简单组件的交互中涌现</li>
-                            <li><strong>层次化组织</strong>：智能体可以组织成层次结构，高层智能体管理低层智能体</li>
-                            <li><strong>专业化分工</strong>：不同的智能体负责不同的专门任务</li>
-                        </ul>
-                    </div>
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+        
+        // 检查系统主题偏好
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme');
+        
+        if (savedTheme) {
+            html.classList.toggle('dark', savedTheme === 'dark');
+        } else {
+            html.classList.toggle('dark', prefersDark);
+        }
+        
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
 
-                    <p class="text-lg leading-relaxed mb-6">
-                        明斯基用一个生动的比喻来解释这一思想：就像一个蚁群，单个蚂蚁的行为很简单，但整个蚁群却能展现出复杂的集体智能——建造复杂的巢穴、寻找食物、分工合作。人类的心智也是如此，由无数个"心理智能体"协作而成。
-                    </p>
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
 
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.2 对单一模型智能的批判</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        传统的符号主义AI试图构建一个包罗万象的知识库和推理引擎，这种"单体式"的设计思路面临着诸多挑战：
-                    </p>
+        // 返回顶部按钮
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
 
-                    <div class="grid md:grid-cols-2 gap-6 mb-8">
-                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
-                            <h4 class="text-lg font-bold text-red-800 mb-3">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>复杂性爆炸
-                            </h4>
-                            <p class="text-red-700">
-                                随着知识库的扩大，系统的复杂性呈指数级增长，维护和调试变得极其困难。
-                            </p>
-                        </div>
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
 
-                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
-                            <h4 class="text-lg font-bold text-orange-800 mb-3">
-                                <i class="fas fa-cog mr-2"></i>缺乏模块化
-                            </h4>
-                            <p class="text-orange-700">
-                                单体系统难以实现真正的模块化，一个组件的修改可能影响整个系统的行为。
-                            </p>
-                        </div>
-
-                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
-                            <h4 class="text-lg font-bold text-yellow-800 mb-3">
-                                <i class="fas fa-shield-alt mr-2"></i>脆弱性问题
-                            </h4>
-                            <p class="text-yellow-700">
-                                系统的任何一个部分出现问题，都可能导致整个系统的失效，缺乏容错能力。
-                            </p>
-                        </div>
-
-                        <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
-                            <h4 class="text-lg font-bold text-purple-800 mb-3">
-                                <i class="fas fa-expand mr-2"></i>扩展困难
-                            </h4>
-                            <p class="text-purple-700">
-                                向系统添加新功能需要对整个架构进行重大修改，扩展性极差。
-                            </p>
-                        </div>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.3 智能作为协作实体</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        多智能体思想的核心在于将复杂问题分解为多个相对简单的子问题，每个智能体负责解决其中的一个或几个子问题。通过智能体之间的协作和通信，整个系统能够解决单个智能体无法处理的复杂任务。
-                    </p>
-
-                    <div class="bg-green-50 p-6 rounded-xl border border-green-200 mb-8">
-                        <h4 class="text-lg font-semibold text-green-800 mb-4">
-                            <i class="fas fa-cubes mr-2"></i>案例：搭建积木塔
-                        </h4>
-                        <p class="text-green-700 mb-4">
-                            考虑一个看似简单的任务：让机器人搭建一个积木塔。在单体智能系统中，这需要一个复杂的程序来处理视觉识别、路径规划、力控制等所有方面。
-                        </p>
-                        <p class="text-green-700 mb-4">
-                            而在多智能体系统中，我们可以设计：
-                        </p>
-                        <ul class="text-green-600 space-y-2 list-disc list-inside ml-4">
-                            <li><strong>视觉智能体</strong>：负责识别积木的位置、形状和颜色</li>
-                            <li><strong>规划智能体</strong>：负责制定搭建策略和步骤</li>
-                            <li><strong>运动智能体</strong>：负责控制机械臂的运动</li>
-                            <li><strong>协调智能体</strong>：负责协调各个智能体的工作</li>
-                        </ul>
-                    </div>
-
-                    <div class="text-center my-8">
-                        <img src="../docs/images/2-figures/1757246501849-4.png" alt="多智能体协作搭建积木塔" class="mx-auto rounded-lg shadow-md max-w-full">
-                        <p class="text-sm text-gray-600 mt-2">图 2.6 多智能体协作搭建积木塔的示意图</p>
-                    </div>
-
-                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.4 多智能体系统的理论启发</h3>
-                    
-                    <p class="text-lg leading-relaxed mb-6">
-                        多智能体思想为后续的AI发展提供了重要的理论启发：
-                    </p>
-
-                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
-                        <div class="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <h4 class="text-lg font-bold text-blue-800 mb-3">
-                                    <i class="fas fa-lightbulb mr-2"></i>设计原则
-                                </h4>
-                                <ul class="text-blue-700 space-y-2 text-sm">
-                                    <li>• <strong>分而治之</strong>：将复杂问题分解为简单子问题</li>
-                                    <li>• <strong>专业化</strong>：每个智能体专注于特定任务</li>
-                                    <li>• <strong>模块化</strong>：智能体可以独立开发和测试</li>
-                                    <li>• <strong>可扩展性</strong>：可以轻松添加新的智能体</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-bold text-purple-800 mb-3">
-                                    <i class="fas fa-network-wired mr-2"></i>系统特性
-                                </h4>
-                                <ul class="text-purple-700 space-y-2 text-sm">
-                                    <li>• <strong>鲁棒性</strong>：单个智能体失效不会导致系统崩溃</li>
-                                    <li>• <strong>并行性</strong>：多个智能体可以同时工作</li>
-                                    <li>• <strong>适应性</strong>：系统可以动态调整智能体配置</li>
-                                    <li>• <strong>涌现性</strong>：整体能力超过部分之和</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
-                        <p class="text-lg text-green-800 font-semibold text-center">
+        // 代码块复制功能
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 px-2 py-1 text-xs bg-gray-200 dark:bg-gray-700 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors';
+            button.textContent = '复制';
+            button.style.position = 'absolute';
+            button.style.top = '0.5rem';
+            button.style.right = '0.5rem';
+            
+            block.style.position = 'relative';
+            block.appendChild(button);
+            
+            button.addEventListener('click', () => {
+                const code = block.querySelector('pre code') || block.querySelector('pre');
+                navigator.clipboard.writeText(code.textContent).then(() => {
+                    button.textContent = '已复制';
+                    setTimeout(() => {
+                        button.textContent = '复制';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
