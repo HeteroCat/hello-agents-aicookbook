@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第三章 大语言模型基础 - Hello-Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        /* 自定义样式 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 深色模式样式 */
+        .dark {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .dark .bg-white {
+            background-color: #1e293b;
+        }
+        
+        .dark .text-gray-800 {
+            color: #e2e8f0;
+        }
+        
+        .dark .text-gray-600 {
+            color: #94a3b8;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #334155;
+        }
+        
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* 代码块样式 */
+        pre[class*="language-"] {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+            margin: 1rem 0;
+        }
+        
+        .dark pre[class*="language-"] {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        /* 数学公式样式 */
+        .MathJax {
+            font-size: 1.1em !important;
+        }
+        
+        /* 架构图样式 */
+        .architecture-diagram {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .dark .architecture-diagram {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #0ea5e9;
+        }
+        
+        .component-box {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .component-box {
+            background: #1e293b;
+            border-color: #475569;
+        }
+        
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #3b82f6;
+            font-size: 1.5rem;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        /* 目录样式 */
+        .toc {
+            position: sticky;
+            top: 6rem;
+            max-height: calc(100vh - 8rem);
+            overflow-y: auto;
+        }
+        
+        .toc a {
+            display: block;
+            padding: 0.5rem 0;
+            color: #64748b;
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            padding-left: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .toc a:hover,
+        .toc a.active {
+            color: #3b82f6;
+            border-left-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .max-w-7xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .flex.gap-8 {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .gradient-bg h1 {
+                font-size: 2rem;
+            }
+            
+            .gradient-bg p {
+                font-size: 1rem;
+            }
+            
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+            
+            .text-4xl {
+                font-size: 2rem;
+            }
+            
+            .p-8 {
+                padding: 1rem;
+            }
+            
+            .px-6 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .py-4 {
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+            }
+            
+            .mb-12 {
+                margin-bottom: 2rem;
+            }
+            
+            .mb-8 {
+                margin-bottom: 1.5rem;
+            }
+            
+            .space-x-4 > * + * {
+                margin-left: 0.5rem;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .nav-links a {
+                font-size: 0.875rem;
+            }
+            
+            /* 交互式组件响应式 */
+            .parameter-controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .parameter-item {
+                width: 100%;
+            }
+            
+            .grid-cols-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gradient-bg {
+                padding: 1rem;
+            }
+            
+            .gradient-bg h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.5rem;
+            }
+            
+            .gradient-bg p {
+                font-size: 0.875rem;
+            }
+            
+            .text-3xl {
+                font-size: 1.25rem;
+            }
+            
+            .p-8 {
+                padding: 0.75rem;
+            }
+            
+            .space-x-4 > * + * {
+                margin-left: 0.25rem;
+            }
+            
+            .nav-links a {
+                font-size: 0.75rem;
+                padding: 0.25rem 0.5rem;
+            }
+            
+            /* 数学公式响应式 */
+            .MathJax {
+                font-size: 0.9em !important;
+            }
+            
+            /* 代码块响应式 */
+            pre[class*="language-"] {
+                font-size: 0.8rem;
+                padding: 0.5rem;
+            }
+        }
+        
+        /* 导航栏响应式 */
+        @media (max-width: 640px) {
+            .flex.items-center.justify-between {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .flex.items-center.space-x-4:last-child {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: 0.5rem;
+            }
+        }
+        
+        /* 参数滑块样式 */
+        .parameter-slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        .parameter-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+        }
+        
+        .parameter-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            border: none;
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-robot text-2xl text-gradient"></i>
+                    <h1 class="text-xl font-bold text-gradient">Hello-Agents</h1>
+                </div>
+                <div class="flex items-center space-x-4 nav-links">
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="flex gap-8">
+            <!-- 主要内容 -->
+            <main class="flex-1 max-w-none">
+                <!-- 标题区域 -->
+                <div class="text-center mb-12 fade-in">
+                    <div class="gradient-bg text-white rounded-2xl p-8 mb-8">
+                        <h1 class="text-4xl font-bold mb-4">第三章 大语言模型基础</h1>
+                        <p class="text-xl opacity-90">现代智能体的核心技术基础</p>
+                    </div>
+                </div>
+
+                <!-- 语言模型基础 -->
+                <section id="introduction" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-language mr-3"></i>语言模型基础
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            大语言模型（Large Language Model, LLM）是现代智能体系统的核心基础。要理解智能体如何工作，我们首先需要深入了解语言模型的基本原理。
+                        </p>
+
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-blue-400 text-xl mr-3 mt-1"></i>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-blue-800 mb-2">语言模型的定义</h3>
+                                    <p class="text-blue-700 mb-3">
+                                        语言模型是一个概率分布，用于计算给定文本序列的概率。它能够预测下一个词或评估整个句子的合理性。
+                                    </p>
+                                    <div class="bg-blue-100 p-4 rounded-lg">
+                                        <p class="text-blue-800 font-mono">
+                                            P(w₁, w₂, ..., wₙ) = P(w₁) × P(w₂|w₁) × P(w₃|w₁,w₂) × ... × P(wₙ|w₁,...,wₙ₋₁)
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-lg leading-relaxed mb-6">
+                            语言模型的发展经历了从统计方法到神经网络，再到Transformer架构的演进过程。每一次技术革新都带来了性能的显著提升。
+                        </p>
+                    </div>
+                </section>
+
+                <!-- N-gram模型 -->
+                <section id="ngram-models" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-chart-line mr-3"></i>N-gram模型
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            N-gram模型是最早的统计语言模型之一，基于马尔可夫假设：当前词只依赖于前面的n-1个词。
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                                <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-two mr-2"></i>Bigram模型 (n=2)
+                                </h3>
+                                <p class="text-green-700 mb-3">每个词只依赖于前一个词：</p>
+                                <div class="bg-green-100 p-3 rounded font-mono text-sm">
+                                    P(wᵢ|w₁,...,wᵢ₋₁) ≈ P(wᵢ|wᵢ₋₁)
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-purple-50 to-violet-50 p-6 rounded-xl border border-purple-200">
+                                <h3 class="text-lg font-semibold text-purple-800 mb-3">
+                                    <i class="fas fa-three mr-2"></i>Trigram模型 (n=3)
+                                </h3>
+                                <p class="text-purple-700 mb-3">每个词依赖于前两个词：</p>
+                                <div class="bg-purple-100 p-3 rounded font-mono text-sm">
+                                    P(wᵢ|w₁,...,wᵢ₋₁) ≈ P(wᵢ|wᵢ₋₂,wᵢ₋₁)
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-4">Python实现示例</h3>
+
+<pre class="language-python"><code>import re
+from collections import defaultdict, Counter
+
+class BigramLanguageModel:
+    def __init__(self):
+        # 存储bigram计数
+        self.bigram_counts = defaultdict(Counter)
+        # 存储unigram计数
+        self.unigram_counts = Counter()
+        # 词汇表
+        self.vocab = set()
+    
+    def preprocess_text(self, text):
+        """预处理文本"""
+        # 转换为小写并分词
+        words = re.findall(r'\b\w+\b', text.lower())
+        # 添加句子开始和结束标记
+        return ['<s>'] + words + ['</s>']
+    
+    def train(self, texts):
+        """训练模型"""
+        for text in texts:
+            words = self.preprocess_text(text)
+            self.vocab.update(words)
+            
+            # 统计unigram和bigram
+            for i in range(len(words)):
+                self.unigram_counts[words[i]] += 1
+                if i > 0:
+                    self.bigram_counts[words[i-1]][words[i]] += 1
+    
+    def get_probability(self, word, prev_word):
+        """计算条件概率 P(word|prev_word)"""
+        if prev_word not in self.bigram_counts:
+            return 0.0
+        
+        bigram_count = self.bigram_counts[prev_word][word]
+        unigram_count = self.unigram_counts[prev_word]
+        
+        if unigram_count == 0:
+            return 0.0
+        
+        return bigram_count / unigram_count
+    
+    def sentence_probability(self, sentence):
+        """计算句子概率"""
+        words = self.preprocess_text(sentence)
+        prob = 1.0
+        
+        for i in range(1, len(words)):
+            word_prob = self.get_probability(words[i], words[i-1])
+            if word_prob == 0:
+                return 0.0
+            prob *= word_prob
+        
+        return prob
+    
+    def generate_text(self, start_word='<s>', max_length=20):
+        """生成文本"""
+        result = [start_word]
+        current_word = start_word
+        
+        for _ in range(max_length):
+            if current_word not in self.bigram_counts:
+                break
+            
+            # 获取可能的下一个词及其概率
+            candidates = self.bigram_counts[current_word]
+            if not candidates:
+                break
+            
+            # 简单选择最高概率的词（实际应用中可以使用采样）
+            next_word = max(candidates.items(), key=lambda x: x[1])[0]
+            
+            if next_word == '</s>':
+                break
+            
+            result.append(next_word)
+            current_word = next_word
+        
+        return ' '.join(result[1:])  # 去掉开始标记
+
+# 使用示例
+if __name__ == "__main__":
+    # 训练数据
+    training_texts = [
+        "我喜欢学习人工智能",
+        "人工智能很有趣",
+        "学习使我快乐",
+        "我喜欢编程",
+        "编程很有趣"
+    ]
+    
+    # 训练模型
+    model = BigramLanguageModel()
+    model.train(training_texts)
+    
+    # 计算句子概率
+    test_sentence = "我喜欢人工智能"
+    prob = model.sentence_probability(test_sentence)
+    print(f"句子 '{test_sentence}' 的概率: {prob:.6f}")
+    
+    # 生成文本
+    generated = model.generate_text("我", max_length=10)
+    print(f"生成的文本: {generated}")
+</code></pre>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 my-8 rounded-r-lg">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-2">N-gram模型的局限性</h3>
+                            <ul class="text-yellow-700 space-y-2">
+                                <li><strong>数据稀疏性</strong>：许多n-gram组合在训练数据中未出现</li>
+                                <li><strong>泛化能力差</strong>：无法处理未见过的词汇组合</li>
+                                <li><strong>上下文窗口固定</strong>：只能考虑有限的历史信息</li>
+                                <li><strong>缺乏语义理解</strong>：纯粹基于统计，不理解词汇含义</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 本地模型调用 -->
+                <section id="local-models" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-desktop mr-3"></i>本地模型调用
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            使用Hugging Face Transformers库可以轻松调用开源大语言模型，为智能体开发提供强大的本地计算能力。
+                        </p>
+
+                        <h3 class="text-xl font-semibold mb-4">环境配置与模型加载</h3>
+
+<pre class="language-python"><code>import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import warnings
+warnings.filterwarnings('ignore')
+
+class LocalLLMChat:
+    def __init__(self, model_name="Qwen/Qwen1.5-0.5B-Chat"):
+        """
+        初始化本地大语言模型
+        
+        Args:
+            model_name: 模型名称，默认使用Qwen1.5-0.5B-Chat
+        """
+        self.model_name = model_name
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        print(f"正在加载模型: {model_name}")
+        print(f"使用设备: {self.device}")
+        
+        # 加载分词器和模型
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name, 
+            trust_remote_code=True
+        )
+        
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+            device_map="auto" if torch.cuda.is_available() else None,
+            trust_remote_code=True
+        )
+        
+        # 设置pad_token
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+        
+        print("模型加载完成！")
+    
+    def format_chat_prompt(self, messages):
+        """
+        格式化对话提示
+        
+        Args:
+            messages: 对话消息列表，格式为 [{"role": "user", "content": "..."}]
+        
+        Returns:
+            格式化后的提示文本
+        """
+        # 使用模型的聊天模板
+        if hasattr(self.tokenizer, 'apply_chat_template'):
+            return self.tokenizer.apply_chat_template(
+                messages, 
+                tokenize=False, 
+                add_generation_prompt=True
+            )
+        else:
+            # 简单的格式化方式
+            prompt = ""
+            for message in messages:
+                role = message["role"]
+                content = message["content"]
+                if role == "user":
+                    prompt += f"用户: {content}\n"
+                elif role == "assistant":
+                    prompt += f"助手: {content}\n"
+            prompt += "助手: "
+            return prompt
+    
+    def generate_response(self, messages, max_length=512, temperature=0.7, 
+                         top_p=0.9, top_k=50, do_sample=True):
+        """
+        生成回复
+        
+        Args:
+            messages: 对话消息列表
+            max_length: 最大生成长度
+            temperature: 温度参数
+            top_p: nucleus sampling参数
+            top_k: top-k sampling参数
+            do_sample: 是否使用采样
+        
+        Returns:
+            生成的回复文本
+        """
+        # 格式化输入
+        prompt = self.format_chat_prompt(messages)
+        
+        # 编码输入
+        inputs = self.tokenizer.encode(prompt, return_tensors="pt")
+        inputs = inputs.to(self.device)
+        
+        # 生成回复
+        with torch.no_grad():
+            outputs = self.model.generate(
+                inputs,
+                max_length=len(inputs[0]) + max_length,
+                temperature=temperature,
+                top_p=top_p,
+                top_k=top_k,
+                do_sample=do_sample,
+                pad_token_id=self.tokenizer.pad_token_id,
+                eos_token_id=self.tokenizer.eos_token_id,
+            )
+        
+        # 解码输出
+        response = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+        # 提取新生成的部分
+        response = response[len(prompt):].strip()
+        
+        return response
+    
+    def chat(self, user_input, conversation_history=None, **kwargs):
+        """
+        单轮对话接口
+        
+        Args:
+            user_input: 用户输入
+            conversation_history: 对话历史
+            **kwargs: 生成参数
+        
+        Returns:
+            助手回复
+        """
+        if conversation_history is None:
+            conversation_history = []
+        
+        # 添加用户消息
+        messages = conversation_history + [{"role": "user", "content": user_input}]
+        
+        # 生成回复
+        response = self.generate_response(messages, **kwargs)
+        
+        return response
+    
+    def interactive_chat(self):
+        """交互式对话"""
+        print("开始对话！输入 'quit' 退出。")
+        conversation_history = []
+        
+        while True:
+            user_input = input("\n用户: ").strip()
+            
+            if user_input.lower() in ['quit', 'exit', '退出']:
+                print("对话结束！")
+                break
+            
+            if not user_input:
+                continue
+            
+            try:
+                # 生成回复
+                response = self.chat(user_input, conversation_history)
+                print(f"助手: {response}")
+                
+                # 更新对话历史
+                conversation_history.append({"role": "user", "content": user_input})
+                conversation_history.append({"role": "assistant", "content": response})
+                
+                # 限制历史长度
+                if len(conversation_history) > 10:
+                    conversation_history = conversation_history[-10:]
+                    
+            except Exception as e:
+                print(f"生成回复时出错: {e}")
+
+# 使用示例
+if __name__ == "__main__":
+    # 初始化聊天模型
+    chat_model = LocalLLMChat("Qwen/Qwen1.5-0.5B-Chat")
+    
+    # 单轮对话示例
+    user_message = "请解释什么是人工智能"
+    response = chat_model.chat(user_message)
+    print(f"用户: {user_message}")
+    print(f"助手: {response}")
+    
+    # 多轮对话示例
+    conversation = []
+    
+    # 第一轮
+    user_msg1 = "你好，我想学习机器学习"
+    response1 = chat_model.chat(user_msg1, conversation)
+    conversation.extend([
+        {"role": "user", "content": user_msg1},
+        {"role": "assistant", "content": response1}
+    ])
+    print(f"\n用户: {user_msg1}")
+    print(f"助手: {response1}")
+    
+    # 第二轮
+    user_msg2 = "从哪里开始比较好？"
+    response2 = chat_model.chat(user_msg2, conversation)
+    print(f"\n用户: {user_msg2}")
+    print(f"助手: {response2}")
+    
+    # 启动交互式对话（可选）
+    # chat_model.interactive_chat()
+</code></pre>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-4">
+                                <i class="fas fa-cog mr-2"></i>模型配置建议
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-blue-700 mb-2">硬件要求：</h4>
+                                    <ul class="text-blue-600 space-y-1">
+                                        <li>• 0.5B模型：4GB+ RAM</li>
+                                        <li>• 1.8B模型：8GB+ RAM</li>
+                                        <li>• 7B模型：16GB+ RAM</li>
+                                        <li>• GPU加速推荐</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-blue-700 mb-2">优化技巧：</h4>
+                                    <ul class="text-blue-600 space-y-1">
+                                        <li>• 使用量化模型</li>
+                                        <li>• 调整批处理大小</li>
+                                        <li>• 启用梯度检查点</li>
+                                        <li>• 使用混合精度</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 模型选择 -->
+                <section id="model-selection" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-balance-scale mr-3"></i>模型选择指南
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            选择合适的大语言模型需要综合考虑性能、成本、部署难度等多个因素。
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <!-- 闭源模型 -->
+                            <div class="bg-gradient-to-br from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-200">
+                                <h3 class="text-xl font-semibold text-purple-800 mb-4">
+                                    <i class="fas fa-lock mr-2"></i>闭源模型
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-purple-700 mb-2">OpenAI GPT系列</h4>
+                                        <ul class="text-purple-600 text-sm space-y-1">
+                                            <li>• GPT-4o: 最新多模态模型</li>
+                                            <li>• GPT-4: 强大的推理能力</li>
+                                            <li>• GPT-3.5-turbo: 性价比高</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-purple-700 mb-2">Google Gemini</h4>
+                                        <ul class="text-purple-600 text-sm space-y-1">
+                                            <li>• Gemini Ultra: 顶级性能</li>
+                                            <li>• Gemini Pro: 平衡选择</li>
+                                            <li>• Gemini Nano: 移动端优化</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-purple-700 mb-2">Anthropic Claude</h4>
+                                        <ul class="text-purple-600 text-sm space-y-1">
+                                            <li>• Claude 3 Opus: 最强版本</li>
+                                            <li>• Claude 3 Sonnet: 平衡版本</li>
+                                            <li>• Claude 3 Haiku: 快速版本</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 开源模型 -->
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-xl border border-green-200">
+                                <h3 class="text-xl font-semibold text-green-800 mb-4">
+                                    <i class="fas fa-unlock mr-2"></i>开源模型
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-green-700 mb-2">Meta Llama系列</h4>
+                                        <ul class="text-green-600 text-sm space-y-1">
+                                            <li>• Llama 3: 最新版本，性能优异</li>
+                                            <li>• Llama 2: 成熟稳定</li>
+                                            <li>• Code Llama: 代码专用</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-green-700 mb-2">阿里Qwen系列</h4>
+                                        <ul class="text-green-600 text-sm space-y-1">
+                                            <li>• Qwen2: 多语言支持优秀</li>
+                                            <li>• Qwen1.5: 中文表现突出</li>
+                                            <li>• CodeQwen: 代码生成专用</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-green-700 mb-2">Mistral AI</h4>
+                                        <ul class="text-green-600 text-sm space-y-1">
+                                            <li>• Mixtral 8x7B: 混合专家模型</li>
+                                            <li>• Mistral 7B: 轻量高效</li>
+                                            <li>• Codestral: 代码生成</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-4">
+                                <i class="fas fa-chart-bar mr-2"></i>选择考虑因素
+                            </h3>
+                            <div class="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-yellow-700 mb-2">性能指标：</h4>
+                                    <ul class="text-yellow-600 space-y-1">
+                                        <li>• 准确性</li>
+                                        <li>• 推理能力</li>
+                                        <li>• 多语言支持</li>
+                                        <li>• 上下文长度</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-yellow-700 mb-2">成本考虑：</h4>
+                                    <ul class="text-yellow-600 space-y-1">
+                                        <li>• API调用费用</li>
+                                        <li>• 硬件成本</li>
+                                        <li>• 维护成本</li>
+                                        <li>• 扩展成本</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-yellow-700 mb-2">部署因素：</h4>
+                                    <ul class="text-yellow-600 space-y-1">
+                                        <li>• 响应速度</li>
+                                        <li>• 可用性</li>
+                                        <li>• 数据隐私</li>
+                                        <li>• 定制能力</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 神经语言模型 -->
+                <section id="neural-lm" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-brain mr-3"></i>神经语言模型与词嵌入
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            神经网络语言模型通过词嵌入（Word Embeddings）解决了N-gram模型的数据稀疏性问题，将词汇映射到连续的向量空间中。
+                        </p>
+
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-green-800 mb-4">
+                                <i class="fas fa-vector-square mr-2"></i>词嵌入的核心思想
+                            </h3>
+                            <p class="text-green-700 mb-4">
+                                将每个词表示为一个高维向量，语义相似的词在向量空间中距离较近。这样可以捕获词汇之间的语义关系。
+                            </p>
+                            
+                            <div class="bg-green-100 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800 mb-2">著名的词向量关系：</h4>
+                                <p class="text-green-700 font-mono">
+                                    king - man + woman ≈ queen
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-4">词向量相似度计算示例</h3>
+
+<pre class="language-python"><code>import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
+class WordEmbedding:
+    def __init__(self, embedding_dim=100):
+        self.embedding_dim = embedding_dim
+        self.word_to_idx = {}
+        self.idx_to_word = {}
+        self.embeddings = None
+        self.vocab_size = 0
+    
+    def build_vocab(self, texts):
+        """构建词汇表"""
+        vocab = set()
+        for text in texts:
+            words = text.lower().split()
+            vocab.update(words)
+        
+        self.vocab_size = len(vocab)
+        self.word_to_idx = {word: idx for idx, word in enumerate(vocab)}
+        self.idx_to_word = {idx: word for word, idx in self.word_to_idx.items()}
+        
+        # 随机初始化词嵌入（实际应用中会通过训练得到）
+        self.embeddings = np.random.randn(self.vocab_size, self.embedding_dim)
+        
+        # 为了演示，我们手动设置一些有意义的向量
+        self._set_demo_embeddings()
+    
+    def _set_demo_embeddings(self):
+        """设置演示用的词嵌入"""
+        # 这里我们手动设置一些词的嵌入来演示相似性
+        demo_words = {
+            'king': [0.1, 0.3, -0.2, 0.8, 0.5],
+            'queen': [0.2, 0.4, -0.1, 0.7, 0.6],
+            'man': [-0.1, 0.2, 0.3, 0.1, -0.2],
+            'woman': [0.0, 0.3, 0.4, 0.0, -0.1],
+            'cat': [0.5, -0.2, 0.1, -0.3, 0.4],
+            'dog': [0.4, -0.1, 0.2, -0.2, 0.3],
+        }
+        
+        for word, vector in demo_words.items():
+            if word in self.word_to_idx:
+                idx = self.word_to_idx[word]
+                # 扩展向量到完整维度
+                full_vector = np.random.randn(self.embedding_dim)
+                full_vector[:len(vector)] = vector
+                self.embeddings[idx] = full_vector
+    
+    def get_embedding(self, word):
+        """获取词的嵌入向量"""
+        if word not in self.word_to_idx:
+            return None
+        idx = self.word_to_idx[word]
+        return self.embeddings[idx]
+    
+    def cosine_similarity(self, word1, word2):
+        """计算两个词的余弦相似度"""
+        emb1 = self.get_embedding(word1)
+        emb2 = self.get_embedding(word2)
+        
+        if emb1 is None or emb2 is None:
+            return None
+        
+        # 计算余弦相似度
+        dot_product = np.dot(emb1, emb2)
+        norm1 = np.linalg.norm(emb1)
+        norm2 = np.linalg.norm(emb2)
+        
+        if norm1 == 0 or norm2 == 0:
+            return 0
+        
+        return dot_product / (norm1 * norm2)
+    
+    def find_similar_words(self, word, top_k=5):
+        """找到与给定词最相似的词"""
+        target_emb = self.get_embedding(word)
+        if target_emb is None:
+            return []
+        
+        similarities = []
+        for other_word in self.word_to_idx:
+            if other_word != word:
+                sim = self.cosine_similarity(word, other_word)
+                if sim is not None:
+                    similarities.append((other_word, sim))
+        
+        # 按相似度排序
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        return similarities[:top_k]
+    
+    def word_analogy(self, word_a, word_b, word_c):
+        """词类比：word_a - word_b + word_c = ?"""
+        emb_a = self.get_embedding(word_a)
+        emb_b = self.get_embedding(word_b)
+        emb_c = self.get_embedding(word_c)
+        
+        if any(emb is None for emb in [emb_a, emb_b, emb_c]):
+            return None
+        
+        # 计算目标向量
+        target_vector = emb_a - emb_b + emb_c
+        
+        # 找到最相似的词
+        best_word = None
+        best_similarity = -1
+        
+        for word in self.word_to_idx:
+            if word not in [word_a, word_b, word_c]:
+                emb = self.get_embedding(word)
+                if emb is not None:
+                    # 计算与目标向量的相似度
+                    dot_product = np.dot(target_vector, emb)
+                    norm_target = np.linalg.norm(target_vector)
+                    norm_emb = np.linalg.norm(emb)
+                    
+                    if norm_target > 0 and norm_emb > 0:
+                        similarity = dot_product / (norm_target * norm_emb)
+                        if similarity > best_similarity:
+                            best_similarity = similarity
+                            best_word = word
+        
+        return best_word, best_similarity
+
+# 使用示例
+if __name__ == "__main__":
+    # 示例文本
+    texts = [
+        "king queen man woman",
+        "cat dog animal pet",
+        "happy sad emotion feeling",
+        "big small size large"
+    ]
+    
+    # 创建词嵌入模型
+    embedding_model = WordEmbedding(embedding_dim=50)
+    embedding_model.build_vocab(texts)
+    
+    # 计算词相似度
+    similarity = embedding_model.cosine_similarity("king", "queen")
+    print(f"'king' 和 'queen' 的相似度: {similarity:.4f}")
+    
+    # 找相似词
+    similar_words = embedding_model.find_similar_words("king", top_k=3)
+    print(f"与 'king' 最相似的词: {similar_words}")
+    
+    # 词类比
+    result = embedding_model.word_analogy("king", "man", "woman")
+    if result:
+        word, score = result
+        print(f"king - man + woman = {word} (相似度: {score:.4f})")
+</code></pre>
+
+                        <p class="text-lg leading-relaxed mb-6">
+                            词嵌入的引入为语言模型带来了质的飞跃，但传统的RNN和LSTM仍然面临序列处理的瓶颈问题。
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Transformer架构 -->
+                <section id="transformer" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-cogs mr-3"></i>Transformer架构
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            2017年，Google提出的Transformer架构彻底改变了自然语言处理领域。它摒弃了RNN的序列处理方式，完全基于注意力机制。
+                        </p>
+
+                        <div class="architecture-diagram">
+                            <h3 class="text-xl font-semibold text-center mb-6">Transformer架构图</h3>
+                            <div class="grid grid-cols-2 gap-8">
+                                <!-- 编码器 -->
+                                <div class="space-y-4">
+                                    <h4 class="text-lg font-semibold text-center text-blue-800">编码器 (Encoder)</h4>
+                                    <div class="component-box">
+                                        <i class="fas fa-layer-group text-blue-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">输出层</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-plus text-green-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Add & Norm</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-network-wired text-purple-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Feed Forward</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-plus text-green-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Add & Norm</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-eye text-orange-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Multi-Head Attention</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-map-marker-alt text-red-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Positional Encoding</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-keyboard text-gray-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">输入嵌入</p>
+                                    </div>
+                                </div>
+
+                                <!-- 解码器 -->
+                                <div class="space-y-4">
+                                    <h4 class="text-lg font-semibold text-center text-blue-800">解码器 (Decoder)</h4>
+                                    <div class="component-box">
+                                        <i class="fas fa-layer-group text-blue-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">输出概率</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-plus text-green-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Add & Norm</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-network-wired text-purple-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Feed Forward</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-plus text-green-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Add & Norm</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-exchange-alt text-indigo-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Cross Attention</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-plus text-green-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Add & Norm</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-mask text-orange-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Masked Self-Attention</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-map-marker-alt text-red-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">Positional Encoding</p>
+                                    </div>
+                                    <div class="arrow">↑</div>
+                                    <div class="component-box">
+                                        <i class="fas fa-keyboard text-gray-600 text-xl mb-2"></i>
+                                        <p class="font-semibold">输出嵌入</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-4">Transformer核心组件实现</h3>
+
+<pre class="language-python"><code>import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import math
+
+class MultiHeadAttention(nn.Module):
+    def __init__(self, d_model, num_heads):
+        super(MultiHeadAttention, self).__init__()
+        assert d_model % num_heads == 0
+        
+        self.d_model = d_model
+        self.num_heads = num_heads
+        self.d_k = d_model // num_heads
+        
+        # 线性变换层
+        self.W_q = nn.Linear(d_model, d_model)
+        self.W_k = nn.Linear(d_model, d_model)
+        self.W_v = nn.Linear(d_model, d_model)
+        self.W_o = nn.Linear(d_model, d_model)
+        
+    def scaled_dot_product_attention(self, Q, K, V, mask=None):
+        # 计算注意力分数
+        scores = torch.matmul(Q, K.transpose(-2, -1)) / math.sqrt(self.d_k)
+        
+        # 应用掩码（如果有）
+        if mask is not None:
+            scores = scores.masked_fill(mask == 0, -1e9)
+        
+        # 应用softmax
+        attention_weights = F.softmax(scores, dim=-1)
+        
+        # 计算加权值
+        output = torch.matmul(attention_weights, V)
+        
+        return output, attention_weights
+    
+    def forward(self, query, key, value, mask=None):
+        batch_size = query.size(0)
+        
+        # 线性变换并重塑为多头
+        Q = self.W_q(query).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        K = self.W_k(key).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        V = self.W_v(value).view(batch_size, -1, self.num_heads, self.d_k).transpose(1, 2)
+        
+        # 应用注意力
+        attention_output, attention_weights = self.scaled_dot_product_attention(Q, K, V, mask)
+        
+        # 重塑并连接多头
+        attention_output = attention_output.transpose(1, 2).contiguous().view(
+            batch_size, -1, self.d_model
+        )
+        
+        # 最终线性变换
+        output = self.W_o(attention_output)
+        
+        return output, attention_weights
+
+class PositionwiseFeedForward(nn.Module):
+    def __init__(self, d_model, d_ff):
+        super(PositionwiseFeedForward, self).__init__()
+        self.linear1 = nn.Linear(d_model, d_ff)
+        self.linear2 = nn.Linear(d_ff, d_model)
+        self.relu = nn.ReLU()
+        
+    def forward(self, x):
+        return self.linear2(self.relu(self.linear1(x)))
+
+class PositionalEncoding(nn.Module):
+    def __init__(self, d_model, max_seq_length=5000):
+        super(PositionalEncoding, self).__init__()
+        
+        pe = torch.zeros(max_seq_length, d_model)
+        position = torch.arange(0, max_seq_length, dtype=torch.float).unsqueeze(1)
+        
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * 
+                           (-math.log(10000.0) / d_model))
+        
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        
+        self.register_buffer('pe', pe.unsqueeze(0))
+        
+    def forward(self, x):
+        return x + self.pe[:, :x.size(1)]
+
+class EncoderLayer(nn.Module):
+    def __init__(self, d_model, num_heads, d_ff, dropout=0.1):
+        super(EncoderLayer, self).__init__()
+        self.self_attention = MultiHeadAttention(d_model, num_heads)
+        self.feed_forward = PositionwiseFeedForward(d_model, d_ff)
+        self.norm1 = nn.LayerNorm(d_model)
+        self.norm2 = nn.LayerNorm(d_model)
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x, mask=None):
+        # 自注意力 + 残差连接 + 层归一化
+        attn_output, _ = self.self_attention(x, x, x, mask)
+        x = self.norm1(x + self.dropout(attn_output))
+        
+        # 前馈网络 + 残差连接 + 层归一化
+        ff_output = self.feed_forward(x)
+        x = self.norm2(x + self.dropout(ff_output))
+        
+        return x
+
+class TransformerEncoder(nn.Module):
+    def __init__(self, vocab_size, d_model, num_heads, num_layers, d_ff, max_seq_length, dropout=0.1):
+        super(TransformerEncoder, self).__init__()
+        self.d_model = d_model
+        self.embedding = nn.Embedding(vocab_size, d_model)
+        self.positional_encoding = PositionalEncoding(d_model, max_seq_length)
+        
+        self.encoder_layers = nn.ModuleList([
+            EncoderLayer(d_model, num_heads, d_ff, dropout)
+            for _ in range(num_layers)
+        ])
+        
+        self.dropout = nn.Dropout(dropout)
+        
+    def forward(self, x, mask=None):
+        # 嵌入 + 位置编码
+        x = self.embedding(x) * math.sqrt(self.d_model)
+        x = self.positional_encoding(x)
+        x = self.dropout(x)
+        
+        # 通过编码器层
+        for encoder_layer in self.encoder_layers:
+            x = encoder_layer(x, mask)
+        
+        return x
+
+# 使用示例
+if __name__ == "__main__":
+    # 模型参数
+    vocab_size = 10000
+    d_model = 512
+    num_heads = 8
+    num_layers = 6
+    d_ff = 2048
+    max_seq_length = 100
+    
+    # 创建模型
+    model = TransformerEncoder(
+        vocab_size=vocab_size,
+        d_model=d_model,
+        num_heads=num_heads,
+        num_layers=num_layers,
+        d_ff=d_ff,
+        max_seq_length=max_seq_length
+    )
+    
+    # 示例输入
+    batch_size = 2
+    seq_length = 20
+    input_ids = torch.randint(0, vocab_size, (batch_size, seq_length))
+    
+    # 前向传播
+    output = model(input_ids)
+    print(f"输入形状: {input_ids.shape}")
+    print(f"输出形状: {output.shape}")
+    print(f"模型参数数量: {sum(p.numel() for p in model.parameters()):,}")
+</code></pre>
+                    </div>
+                </section>
+
+                <!-- 注意力机制 -->
+                <section id="attention" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-eye mr-3"></i>注意力机制详解
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            注意力机制是Transformer的核心创新，它允许模型在处理每个位置时关注序列中的所有位置。
+                        </p>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-4">
+                                <i class="fas fa-key mr-2"></i>Query-Key-Value机制
+                            </h3>
+                            <p class="text-blue-700 mb-4">
+                                注意力机制可以类比为信息检索系统：
+                            </p>
+                            <div class="grid md:grid-cols-3 gap-4">
+                                <div class="bg-blue-100 p-4 rounded-lg text-center">
+                                    <i class="fas fa-search text-blue-600 text-2xl mb-2"></i>
+                                    <h4 class="font-semibold text-blue-800">Query (查询)</h4>
+                                    <p class="text-blue-700 text-sm">当前位置想要什么信息</p>
+                                </div>
+                                <div class="bg-blue-100 p-4 rounded-lg text-center">
+                                    <i class="fas fa-key text-blue-600 text-2xl mb-2"></i>
+                                    <h4 class="font-semibold text-blue-800">Key (键)</h4>
+                                    <p class="text-blue-700 text-sm">每个位置提供什么信息</p>
+                                </div>
+                                <div class="bg-blue-100 p-4 rounded-lg text-center">
+                                    <i class="fas fa-database text-blue-600 text-2xl mb-2"></i>
+                                    <h4 class="font-semibold text-blue-800">Value (值)</h4>
+                                    <p class="text-blue-700 text-sm">实际的信息内容</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-xl mb-8">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">注意力计算公式</h3>
+                            <div class="text-center">
+                                <p class="text-xl font-mono bg-white p-4 rounded border">
+                                    Attention(Q, K, V) = softmax(QK<sup>T</sup> / √d<sub>k</sub>)V
+                                </p>
+                            </div>
+                            <div class="mt-4 text-gray-700">
+                                <p><strong>其中：</strong></p>
+                                <ul class="list-disc list-inside space-y-1">
+                                    <li>Q, K, V 分别是查询、键、值矩阵</li>
+                                    <li>d<sub>k</sub> 是键向量的维度</li>
+                                    <li>√d<sub>k</sub> 用于缩放，防止softmax饱和</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-4">多头注意力的优势</h3>
+
+                        <div class="grid md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                                <h4 class="text-lg font-semibold text-purple-800 mb-3">
+                                    <i class="fas fa-layer-group mr-2"></i>多样化关注
+                                </h4>
+                                <p class="text-purple-700">
+                                    不同的注意力头可以关注不同类型的关系，如语法关系、语义关系等。
+                                </p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-xl border border-green-200">
+                                <h4 class="text-lg font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-expand-arrows-alt mr-2"></i>并行计算
+                                </h4>
+                                <p class="text-green-700">
+                                    多个头可以并行计算，提高了计算效率和模型表达能力。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Decoder-Only架构 -->
+                <section id="decoder-only" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-arrow-right mr-3"></i>Decoder-Only架构
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            现代大语言模型（如GPT系列）采用Decoder-Only架构，这种设计简化了模型结构，专注于自回归生成任务。
+                        </p>
+
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-green-800 mb-4">
+                                <i class="fas fa-lightbulb mr-2"></i>Decoder-Only的优势
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-green-700 mb-2">统一的训练目标：</h4>
+                                    <ul class="text-green-600 space-y-1">
+                                        <li>• 专注于下一个词预测</li>
+                                        <li>• 简化了训练过程</li>
+                                        <li>• 更好的扩展性</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green-700 mb-2">灵活的应用：</h4>
+                                    <ul class="text-green-600 space-y-1">
+                                        <li>• 文本生成</li>
+                                        <li>• 对话系统</li>
+                                        <li>• 代码生成</li>
+                                        <li>• 推理任务</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 my-8 rounded-r-lg">
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-2">
+                                <i class="fas fa-mask mr-2"></i>掩码自注意力
+                            </h3>
+                            <p class="text-yellow-700">
+                                Decoder使用掩码自注意力确保模型在预测第i个词时只能看到前i-1个词，这保证了自回归生成的因果性。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 模型交互 -->
+                <section id="interaction" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-comments mr-3"></i>与大语言模型交互
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            理解如何与大语言模型有效交互是构建智能体的关键技能。模型的输出受到多个采样参数的影响。
+                        </p>
+
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-blue-800 mb-4">
+                                <i class="fas fa-sliders-h mr-2"></i>关键采样参数
+                            </h3>
+                            
+                            <div class="space-y-6">
+                                <!-- Temperature -->
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-semibold text-blue-800">Temperature (温度)</h4>
+                                        <span id="temp-value" class="text-blue-600 font-mono">1.0</span>
+                                    </div>
+                                    <input type="range" id="temperature" class="parameter-slider" min="0.1" max="2.0" step="0.1" value="1.0">
+                                    <p class="text-blue-700 text-sm mt-2">控制输出的随机性。值越高，输出越随机；值越低，输出越确定。</p>
+                                </div>
+
+                                <!-- Top-k -->
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-semibold text-blue-800">Top-k</h4>
+                                        <span id="topk-value" class="text-blue-600 font-mono">50</span>
+                                    </div>
+                                    <input type="range" id="topk" class="parameter-slider" min="1" max="100" step="1" value="50">
+                                    <p class="text-blue-700 text-sm mt-2">只考虑概率最高的k个词。限制候选词的数量。</p>
+                                </div>
+
+                                <!-- Top-p -->
+                                <div class="bg-white p-4 rounded-lg border">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h4 class="font-semibold text-blue-800">Top-p (Nucleus Sampling)</h4>
+                                        <span id="topp-value" class="text-blue-600 font-mono">0.9</span>
+                                    </div>
+                                    <input type="range" id="topp" class="parameter-slider" min="0.1" max="1.0" step="0.05" value="0.9">
+                                    <p class="text-blue-700 text-sm mt-2">选择累积概率达到p的最小词集。动态调整候选词数量。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-6 my-8">
+                            <div class="bg-gradient-to-br from-red-50 to-orange-50 p-6 rounded-xl border border-red-200">
+                                <h4 class="text-lg font-semibold text-red-800 mb-3">
+                                    <i class="fas fa-thermometer-half mr-2"></i>低温度 (0.1-0.3)
+                                </h4>
+                                <p class="text-red-700 mb-2"><strong>特点：</strong>确定性强，重复性高</p>
+                                <p class="text-red-700"><strong>适用：</strong>事实问答、代码生成</p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border border-yellow-200">
+                                <h4 class="text-lg font-semibold text-yellow-800 mb-3">
+                                    <i class="fas fa-balance-scale mr-2"></i>中等温度 (0.7-1.0)
+                                </h4>
+                                <p class="text-yellow-700 mb-2"><strong>特点：</strong>平衡创造性和一致性</p>
+                                <p class="text-yellow-700"><strong>适用：</strong>对话、文章写作</p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                                <h4 class="text-lg font-semibold text-purple-800 mb-3">
+                                    <i class="fas fa-fire mr-2"></i>高温度 (1.2-2.0)
+                                </h4>
+                                <p class="text-purple-700 mb-2"><strong>特点：</strong>高度创造性，不可预测</p>
+                                <p class="text-purple-700"><strong>适用：</strong>创意写作、头脑风暴</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 提示工程 -->
+                <section id="prompting" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-magic mr-3"></i>提示工程技术
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            提示工程是与大语言模型有效交互的艺术和科学。通过精心设计的提示，我们可以引导模型产生更准确、更有用的输出。
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-6 my-8">
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                                <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                                    <i class="fas fa-bolt mr-2"></i>Zero-shot
+                                </h3>
+                                <p class="text-blue-700 mb-3">直接给出任务描述，不提供示例。</p>
+                                <div class="bg-blue-100 p-3 rounded text-sm">
+                                    <strong>示例：</strong><br>
+                                    "请将以下句子翻译成英文：你好，世界！"
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-xl border border-green-200">
+                                <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                    <i class="fas fa-eye mr-2"></i>One-shot
+                                </h3>
+                                <p class="text-green-700 mb-3">提供一个示例来说明任务。</p>
+                                <div class="bg-green-100 p-3 rounded text-sm">
+                                    <strong>示例：</strong><br>
+                                    "中文：你好 → 英文：Hello<br>
+                                    中文：世界 → 英文："
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                                <h3 class="text-lg font-semibold text-purple-800 mb-3">
+                                    <i class="fas fa-layer-group mr-2"></i>Few-shot
+                                </h3>
+                                <p class="text-purple-700 mb-3">提供多个示例来建立模式。</p>
+                                <div class="bg-purple-100 p-3 rounded text-sm">
+                                    <strong>示例：</strong><br>
+                                    "苹果 → 水果<br>
+                                    汽车 → 交通工具<br>
+                                    钢琴 → ?"
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-orange-800 mb-4">
+                                <i class="fas fa-chain mr-2"></i>链式思维 (Chain-of-Thought)
+                            </h3>
+                            <p class="text-orange-700 mb-4">
+                                通过展示推理步骤，引导模型进行逐步思考，特别适用于复杂的推理任务。
+                            </p>
+                            
+                            <div class="bg-orange-100 p-4 rounded-lg">
+                                <h4 class="font-semibold text-orange-800 mb-2">示例：数学问题</h4>
+                                <div class="text-orange-700 space-y-2">
+                                    <p><strong>问题：</strong>一个班级有30名学生，其中60%是女生。如果又来了5名男生，现在男生占总人数的百分比是多少？</p>
+                                    <p><strong>思考过程：</strong></p>
+                                    <ol class="list-decimal list-inside space-y-1 ml-4">
+                                        <li>原来女生人数：30 × 60% = 18人</li>
+                                        <li>原来男生人数：30 - 18 = 12人</li>
+                                        <li>新增男生后：12 + 5 = 17人</li>
+                                        <li>总人数：30 + 5 = 35人</li>
+                                        <li>男生占比：17 ÷ 35 = 48.57%</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 文本分词 -->
+                <section id="tokenization" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-cut mr-3"></i>文本分词技术
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            分词是将文本转换为模型可以理解的数字序列的关键步骤。现代大语言模型主要使用子词分词技术。
+                        </p>
+
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-red-800 mb-4">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>为什么需要分词？
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-red-700 mb-2">词级分词的问题：</h4>
+                                    <ul class="text-red-600 space-y-1">
+                                        <li>• 词汇表过大</li>
+                                        <li>• 未登录词问题</li>
+                                        <li>• 语言差异性</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-red-700 mb-2">字符级分词的问题：</h4>
+                                    <ul class="text-red-600 space-y-1">
+                                        <li>• 序列过长</li>
+                                        <li>• 语义信息丢失</li>
+                                        <li>• 计算效率低</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-4">BPE (Byte-Pair Encoding) 算法</h3>
+
+<pre class="language-python"><code>from collections import defaultdict, Counter
+import re
+
+class BPETokenizer:
+    def __init__(self, vocab_size=1000):
+        self.vocab_size = vocab_size
+        self.word_freqs = {}
+        self.vocab = {}
+        self.merges = []
+        
+    def get_word_freqs(self, corpus):
+        """统计词频"""
+        word_freqs = defaultdict(int)
+        for text in corpus:
+            words = re.findall(r'\w+', text.lower())
+            for word in words:
+                word_freqs[word] += 1
+        return dict(word_freqs)
+    
+    def get_splits(self, word_freqs):
+        """将词分割为字符"""
+        splits = {}
+        for word, freq in word_freqs.items():
+            splits[word] = list(word)
+        return splits
+    
+    def get_pair_freqs(self, splits, word_freqs):
+        """统计相邻字符对的频率"""
+        pair_freqs = defaultdict(int)
+        for word, freq in word_freqs.items():
+            split = splits[word]
+            if len(split) == 1:
+                continue
+            for i in range(len(split) - 1):
+                pair = (split[i], split[i + 1])
+                pair_freqs[pair] += freq
+        return pair_freqs
+    
+    def merge_pair(self, pair, splits):
+        """合并最频繁的字符对"""
+        new_splits = {}
+        for word in splits:
+            split = splits[word]
+            if len(split) == 1:
+                new_splits[word] = split
+                continue
+            
+            new_split = []
+            i = 0
+            while i < len(split):
+                if i < len(split) - 1 and split[i] == pair[0] and split[i + 1] == pair[1]:
+                    new_split.append(pair[0] + pair[1])
+                    i += 2
+                else:
+                    new_split.append(split[i])
+                    i += 1
+            new_splits[word] = new_split
+        return new_splits
+    
+    def train(self, corpus):
+        """训练BPE分词器"""
+        # 1. 统计词频
+        self.word_freqs = self.get_word_freqs(corpus)
+        
+        # 2. 初始分割
+        splits = self.get_splits(self.word_freqs)
+        
+        # 3. 建立初始词汇表
+        alphabet = set()
+        for word in self.word_freqs:
+            alphabet.update(list(word))
+        
+        vocab = list(alphabet)
+        
+        # 4. 迭代合并
+        while len(vocab) < self.vocab_size:
+            pair_freqs = self.get_pair_freqs(splits, self.word_freqs)
+            if not pair_freqs:
+                break
+            
+            # 找到最频繁的字符对
+            best_pair = max(pair_freqs, key=pair_freqs.get)
+            
+            # 合并字符对
+            splits = self.merge_pair(best_pair, splits)
+            
+            # 更新词汇表和合并规则
+            new_token = best_pair[0] + best_pair[1]
+            vocab.append(new_token)
+            self.merges.append(best_pair)
+        
+        # 5. 建立词汇表映射
+        self.vocab = {token: i for i, token in enumerate(vocab)}
+        
+        return vocab
+    
+    def tokenize(self, text):
+        """对文本进行分词"""
+        words = re.findall(r'\w+', text.lower())
+        tokens = []
+        
+        for word in words:
+            # 初始分割为字符
+            word_tokens = list(word)
+            
+            # 应用学习到的合并规则
+            for pair in self.merges:
+                new_word_tokens = []
+                i = 0
+                while i < len(word_tokens):
+                    if (i < len(word_tokens) - 1 and 
+                        word_tokens[i] == pair[0] and 
+                        word_tokens[i + 1] == pair[1]):
+                        new_word_tokens.append(pair[0] + pair[1])
+                        i += 2
+                    else:
+                        new_word_tokens.append(word_tokens[i])
+                        i += 1
+                word_tokens = new_word_tokens
+            
+            tokens.extend(word_tokens)
+        
+        return tokens
+    
+    def encode(self, text):
+        """将文本编码为ID序列"""
+        tokens = self.tokenize(text)
+        return [self.vocab.get(token, self.vocab.get('<UNK>', 0)) for token in tokens]
+    
+    def decode(self, ids):
+        """将ID序列解码为文本"""
+        id_to_token = {i: token for token, i in self.vocab.items()}
+        tokens = [id_to_token.get(id, '<UNK>') for id in ids]
+        return ''.join(tokens)
+
+# 使用示例
+if __name__ == "__main__":
+    # 训练语料
+    corpus = [
+        "这是一个测试文本",
+        "我们正在学习自然语言处理",
+        "分词是重要的预处理步骤",
+        "BPE算法很有效",
+        "机器学习需要大量数据"
+    ]
+    
+    # 训练分词器
+    tokenizer = BPETokenizer(vocab_size=100)
+    vocab = tokenizer.train(corpus)
+    
+    print("词汇表大小:", len(vocab))
+    print("前20个词汇:", vocab[:20])
+    
+    # 测试分词
+    test_text = "这是一个新的测试句子"
+    tokens = tokenizer.tokenize(test_text)
+    print(f"原文: {test_text}")
+    print(f"分词结果: {tokens}")
+    
+    # 编码和解码
+    ids = tokenizer.encode(test_text)
+    decoded = tokenizer.decode(ids)
+    print(f"编码: {ids}")
+    print(f"解码: {decoded}")
+</code></pre>
+
+                        <div class="bg-green-50 border-l-4 border-green-400 p-6 my-8 rounded-r-lg">
+                            <h3 class="text-lg font-semibold text-green-800 mb-2">分词器的重要性</h3>
+                            <ul class="text-green-700 space-y-2">
+                                <li><strong>上下文窗口管理</strong>：了解token数量有助于控制输入长度</li>
+                                <li><strong>API成本控制</strong>：许多API按token数量计费</li>
+                                <li><strong>避免异常行为</strong>：某些token组合可能导致模型异常</li>
+                                <li><strong>多语言支持</strong>：子词分词更好地处理不同语言</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 扩展定律与涌现能力 -->
+                <section id="scaling-laws" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-chart-line mr-3"></i>扩展定律与涌现能力
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            大语言模型的性能遵循可预测的扩展定律，随着模型规模、数据量和计算资源的增加而提升。
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8 mb-8">
+                            <!-- 扩展定律 -->
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-200">
+                                <h3 class="text-xl font-semibold text-blue-800 mb-4">
+                                    <i class="fas fa-ruler mr-2"></i>扩展定律
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-blue-700 mb-2">Chinchilla定律</h4>
+                                        <p class="text-blue-600 text-sm mb-2">
+                                            对于给定的计算预算，模型参数数量和训练数据量应该等比例增长。
+                                        </p>
+                                        <div class="bg-blue-100 p-3 rounded text-blue-800 font-mono text-sm">
+                                            最优参数量 ∝ 计算预算^0.5<br>
+                                            最优数据量 ∝ 计算预算^0.5
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-blue-700 mb-2">性能预测</h4>
+                                        <ul class="text-blue-600 text-sm space-y-1">
+                                            <li>• 损失函数随参数量幂律下降</li>
+                                            <li>• 计算效率存在最优配置</li>
+                                            <li>• 数据质量比数量更重要</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 涌现能力 -->
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                                <h3 class="text-xl font-semibold text-purple-800 mb-4">
+                                    <i class="fas fa-magic mr-2"></i>涌现能力
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-purple-700 mb-2">关键阈值</h4>
+                                        <ul class="text-purple-600 text-sm space-y-1">
+                                            <li>• 1B参数：基础语言理解</li>
+                                            <li>• 10B参数：复杂推理萌芽</li>
+                                            <li>• 100B参数：强推理能力</li>
+                                            <li>• 1T参数：多模态融合</li>
+                                        </ul>
+                                    </div>
+                                    
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h4 class="font-semibold text-purple-700 mb-2">涌现现象</h4>
+                                        <ul class="text-purple-600 text-sm space-y-1">
+                                            <li>• 思维链推理</li>
+                                            <li>• 上下文学习</li>
+                                            <li>• 指令遵循</li>
+                                            <li>• 代码生成</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-200 mb-8">
+                            <h3 class="text-lg font-semibold text-indigo-800 mb-4">
+                                <i class="fas fa-lightbulb mr-2"></i>涌现能力示例
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-indigo-700 mb-2">思维链推理：</h4>
+                                    <div class="bg-white p-3 rounded border text-sm">
+                                        <p class="text-gray-600 mb-2"><strong>问题：</strong>小明有15个苹果，给了小红3个，又买了8个，现在有多少个？</p>
+                                        <p class="text-indigo-600"><strong>推理：</strong>让我一步步计算：<br>
+                                        1. 小明原有：15个苹果<br>
+                                        2. 给了小红：15 - 3 = 12个<br>
+                                        3. 又买了8个：12 + 8 = 20个<br>
+                                        <strong>答案：</strong>20个苹果</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-indigo-700 mb-2">上下文学习：</h4>
+                                    <div class="bg-white p-3 rounded border text-sm">
+                                        <p class="text-gray-600 mb-2"><strong>示例：</strong><br>
+                                        输入：happy → 快乐<br>
+                                        输入：sad → 悲伤<br>
+                                        输入：angry → ?</p>
+                                        <p class="text-indigo-600"><strong>输出：</strong>愤怒</p>
+                                        <p class="text-gray-500 text-xs">模型学会了英中翻译模式</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 模型局限性 -->
+                <section id="limitations" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-exclamation-triangle mr-3"></i>模型局限性与挑战
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            尽管大语言模型能力强大，但仍存在一些重要的局限性需要在实际应用中加以考虑。
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <!-- 幻觉问题 -->
+                            <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-red-800 mb-4">
+                                    <i class="fas fa-eye mr-2"></i>幻觉问题
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <h4 class="font-semibold text-red-700 text-sm mb-1">事实性幻觉</h4>
+                                        <p class="text-red-600 text-xs">编造不存在的事实、数据或引用</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-red-700 text-sm mb-1">忠实性幻觉</h4>
+                                        <p class="text-red-600 text-xs">与输入内容不一致的输出</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-red-700 text-sm mb-1">内在幻觉</h4>
+                                        <p class="text-red-600 text-xs">自相矛盾的陈述</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 知识局限 -->
+                            <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-orange-800 mb-4">
+                                    <i class="fas fa-calendar mr-2"></i>知识局限
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <h4 class="font-semibold text-orange-700 text-sm mb-1">时效性</h4>
+                                        <p class="text-orange-600 text-xs">训练数据截止时间限制</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-orange-700 text-sm mb-1">专业性</h4>
+                                        <p class="text-orange-600 text-xs">特定领域深度知识不足</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-orange-700 text-sm mb-1">个性化</h4>
+                                        <p class="text-orange-600 text-xs">缺乏用户特定信息</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 推理局限 -->
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                                <h3 class="text-lg font-semibold text-yellow-800 mb-4">
+                                    <i class="fas fa-brain mr-2"></i>推理局限
+                                </h3>
+                                <div class="space-y-3">
+                                    <div>
+                                        <h4 class="font-semibold text-yellow-700 text-sm mb-1">逻辑推理</h4>
+                                        <p class="text-yellow-600 text-xs">复杂逻辑链条容易出错</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-yellow-700 text-sm mb-1">数学计算</h4>
+                                        <p class="text-yellow-600 text-xs">精确计算能力有限</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-semibold text-yellow-700 text-sm mb-1">因果关系</h4>
+                                        <p class="text-yellow-600 text-xs">难以理解深层因果机制</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 border border-green-200 rounded-xl p-6 mb-8">
+                            <h3 class="text-lg font-semibold text-green-800 mb-4">
+                                <i class="fas fa-shield-alt mr-2"></i>缓解策略
+                            </h3>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 class="font-semibold text-green-700 mb-2">技术方案：</h4>
+                                    <ul class="text-green-600 space-y-1 text-sm">
+                                        <li>• <strong>RAG系统：</strong>检索增强生成</li>
+                                        <li>• <strong>工具调用：</strong>外部API集成</li>
+                                        <li>• <strong>多步推理：</strong>分解复杂问题</li>
+                                        <li>• <strong>验证机制：</strong>多模型交叉验证</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-green-700 mb-2">应用策略：</h4>
+                                    <ul class="text-green-600 space-y-1 text-sm">
+                                        <li>• <strong>人机协作：</strong>人工审核关键输出</li>
+                                        <li>• <strong>置信度评估：</strong>输出可信度评分</li>
+                                        <li>• <strong>领域微调：</strong>特定任务优化</li>
+                                        <li>• <strong>提示工程：</strong>精心设计输入</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 章节总结 -->
+                <section id="chapter-summary" class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">
+                        <i class="fas fa-bookmark mr-3"></i>章节总结
+                    </h2>
+                    
+                    <div class="prose max-w-none">
+                        <p class="text-lg leading-relaxed mb-6">
+                            本章全面介绍了大语言模型的基础知识，为理解现代智能体技术奠定了坚实基础。
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div class="bg-white p-6 rounded-xl border border-indigo-200">
+                                <h3 class="text-xl font-semibold text-indigo-800 mb-4">
+                                    <i class="fas fa-key mr-2"></i>核心要点
+                                </h3>
+                                <ul class="space-y-2 text-indigo-700">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>语言模型从N-gram到Transformer的演进历程</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>Transformer架构的核心机制与实现</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>提示工程与模型交互的最佳实践</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>文本分词技术对模型性能的影响</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-green-500 mr-2 mt-1 text-sm"></i>
+                                        <span>开源与闭源模型的选择策略</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-purple-200">
+                                <h3 class="text-xl font-semibold text-purple-800 mb-4">
+                                    <i class="fas fa-arrow-right mr-2"></i>下章预告
+                                </h3>
+                                <p class="text-purple-700 mb-4">
+                                    接下来我们将深入探讨如何将大语言模型应用于智能体开发，包括：
+                                </p>
+                                <ul class="space-y-2 text-purple-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-arrow-circle-right text-purple-400 mr-2 mt-1 text-sm"></i>
+                                        <span>智能体架构设计模式</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-arrow-circle-right text-purple-400 mr-2 mt-1 text-sm"></i>
+                                        <span>记忆系统与状态管理</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-arrow-circle-right text-purple-400 mr-2 mt-1 text-sm"></i>
+                                        <span>工具调用与外部集成</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-arrow-circle-right text-purple-400 mr-2 mt-1 text-sm"></i>
+                                        <span>多智能体协作机制</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>

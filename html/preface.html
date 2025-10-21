@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前言 - Hello-Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 自定义样式 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* 深色模式样式 */
+        .dark {
+            background-color: #0f172a !important;
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .bg-white {
+            background-color: #1e293b !important;
+        }
+        
+        .dark .bg-gray-50 {
+            background-color: #0f172a !important;
+        }
+        
+        .dark .text-gray-800 {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .text-gray-600 {
+            color: #94a3b8 !important;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #334155 !important;
+        }
+        
+        .dark .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2) !important;
+        }
+        
+        .dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3) !important;
+        }
+        
+        .dark .hover\\:bg-gray-100:hover {
+            background-color: #334155 !important;
+        }
+        
+        .dark .bg-blue-50 {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        .dark .border-blue-400 {
+            border-color: #3b82f6 !important;
+        }
+        
+        .dark .text-blue-400 {
+            color: #60a5fa !important;
+        }
+        
+        .dark .text-blue-800 {
+            color: #93c5fd !important;
+        }
+        
+        .dark .text-blue-700 {
+            color: #60a5fa !important;
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 100%) !important;
+        }
+        
+        /* 修复prose内容在深色模式下的显示 */
+        .dark .prose {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .prose p {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .prose strong {
+            color: #f1f5f9 !important;
+        }
+        
+        .dark .prose h2 {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .prose h3 {
+            color: #e2e8f0 !important;
+        }
+        
+        /* 修复所有文本颜色类 */
+        .dark .text-lg {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .text-purple-700 {
+            color: #c4b5fd !important;
+        }
+        
+        .dark .text-purple-800 {
+            color: #ddd6fe !important;
+        }
+        
+        .dark .text-green-700 {
+            color: #86efac !important;
+        }
+        
+        .dark .text-green-800 {
+            color: #bbf7d0 !important;
+        }
+        
+        .dark .text-orange-700 {
+            color: #fed7aa !important;
+        }
+        
+        .dark .text-orange-800 {
+            color: #ffedd5 !important;
+        }
+        
+        .dark .text-indigo-700 {
+            color: #c7d2fe !important;
+        }
+        
+        .dark .text-indigo-800 {
+            color: #e0e7ff !important;
+        }
+        
+        .dark .text-red-800 {
+            color: #fecaca !important;
+        }
+        
+        .dark .text-yellow-700 {
+            color: #fef3c7 !important;
+        }
+        
+        .dark .text-yellow-800 {
+            color: #fef9c3 !important;
+        }
+        
+        /* 修复渐变背景卡片 */
+        .dark .bg-gradient-to-br.from-purple-50.to-blue-50 {
+            background: linear-gradient(to bottom right, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1)) !important;
+        }
+        
+        .dark .bg-gradient-to-br.from-green-50.to-teal-50 {
+            background: linear-gradient(to bottom right, rgba(34, 197, 94, 0.1), rgba(20, 184, 166, 0.1)) !important;
+        }
+        
+        .dark .bg-gradient-to-br.from-orange-50.to-red-50 {
+            background: linear-gradient(to bottom right, rgba(249, 115, 22, 0.1), rgba(239, 68, 68, 0.1)) !important;
+        }
+        
+        .dark .bg-gradient-to-br.from-indigo-50.to-purple-50 {
+            background: linear-gradient(to bottom right, rgba(99, 102, 241, 0.1), rgba(168, 85, 247, 0.1)) !important;
+        }
+        
+        /* 修复特殊背景 */
+        .dark .bg-gradient-to-r.from-blue-50.to-purple-50 {
+            background: linear-gradient(to right, rgba(59, 130, 246, 0.1), rgba(168, 85, 247, 0.1)) !important;
+        }
+        
+        .dark .bg-yellow-50 {
+            background-color: rgba(245, 158, 11, 0.1) !important;
+        }
+        
+        /* 修复边框颜色 */
+        .dark .border-purple-200 {
+            border-color: rgba(139, 92, 246, 0.3) !important;
+        }
+        
+        .dark .border-green-200 {
+            border-color: rgba(34, 197, 94, 0.3) !important;
+        }
+        
+        .dark .border-orange-200 {
+            border-color: rgba(249, 115, 22, 0.3) !important;
+        }
+        
+        .dark .border-indigo-200 {
+            border-color: rgba(99, 102, 241, 0.3) !important;
+        }
+        
+        .dark .border-blue-200 {
+            border-color: rgba(59, 130, 246, 0.3) !important;
+        }
+        
+        .dark .border-yellow-400 {
+            border-color: rgba(245, 158, 11, 0.6) !important;
+        }
+        
+        /* 修复span标签颜色 */
+        .dark span {
+            color: #e2e8f0 !important;
+        }
+        
+        /* 修复ul li内容 */
+        .dark ul li span {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark ul li span strong {
+            color: #f1f5f9 !important;
+        }
+        
+        /* 修复标签（圈圈）的背景和文字颜色 */
+        .dark .bg-blue-100 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+        }
+        
+        .dark .bg-green-100 {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+        }
+        
+        .dark .bg-purple-100 {
+            background-color: rgba(139, 92, 246, 0.2) !important;
+        }
+        
+        .dark .bg-orange-100 {
+            background-color: rgba(249, 115, 22, 0.2) !important;
+        }
+        
+        .dark .bg-red-100 {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+        }
+        
+        /* 修复标签文字颜色 */
+        .dark .text-blue-600 {
+            color: #60a5fa !important;
+        }
+        
+        .dark .text-green-600 {
+            color: #4ade80 !important;
+        }
+        
+        .dark .text-purple-600 {
+            color: #a855f7 !important;
+        }
+        
+        .dark .text-orange-600 {
+            color: #fb923c !important;
+        }
+        
+        .dark .text-red-600 {
+            color: #f87171 !important;
+        }
+        
+        .dark .text-indigo-600 {
+            color: #818cf8 !important;
+        }
+        
+        /* 修复标签内的span文字 */
+        .dark .bg-blue-100.text-blue-800 {
+            background-color: rgba(59, 130, 246, 0.2) !important;
+            color: #93c5fd !important;
+        }
+        
+        .dark .bg-green-100.text-green-800 {
+            background-color: rgba(34, 197, 94, 0.2) !important;
+            color: #86efac !important;
+        }
+        
+        .dark .bg-purple-100.text-purple-800 {
+            background-color: rgba(139, 92, 246, 0.2) !important;
+            color: #c4b5fd !important;
+        }
+        
+        .dark .bg-orange-100.text-orange-800 {
+            background-color: rgba(249, 115, 22, 0.2) !important;
+            color: #fed7aa !important;
+        }
+        
+        .dark .bg-red-100.text-red-800 {
+            background-color: rgba(239, 68, 68, 0.2) !important;
+            color: #fca5a5 !important;
+        }
+        
+        /* 代码块样式 */
+        pre {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .dark pre {
+            background: #1e293b;
+            border-color: #334155;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        pre:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        
+        /* 返回顶部按钮 */
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 transition-colors duration-300">
+    <!-- 导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-robot text-2xl text-gradient"></i>
+                    <h1 class="text-xl font-bold text-gradient">Hello-Agents</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-gray-600"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="max-w-4xl mx-auto px-6 py-8">
+        <!-- 标题区域 -->
+        <div class="text-center mb-12 fade-in">
+            <div class="gradient-bg text-white rounded-2xl p-8 mb-8">
+                <h1 class="text-4xl font-bold mb-4">前言</h1>
+                <p class="text-xl opacity-90">Hello-Agents：构建智能体系统的完整指南</p>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+            <div class="prose max-w-none">
+                <p class="text-lg leading-relaxed mb-6">
+                    欢迎来到 <strong>Hello-Agents</strong> 的世界！这是一本专为想要深入理解和构建智能体系统的开发者、研究者和技术爱好者而写的书。
+                </p>
+
+                <p class="text-lg leading-relaxed mb-6">
+                    在人工智能快速发展的今天，我们正站在一个历史性的转折点上。大语言模型（LLM）的出现不仅仅是技术的进步，更是思维方式的革命。从传统的"输入-输出"模式，我们正在迈向一个更加智能、自主的"感知-思考-行动"的智能体时代。
+                </p>
+
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
+                    <div class="flex items-start">
+                        <i class="fas fa-lightbulb text-blue-400 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-blue-800 mb-2">什么是智能体？</h3>
+                            <p class="text-blue-700">
+                                智能体（Agent）是能够感知环境、做出决策并采取行动以实现特定目标的自主系统。与传统的软件程序不同，智能体具备学习、推理和适应的能力，能够在复杂多变的环境中独立工作。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-rocket mr-3"></i>从 LLM 到 Agent：一场思维的跃迁
+                </h2>
+
+                <p class="text-lg leading-relaxed mb-6">
+                    大语言模型的出现让我们看到了机器理解和生成自然语言的惊人能力。然而，仅仅拥有语言能力还不够。真正的智能需要的是：
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 my-8">
+                    <div class="bg-gradient-to-br from-purple-50 to-blue-50 p-6 rounded-xl border border-purple-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-eye text-purple-600 text-xl mr-3"></i>
+                            <h3 class="text-lg font-semibold text-purple-800">感知能力</h3>
+                        </div>
+                        <p class="text-purple-700">能够理解和解析来自环境的各种信息，包括文本、图像、音频等多模态数据。</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-teal-50 p-6 rounded-xl border border-green-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-brain text-green-600 text-xl mr-3"></i>
+                            <h3 class="text-lg font-semibold text-green-800">推理能力</h3>
+                        </div>
+                        <p class="text-green-700">能够基于已有信息进行逻辑推理、规划和决策，制定实现目标的策略。</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-orange-50 to-red-50 p-6 rounded-xl border border-orange-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-cogs text-orange-600 text-xl mr-3"></i>
+                            <h3 class="text-lg font-semibold text-orange-800">行动能力</h3>
+                        </div>
+                        <p class="text-orange-700">能够调用各种工具和API，与外部系统交互，将思考转化为具体的行动。</p>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-200">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-memory text-indigo-600 text-xl mr-3"></i>
+                            <h3 class="text-lg font-semibold text-indigo-800">记忆能力</h3>
+                        </div>
+                        <p class="text-indigo-700">能够存储和检索历史信息，从经验中学习，不断优化自己的行为。</p>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-book-open mr-3"></i>本书的结构与内容
+                </h2>
+
+                <p class="text-lg leading-relaxed mb-6">
+                    本书共分为五个部分，每个部分都有其独特的价值和作用：
+                </p>
+
+                <div class="space-y-6 my-8">
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-lift">
+                        <div class="flex items-start">
+                            <div class="bg-blue-100 text-blue-600 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 mt-1">1</div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-blue-800">基础篇：理论基础</h3>
+                                <p class="text-gray-700 mb-3">
+                                    从智能体的定义和发展历史开始，深入探讨大语言模型的核心原理，为后续的实践打下坚实的理论基础。
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">智能体概念</span>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">发展历史</span>
+                                    <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">LLM原理</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-lift">
+                        <div class="flex items-start">
+                            <div class="bg-green-100 text-green-600 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 mt-1">2</div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-green-800">单体篇：核心组件</h3>
+                                <p class="text-gray-700 mb-3">
+                                    详细介绍智能体的核心组件，包括记忆系统、工具使用、规划与推理等，每个组件都配有完整的代码实现。
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">记忆系统</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">工具使用</span>
+                                    <span class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm">规划推理</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-lift">
+                        <div class="flex items-start">
+                            <div class="bg-purple-100 text-purple-600 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 mt-1">3</div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-purple-800">进阶篇：高级技术</h3>
+                                <p class="text-gray-700 mb-3">
+                                    探索多智能体系统、强化学习、模型微调等高级技术，帮助读者构建更加复杂和强大的智能体系统。
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">多智能体</span>
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">强化学习</span>
+                                    <span class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm">模型微调</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-lift">
+                        <div class="flex items-start">
+                            <div class="bg-orange-100 text-orange-600 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 mt-1">4</div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-orange-800">实战篇：项目实践</h3>
+                                <p class="text-gray-700 mb-3">
+                                    通过多个完整的项目案例，展示如何将理论知识应用到实际场景中，包括代码助手、数据分析师等。
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">代码助手</span>
+                                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">数据分析</span>
+                                    <span class="bg-orange-100 text-orange-800 px-3 py-1 rounded-full text-sm">实际应用</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover-lift">
+                        <div class="flex items-start">
+                            <div class="bg-red-100 text-red-600 rounded-full w-10 h-10 flex items-center justify-center font-bold mr-4 mt-1">5</div>
+                            <div>
+                                <h3 class="text-xl font-semibold mb-2 text-red-800">展望篇：未来趋势</h3>
+                                <p class="text-gray-700 mb-3">
+                                    分析智能体技术的发展趋势，探讨面临的挑战和机遇，为读者指明未来的发展方向。
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">发展趋势</span>
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">技术挑战</span>
+                                    <span class="bg-red-100 text-red-800 px-3 py-1 rounded-full text-sm">未来展望</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-users mr-3"></i>适合的读者
+                </h2>
+
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
+                    <p class="text-lg leading-relaxed mb-4">
+                        本书适合以下读者群体：
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span><strong>软件开发者</strong>：希望了解和应用智能体技术的程序员</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span><strong>AI研究者</strong>：专注于人工智能和机器学习的研究人员</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span><strong>产品经理</strong>：需要理解AI技术以制定产品策略的管理者</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                            <span><strong>技术爱好者</strong>：对人工智能和智能体技术感兴趣的学习者</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <h2 class="text-2xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-compass mr-3"></i>如何使用本书
+                </h2>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-r-lg mb-8">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-yellow-500 text-xl mr-3 mt-1"></i>
+                        <div>
+                            <h3 class="text-lg font-semibold text-yellow-800 mb-2">学习建议</h3>
+                            <ul class="text-yellow-700 space-y-2">
+                                <li><strong>循序渐进</strong>：建议按章节顺序阅读，每个章节都为后续内容奠定基础</li>
+                                <li><strong>动手实践</strong>：书中的所有代码都可以运行，强烈建议边学边练</li>
+                                <li><strong>深入思考</strong>：每章末尾的思考题有助于加深理解</li>
+                                <li><strong>社区交流</strong>：加入我们的社区，与其他学习者交流心得</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 rounded-xl mb-8">
+                    <h2 class="text-2xl font-bold mb-4">
+                        <i class="fas fa-rocket mr-3"></i>开始你的智能体之旅
+                    </h2>
+                    <p class="text-lg mb-6">
+                        智能体技术正在重塑我们与计算机交互的方式。让我们一起探索这个充满无限可能的领域，构建属于未来的智能系统！
+                    </p>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 返回顶部按钮 -->
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script>
+        // 主题切换功能
+        const body = document.body;
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = themeToggle.querySelector('i');
+
+        // 初始化主题
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            body.classList.add('dark');
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark');
+
+            if (body.classList.contains('dark')) {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 返回顶部按钮
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTop.classList.add('show');
+            } else {
+                backToTop.classList.remove('show');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // 代码复制功能
+        document.querySelectorAll('pre').forEach(pre => {
+            const button = document.createElement('button');
+            button.className = 'copy-btn';
+            button.textContent = '复制';
+            button.addEventListener('click', () => {
+                const code = pre.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.textContent = '已复制';
+                    setTimeout(() => {
+                        button.textContent = '复制';
+                    }, 2000);
+                });
+            });
+            pre.appendChild(button);
+        });
+
+        // 图片懒加载和错误处理
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+            });
+        });
+
+        // 添加加载动画
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.fade-in').forEach((element, index) => {
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

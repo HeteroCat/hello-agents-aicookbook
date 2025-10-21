@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello-Agents 智能体学习平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e'
+                        },
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            300: '#d1d5db',
+                            400: '#9ca3af',
+                            500: '#6b7280',
+                            600: '#4b5563',
+                            700: '#374151',
+                            800: '#1f2937',
+                            900: '#111827'
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'float': 'float 3s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .dark .gradient-bg {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+        }
+        
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dark .hover-lift:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .status-completed {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+        
+        .status-progress {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+        
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 scroll-smooth">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center animate-float">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold">Hello-Agents</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i id="theme-icon" class="fas fa-moon"></i>
+                    </button>
+                    <a href="https://github.com/datawhalechina/Hello-Agents" target="_blank" 
+                       class="flex items-center space-x-2 px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors hover-lift">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="pt-16">
+        <!-- 英雄区域 -->
+        <section class="gradient-bg py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center text-white animate-fade-in">
+                <div class="mb-8">
+                    <div class="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2 mb-6">
+                        <i class="fas fa-robot"></i>
+                        <span class="text-sm font-medium">智能体学习平台</span>
+                    </div>
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+                        Hello-Agents
+                    </h1>
+                    <p class="text-xl md:text-2xl mb-8 opacity-90">
+                        🤖 动手学多智能体系统实战教程
+                    </p>
+                    <p class="text-lg opacity-80 max-w-2xl mx-auto">
+                        从基础理论到实际应用，全面掌握多智能体系统的设计与实现
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="scrollToSection('quick-start')" 
+                            class="px-8 py-3 bg-white text-primary-600 rounded-lg font-semibold hover:bg-gray-100 transition-colors hover-lift">
+                        <i class="fas fa-play mr-2"></i>
+                        立即开始
+                    </button>
+                    <button onclick="scrollToSection('content-nav')" 
+                            class="px-8 py-3 border-2 border-white text-white rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors hover-lift">
+                        <i class="fas fa-book mr-2"></i>
+                        查看目录
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 项目介绍 -->
+        <section class="py-16 px-4">
+            <div class="max-w-4xl mx-auto animate-slide-up">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-bullseye text-primary-500 mr-3"></i>
+                        项目介绍
+                    </h2>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg hover-lift">
+                    <div class="prose prose-lg max-w-none dark:prose-invert">
+                        <p class="text-lg leading-relaxed mb-6">
+                            如果说2024年是"百模大战"的元年，那么2025年无疑开启了"Agent元年"。技术的焦点正从训练更大的基础模型，转向构建更聪明的智能体应用。然而，当前系统性、重实践的教程却极度匮乏。为此，我们发起了 Hello-Agents 项目，希望能为社区提供一本从零开始、理论与实战并重的多智能体系统构建指南。
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            Hello-Agents 是一个系统性的智能体学习教程，旨在"授人以渔"。教程将带领你穿透框架表象，从智能体的核心原理出发，深入其核心架构，理解其经典范式，并最终亲手构建起属于自己的多智能体应用。我们相信，最好的学习方式就是动手实践。希望这本书能成为你探索智能体世界的起点，能够从一名 LLM 的"使用者"，蜕变为一名智能系统的"构建者"。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 快速开始 -->
+        <section id="quick-start" class="py-16 px-4 bg-gray-100 dark:bg-gray-800">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-rocket text-primary-500 mr-3"></i>
+                        快速开始
+                    </h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white dark:bg-gray-700 rounded-2xl p-8 shadow-lg hover-lift">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-globe text-primary-500 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4">在线阅读</h3>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                🌐 立即开始在线阅读 - 无需下载，随时随地学习
+                            </p>
+                            <a href="https://datawhalechina.github.io/hello-agents/#/" target="_blank" class="block w-full px-6 py-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors hover-lift text-center">
+                                开始在线阅读
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-700 rounded-2xl p-8 shadow-lg hover-lift">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-download text-green-500 text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-4">本地阅读</h3>
+                            <p class="text-gray-600 dark:text-gray-300 mb-6">
+                                如果您希望在本地阅读或贡献内容，请参考下方的学习指南
+                            </p>
+                            <a href="https://www.datawhale.cn/learn?learnPage=1&keywords=" target="_blank" class="block w-full px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors hover-lift text-center">
+                                下载到本地
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 你将收获什么 -->
+        <section class="py-16 px-4">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>
+                        你将收获什么？
+                    </h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-book text-blue-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">Datawhale 开源免费</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    完全免费学习本项目所有内容，与社区共同成长
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-search text-purple-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">理解核心原理</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    深入理解智能体（Agent）的构件、原则与经典范式
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-hammer text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">亲手实现</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    编码复现 ReAct、Plan-and-Solve 等经典智能体架构
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-tools text-orange-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">掌握高级技能</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    学习并应用上下文工程、RAG、工具使用等前沿技术
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-users text-red-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">构建多智能体</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    掌握多智能体协作、通信与评估的核心方法
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-rocket text-indigo-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">驱动真实案例</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    实战开发智能旅行助手、自动化研究员等综合项目
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 内容导航 -->
+        <section id="content-nav" class="py-16 px-4 bg-gray-100 dark:bg-gray-800">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-map text-primary-500 mr-3"></i>
+                        内容导航
+                    </h2>
+                </div>
+                
+                <div class="space-y-6">
+                    <!-- 前言 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-gray-100 dark:bg-gray-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-flag text-gray-600 dark:text-gray-300"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg">前言</h3>
+                                    <p class="text-gray-600 dark:text-gray-300">项目的缘起、背景及读者建议</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm font-medium">
+                                    <i class="fas fa-check mr-1"></i>
+                                    已完成
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第一部分 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg">
+                        <h3 class="font-bold text-xl mb-4 text-primary-600 dark:text-primary-400">
+                            第一部分：智能体与语言模型基础
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-sm">1</span>
+                                    <div>
+                                        <h4 class="font-semibold">第一章 初识智能体</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">智能体定义、类型、范式与应用</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-sm">2</span>
+                                    <div>
+                                        <h4 class="font-semibold">第二章 智能体发展史</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">从符号主义到 LLM 驱动的智能体演进</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-sm">3</span>
+                                    <div>
+                                        <h4 class="font-semibold">第三章 大语言模型基础</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Transformer、提示、主流LLM及其局限</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 第二部分 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg">
+                        <h3 class="font-bold text-xl mb-4 text-green-600 dark:text-green-400">
+                            第二部分：构建你的大语言模型智能体
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-sm">4</span>
+                                    <div>
+                                        <h4 class="font-semibold">第四章 智能体经典范式构建</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">手把手实现 ReAct、Plan-and-Solve、Reflection</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-sm">5</span>
+                                    <div>
+                                        <h4 class="font-semibold">第五章 基于低代码平台的智能体搭建</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">了解Coze、n8n等商业化低代码智能体平台使用</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-sm">6</span>
+                                    <div>
+                                        <h4 class="font-semibold">第六章 框架开发实践</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">AutoGen、AgentScope、LangGraph 等主流框架应用</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-600 rounded-lg hover-lift">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center text-green-600 dark:text-green-400 font-bold text-sm">7</span>
+                                    <div>
+                                        <h4 class="font-semibold">第七章 构建你的Agent框架</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">从0开始构建智能体框架</p>
+                                    </div>
+                                </div>
+                                <span class="status-completed text-white px-3 py-1 rounded-full text-sm">
+                                    <i class="fas fa-check mr-1"></i>
+                                    ✅
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 其他部分简化显示 -->
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg hover-lift">
+                            <h3 class="font-bold text-lg mb-2 text-purple-600 dark:text-purple-400">第三部分</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">高级知识扩展</p>
+                            <div class="text-xs text-gray-500">第8-12章</div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg hover-lift">
+                            <h3 class="font-bold text-lg mb-2 text-orange-600 dark:text-orange-400">第四部分</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">综合案例进阶</p>
+                            <div class="text-xs text-gray-500">第13-15章</div>
+                        </div>
+                        
+                        <div class="bg-white dark:bg-gray-700 rounded-2xl p-6 shadow-lg hover-lift">
+                            <h3 class="font-bold text-lg mb-2 text-red-600 dark:text-red-400">第五部分</h3>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-4">毕业设计及未来展望</p>
+                            <div class="text-xs text-gray-500">第16章</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 如何贡献 -->
+        <section class="py-16 px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-hands-helping text-primary-500 mr-3"></i>
+                        如何贡献
+                    </h2>
+                    <p class="text-lg text-gray-600 dark:text-gray-300">
+                        我们是一个开放的开源社区，欢迎任何形式的贡献！
+                    </p>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bug text-red-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">报告 Bug</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    发现内容或代码问题，请提交 Issue
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-lightbulb text-yellow-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">提出建议</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    对项目有好想法，欢迎发起讨论
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-edit text-green-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">完善内容</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    帮助改进教程，提交你的 Pull Request
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover-lift">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-share text-blue-500"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold mb-2">分享实践</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm">
+                                    在"社区贡献精选"中分享你的学习笔记和项目
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 致谢 -->
+        <section class="py-16 px-4 bg-gray-100 dark:bg-gray-800">
+            <div class="max-w-4xl mx-auto text-center">
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold mb-4 flex items-center justify-center">
+                        <i class="fas fa-heart text-red-500 mr-3"></i>
+                        致谢
+                    </h2>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-700 rounded-2xl p-8 shadow-lg mb-8">
+                    <h3 class="text-xl font-bold mb-6">核心贡献者</h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="text-center p-4">
+                            <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user text-primary-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold">陈思州</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">项目负责人 (Datawhale成员)</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user text-primary-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold">孙韬</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">项目负责人 (Datawhale成员)</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user text-primary-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold">姜舒凡</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">项目负责人 (Datawhale成员)</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-user text-primary-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-semibold">Jason</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">Agent开发工程师（Datawhale意向成员）</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <p class="text-lg mb-4">感谢所有为本项目做出贡献的开发者们 ❤️</p>
+                    <div class="flex justify-center items-center space-x-4">
+                        <a href="https://github.com/datawhalechina" target="_blank" class="bg-primary-500 text-white px-6 py-2 rounded-lg font-bold text-lg hover:bg-primary-600 transition-colors">
+                            <i class="fas fa-graduation-cap mr-2"></i>
+                            Datawhale
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-gray-900 text-white py-12 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-8">
+                <div class="flex items-center justify-center space-x-3 mb-4">
+                    <div class="w-8 h-8 bg-primary-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold">Hello-Agents</span>
+                </div>
+                <p class="text-gray-400">
+                    ⭐ 如果这个项目对你有帮助，请给我们一个 Star！
+                </p>
+            </div>
+            
+            <div class="border-t border-gray-800 pt-8">
+                <p class="text-sm text-gray-400">
+                    📜 本作品采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" 
+            class="fixed bottom-8 right-8 w-12 h-12 bg-primary-500 text-white rounded-full shadow-lg hover:bg-primary-600 transition-all duration-300 opacity-0 pointer-events-none hover-lift">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // 主题切换功能
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // 初始化主题
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add('dark');
+                themeIcon.className = 'fas fa-sun';
+            } else {
+                themeIcon.className = 'fas fa-moon';
+            }
+        }
+
+        // 平滑滚动到指定区域
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }
+
+        // 返回顶部功能
+        function initBackToTop() {
+            const backToTopBtn = document.getElementById('back-to-top');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.remove('opacity-0', 'pointer-events-none');
+                    backToTopBtn.classList.add('opacity-100');
+                } else {
+                    backToTopBtn.classList.add('opacity-0', 'pointer-events-none');
+                    backToTopBtn.classList.remove('opacity-100');
+                }
+            });
+            
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            initBackToTop();
+            
+            // 添加滚动动画
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-slide-up');
+                    }
+                });
+            }, observerOptions);
+            
+            // 观察所有需要动画的元素
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

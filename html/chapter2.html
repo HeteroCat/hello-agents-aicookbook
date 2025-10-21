@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二章 智能体发展史 - Hello Agent</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        
+        .code-block .keyword { color: #f472b6; }
+        .code-block .string { color: #34d399; }
+        .code-block .comment { color: #94a3b8; }
+        .code-block .function { color: #60a5fa; }
+        
+        /* Dark mode styles */
+        .dark {
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .dark .bg-white {
+            background-color: #1e293b !important;
+        }
+        
+        .dark .text-gray-900 {
+            color: #e2e8f0 !important;
+        }
+        
+        .dark .text-gray-700 {
+            color: #cbd5e1 !important;
+        }
+        
+        .dark .text-gray-600 {
+            color: #94a3b8 !important;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #374151 !important;
+        }
+        
+        .dark .bg-blue-50 {
+            background-color: #1e3a8a !important;
+        }
+        
+        .dark .text-blue-800 {
+            color: #93c5fd !important;
+        }
+        
+        .dark .text-blue-700 {
+            color: #bfdbfe !important;
+        }
+        
+        .dark .bg-gradient-to-r.from-blue-50.to-purple-50 {
+            background: linear-gradient(to right, #1e3a8a, #581c87) !important;
+        }
+        
+        .dark .border-blue-200 {
+            border-color: #1e40af !important;
+        }
+        
+        .dark .bg-indigo-50 {
+            background-color: #312e81 !important;
+        }
+        
+        .dark .text-indigo-800 {
+            color: #a5b4fc !important;
+        }
+        
+        .dark .text-indigo-700 {
+            color: #c7d2fe !important;
+        }
+        
+        .dark .border-indigo-400 {
+            border-color: #4338ca !important;
+        }
+        
+        .dark .bg-green-50 {
+            background-color: #14532d !important;
+        }
+        
+        .dark .text-green-800 {
+            color: #86efac !important;
+        }
+        
+        .dark .text-green-700 {
+            color: #bbf7d0 !important;
+        }
+        
+        .dark .border-green-400 {
+            border-color: #16a34a !important;
+        }
+        
+        .dark .bg-yellow-50 {
+            background-color: #713f12 !important;
+        }
+        
+        .dark .text-yellow-800 {
+            color: #fde047 !important;
+        }
+        
+        .dark .text-yellow-700 {
+            color: #facc15 !important;
+        }
+        
+        .dark .border-yellow-400 {
+            border-color: #ca8a04 !important;
+        }
+        
+        .dark .bg-red-50 {
+            background-color: #7f1d1d !important;
+        }
+        
+        .dark .text-red-800 {
+            color: #fca5a5 !important;
+        }
+        
+        .dark .text-red-700 {
+            color: #fecaca !important;
+        }
+        
+        .dark .border-red-200 {
+            border-color: #dc2626 !important;
+        }
+        
+        .dark .bg-purple-50 {
+            background-color: #581c87 !important;
+        }
+        
+        .dark .text-purple-800 {
+            color: #d8b4fe !important;
+        }
+        
+        .dark .text-purple-700 {
+            color: #e9d5ff !important;
+        }
+        
+        .dark .border-purple-200 {
+            border-color: #7c3aed !important;
+        }
+        
+        .dark .bg-orange-50 {
+            background-color: #9a3412 !important;
+        }
+        
+        .dark .text-orange-800 {
+            color: #fed7aa !important;
+        }
+        
+        .dark .text-orange-700 {
+            color: #fdba74 !important;
+        }
+        
+        .dark .border-orange-200 {
+            border-color: #ea580c !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 transition-colors duration-300">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-gradient">Hello Agent</h1>
+                    </div>
+                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                        <a href="#introduction" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-home mr-2"></i>概述
+                        </a>
+                        <a href="#symbolic-ai" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-cogs mr-2"></i>符号主义
+                        </a>
+                        <a href="#rule-based-chatbot" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-robot mr-2"></i>规则聊天机器人
+                        </a>
+                        <a href="#multi-agent" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-users mr-2"></i>多智能体
+                        </a>
+                        <a href="#learning-paradigms" class="text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium transition-colors">
+                            <i class="fas fa-graduation-cap mr-2"></i>学习范式
+                        </a>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-moon text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gradient mb-4">第二章 智能体发展史</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                从符号主义到现代AI：探索智能体技术的演进历程与核心思想
+            </p>
+        </div>
+
+        <div class="space-y-8">
+            <!-- 章节介绍 -->
+            <section id="introduction" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                <div class="prose max-w-none">
+                    <p class="text-lg leading-relaxed mb-6">
+                        为了深刻理解现代智能体为何呈现出如今的形态，以及其核心设计思想的由来，本章将回溯历史：从人工智能领域的古典时代出发，探寻最早的"智能"如何在逻辑与符号的规则体系中被定义；继而见证从单一、集中的智能模型到分布式、协作式智能思想的重大转折；最终理解"学习"范式如何彻底改变了智能体获取能力的方式，并催生出我们今天所见的现代智能体。
+                    </p>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-00.png" alt="AI智能体的演进阶梯" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.1 AI智能体的演进阶梯</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
+                        <p class="text-lg text-blue-800 font-semibold">
+                            如图2.1所示，<strong>每一个新范式的出现，都是为了解决上一代范式的核心"痛点"或根本局限。</strong> 而新的解决方案在带来能力飞跃的同时，也引入了新的、在当时难以克服的"局限"，而这又为下一代范式的诞生埋下了伏笔。理解这一"问题驱动"的迭代历程，能帮助我们更深刻地把握现代智能体技术选型背后的深层原因与历史必然性。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.1 基于符号与逻辑的早期智能体 -->
+            <section id="symbolic-ai" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                <h2 class="text-3xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-cogs mr-3"></i>2.1 基于符号与逻辑的早期智能体
+                </h2>
+                
+                <div class="prose max-w-none">
+                    <p class="text-lg leading-relaxed mb-6">
+                        人工智能领域的早期探索，深受数理逻辑和计算机科学基本原理的影响。在那个时代，研究者们普遍持有一种信念：人类的智能，尤其是逻辑推理能力，可以被形式化的符号体系所捕捉和复现。这一核心思想催生了人工智能的第一个重要范式——符号主义（Symbolicism），也被称为"逻辑AI"或"传统AI"。
+                    </p>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        在符号主义看来，智能行为的核心是基于一套明确规则对符号进行操作。因此，一个智能体可以被视为一个物理符号系统：它通过内部的符号来表示外部世界，并通过逻辑推理来规划行动。这个时代的智能体，其"智慧"完全来源于设计者预先编码的知识库和推理规则，而非通过自主学习获得。
+                    </p>
+
+                    <!-- 2.1.1 物理符号系统假说 -->
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.1.1 物理符号系统假说</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        符号主义时代的理论根据，是1976年由<strong>艾伦·纽厄尔（Allen Newell）</strong>和<strong>赫伯特·西蒙（Herbert A. Simon）</strong>共同提出的<strong>物理符号系统假说（Physical Symbol System Hypothesis, PSSH）</strong><sup>[1]</sup>。这两位图灵奖得主通过这一假说，为在计算机上实现通用人工智能提供了理论指导和判定标准。
+                    </p>
+
+                    <div class="bg-indigo-50 border-l-4 border-indigo-400 p-6 my-8 rounded-r-lg">
+                        <h4 class="text-lg font-semibold text-indigo-800 mb-3">该假说包含两个核心论断：</h4>
+                        <ol class="text-indigo-700 space-y-2 list-decimal list-inside">
+                            <li><strong>充分性论断</strong>：任何一个物理符号系统，都具备产生通用智能行为的充分手段。</li>
+                            <li><strong>必要性论断</strong>：任何一个能够展现通用智能行为的系统，其本质必然是一个物理符号系统。</li>
+                        </ol>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        这里的物理符号系统指的是一个能够在物理世界中存在的系统，它由一组可被区分的符号和一系列对这些符号进行操作的过程组成，其构成元素如图2.2所示。这些符号可以组合成更复杂的结构（例如表达式），而过程则可以创建、修改、复制和销毁这些符号结构。
+                    </p>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-0.png" alt="物理符号系统的构成元素" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.2 物理符号系统的构成元素</p>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 mb-8">
+                        <p class="text-lg text-purple-800 font-semibold text-center">
+                            简而言之，PSSH大胆地宣称：<strong>智能的本质，就是符号的计算与处理。</strong>
+                        </p>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        这个假说具有深远的影响。它将对人类心智这一模糊、复杂的哲学问题的研究，转化为了一个可以在计算机上进行工程化实现的具体问题。它为早期人工智能研究者注入了强大的信心，即只要我们能找到正确的方式来表示知识并设计出有效的推理算法，就一定能创造出与人类媲美的机器智能。整个符号主义时代的研究，从专家系统到自动规划，几乎都是在这一假说的指引下展开的。
+                    </p>
+
+                    <!-- 2.1.2 专家系统 -->
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.1.2 专家系统</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        在物理符号系统假说的指导下，符号主义时代最具代表性的成果是<strong>专家系统（Expert Systems）</strong>。专家系统是一类基于知识的程序，它们试图在特定领域内模拟人类专家的决策过程。这些系统将专家的知识编码为一系列"如果-那么"规则，并通过推理引擎来处理这些规则，从而为用户提供专业建议或解决方案。
+                    </p>
+
+                    <div class="bg-green-50 border-l-4 border-green-400 p-6 my-8 rounded-r-lg">
+                        <h4 class="text-lg font-semibold text-green-800 mb-3">专家系统的典型架构包括：</h4>
+                        <ul class="text-green-700 space-y-2 list-disc list-inside">
+                            <li><strong>知识库（Knowledge Base）</strong>：存储领域专家的知识，通常以规则的形式表示</li>
+                            <li><strong>推理引擎（Inference Engine）</strong>：负责根据知识库中的规则进行逻辑推理</li>
+                            <li><strong>工作内存（Working Memory）</strong>：存储当前问题的事实和中间推理结果</li>
+                            <li><strong>用户界面（User Interface）</strong>：与用户交互，获取输入并展示结果</li>
+                            <li><strong>解释模块（Explanation Module）</strong>：解释系统的推理过程和结论</li>
+                        </ul>
+                    </div>
+
+                    <!-- MYCIN系统 -->
+                    <h4 class="text-xl font-bold mb-4 text-indigo-700">MYCIN：医疗诊断的先驱</h4>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        <strong>MYCIN</strong>是专家系统历史上最著名的成功案例之一，由斯坦福大学的Edward Shortliffe在1970年代开发。MYCIN专门用于诊断血液感染疾病并推荐抗生素治疗方案。该系统包含了约600条启发式规则，这些规则是从医学专家的知识中提取出来的。
+                    </p>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-1.png" alt="MYCIN系统的架构" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.3 MYCIN系统的架构</p>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        MYCIN的一个重要创新是引入了<strong>不确定性推理</strong>。由于医学诊断往往涉及不完整或不确定的信息，MYCIN使用了一种称为"确定性因子"（Certainty Factor, CF）的方法来处理不确定性。每条规则都有一个CF值，表示该规则结论的可信度。
+                    </p>
+
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-200 mb-8">
+                        <h5 class="text-lg font-semibold text-blue-800 mb-3">MYCIN规则示例：</h5>
+                        <div class="bg-white p-4 rounded-lg border font-mono text-sm">
+                            <p class="text-blue-600 mb-2">IF:</p>
+                            <ul class="text-gray-700 ml-4 mb-4 space-y-1">
+                                <li>1) 感染是原发性菌血症，AND</li>
+                                <li>2) 感染部位是无菌的，AND</li>
+                                <li>3) 怀疑入口是胃肠道</li>
+                            </ul>
+                            <p class="text-blue-600 mb-2">THEN:</p>
+                            <p class="text-gray-700 ml-4">有0.7的确定性因子认为致病菌是肠道细菌</p>
+                        </div>
+                    </div>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-2.png" alt="MYCIN的推理过程示例" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.4 MYCIN的推理过程示例</p>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        MYCIN在测试中表现出色，其诊断准确率甚至超过了一些医学专家。然而，尽管技术上成功，MYCIN从未在实际临床环境中得到广泛应用，这主要是由于法律责任、医生接受度和系统维护等非技术因素。
+                    </p>
+
+                    <!-- SHRDLU系统 -->
+                    <h4 class="text-xl font-bold mb-4 text-indigo-700">SHRDLU：自然语言理解的里程碑</h4>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        另一个符号主义时代的重要成果是<strong>SHRDLU</strong>，由MIT的Terry Winograd在1968-1970年间开发。SHRDLU是一个能够理解自然语言指令并在虚拟"积木世界"中执行操作的程序。
+                    </p>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-3.png" alt="SHRDLU的积木世界界面" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.5 SHRDLU的积木世界界面</p>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        SHRDLU的"世界"由一个桌面和若干不同形状、大小、颜色的积木组成。用户可以用英语与系统对话，要求它移动积木、回答关于积木世界状态的问题，甚至进行一些抽象的推理。
+                    </p>
+
+                    <div class="bg-yellow-50 p-6 rounded-xl border border-yellow-400 mb-8">
+                        <h5 class="text-lg font-semibold text-yellow-800 mb-3">SHRDLU对话示例：</h5>
+                        <div class="space-y-3">
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
+                                <p class="text-blue-600 font-semibold">用户：</p>
+                                <p class="text-gray-700">"Pick up a big red block."</p>
+                            </div>
+                            <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                                <p class="text-green-600 font-semibold">SHRDLU：</p>
+                                <p class="text-gray-700">"OK." (执行动作)</p>
+                            </div>
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-400">
+                                <p class="text-blue-600 font-semibold">用户：</p>
+                                <p class="text-gray-700">"Grasp the pyramid."</p>
+                            </div>
+                            <div class="bg-white p-3 rounded border-l-4 border-green-400">
+                                <p class="text-green-600 font-semibold">SHRDLU：</p>
+                                <p class="text-gray-700">"I don't understand which pyramid you mean."</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        SHRDLU的成功在于它将语言理解、知识表示、推理和行动规划巧妙地结合在一个统一的符号系统中。它能够：
+                    </p>
+
+                    <ul class="text-lg leading-relaxed mb-6 space-y-2 list-disc list-inside ml-6">
+                        <li>解析复杂的英语句子并理解其含义</li>
+                        <li>维护对积木世界当前状态的内部表示</li>
+                        <li>规划实现目标所需的动作序列</li>
+                        <li>处理指代消解（如"它"、"那个"等代词）</li>
+                        <li>回答关于过去动作和当前状态的问题</li>
+                    </ul>
+
+                    <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
+                         <p class="text-lg text-green-800 font-semibold text-center">
+                             多智能体思想的提出，<strong>为现代AI系统的分布式架构和协作机制奠定了重要的理论基础</strong>，其影响一直延续到今天的大型AI系统设计中。
+                         </p>
+                     </div>
+                 </div>
+             </section>
+
+             <!-- 2.4 学习范式的革命：从规则到数据驱动 -->
+             <section id="learning-paradigms" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                 <h2 class="text-3xl font-bold mb-6 text-gradient">
+                     <i class="fas fa-graduation-cap mr-3"></i>2.4 学习范式的革命：从规则到数据驱动
+                 </h2>
+                 
+                 <div class="prose max-w-none">
+                     <p class="text-lg leading-relaxed mb-6">
+                         如果说多智能体思想解决了智能系统的<strong>架构问题</strong>，那么学习范式的革命则解决了更为根本的<strong>知识获取问题</strong>。传统符号主义依赖人工编码的规则和知识，而新兴的学习范式让机器能够从数据中自动获取知识和能力。
+                     </p>
+
+                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.1 从规则编程到机器学习</h3>
+                     
+                     <p class="text-lg leading-relaxed mb-6">
+                         传统的符号主义AI面临的最大挑战之一就是<strong>知识获取瓶颈</strong>。将人类专家的知识转化为机器可理解的规则是一个极其困难和耗时的过程。而机器学习的出现，为这一问题提供了全新的解决方案。
+                     </p>
+
+                     <div class="grid md:grid-cols-2 gap-8 mb-8">
+                         <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                             <h4 class="text-xl font-bold text-red-800 mb-4">
+                                 <i class="fas fa-code mr-2"></i>传统规则编程
+                             </h4>
+                             <ul class="text-red-700 space-y-3">
+                                 <li><strong>知识来源</strong>：人类专家的经验和直觉</li>
+                                 <li><strong>表示方式</strong>：显式的if-then规则</li>
+                                 <li><strong>获取方式</strong>：知识工程师手工编码</li>
+                                 <li><strong>更新机制</strong>：人工修改和维护</li>
+                                 <li><strong>适应性</strong>：静态，难以适应新情况</li>
+                             </ul>
+                         </div>
+
+                         <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+                             <h4 class="text-xl font-bold text-green-800 mb-4">
+                                 <i class="fas fa-brain mr-2"></i>机器学习范式
+                             </h4>
+                             <ul class="text-green-700 space-y-3">
+                                 <li><strong>知识来源</strong>：大量的训练数据</li>
+                                 <li><strong>表示方式</strong>：隐式的模型参数</li>
+                                 <li><strong>获取方式</strong>：算法自动学习</li>
+                                 <li><strong>更新机制</strong>：持续学习和优化</li>
+                                 <li><strong>适应性</strong>：动态，能适应新数据</li>
+                             </ul>
+                         </div>
+                     </div>
+
+                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.2 强化学习：智能体的自主学习</h3>
+                     
+                     <p class="text-lg leading-relaxed mb-6">
+                         在各种机器学习方法中，<strong>强化学习（Reinforcement Learning, RL）</strong>对智能体发展的影响最为深远。强化学习让智能体能够通过与环境的交互来学习最优策略，这种学习方式更接近人类和动物的学习过程。
+                     </p>
+
+                     <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
+                         <h4 class="text-lg font-semibold text-blue-800 mb-3">强化学习的核心要素：</h4>
+                         <div class="grid md:grid-cols-2 gap-6">
+                             <div>
+                                 <h5 class="font-semibold text-blue-700 mb-2">基本组件：</h5>
+                                 <ul class="text-blue-600 space-y-1 text-sm">
+                                     <li>• <strong>智能体（Agent）</strong>：学习和决策的主体</li>
+                                     <li>• <strong>环境（Environment）</strong>：智能体所处的外部世界</li>
+                                     <li>• <strong>状态（State）</strong>：环境的当前情况描述</li>
+                                     <li>• <strong>动作（Action）</strong>：智能体可执行的操作</li>
+                                     <li>• <strong>奖励（Reward）</strong>：环境给予的反馈信号</li>
+                                 </ul>
+                             </div>
+                             <div>
+                                 <h5 class="font-semibold text-blue-700 mb-2">学习目标：</h5>
+                                 <ul class="text-blue-600 space-y-1 text-sm">
+                                     <li>• <strong>策略优化</strong>：找到最优的行动策略</li>
+                                     <li>• <strong>价值估计</strong>：评估状态和动作的价值</li>
+                                     <li>• <strong>探索与利用</strong>：平衡尝试新动作和利用已知知识</li>
+                                     <li>• <strong>长期回报</strong>：最大化累积奖励</li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="text-center my-8">
+                         <img src="../docs/images/2-figures/1757246501849-5.png" alt="强化学习的交互循环" class="mx-auto rounded-lg shadow-md max-w-full">
+                         <p class="text-sm text-gray-600 mt-2">图 2.7 强化学习中智能体与环境的交互循环</p>
+                     </div>
+
+                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.3 深度学习的突破</h3>
+                     
+                     <p class="text-lg leading-relaxed mb-6">
+                         2010年代，深度学习的兴起为AI带来了革命性的变化。深度神经网络强大的表示学习能力，让机器能够从原始数据中自动提取有用的特征，这极大地扩展了机器学习的应用范围。
+                     </p>
+
+                     <div class="grid md:grid-cols-3 gap-6 mb-8">
+                         <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
+                             <div class="text-center mb-4">
+                                 <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                     <i class="fas fa-eye text-white text-2xl"></i>
+                                 </div>
+                                 <h4 class="text-lg font-bold text-purple-800">计算机视觉</h4>
+                             </div>
+                             <p class="text-purple-700 text-sm text-center">
+                                 卷积神经网络（CNN）在图像识别、目标检测等任务上取得突破性进展
+                             </p>
+                         </div>
+
+                         <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6">
+                             <div class="text-center mb-4">
+                                 <div class="w-16 h-16 bg-indigo-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                     <i class="fas fa-comments text-white text-2xl"></i>
+                                 </div>
+                                 <h4 class="text-lg font-bold text-indigo-800">自然语言处理</h4>
+                             </div>
+                             <p class="text-indigo-700 text-sm text-center">
+                                 循环神经网络（RNN）和Transformer架构推动了语言理解的重大进步
+                             </p>
+                         </div>
+
+                         <div class="bg-teal-50 border border-teal-200 rounded-xl p-6">
+                             <div class="text-center mb-4">
+                                 <div class="w-16 h-16 bg-teal-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                                     <i class="fas fa-gamepad text-white text-2xl"></i>
+                                 </div>
+                                 <h4 class="text-lg font-bold text-teal-800">游戏AI</h4>
+                             </div>
+                             <p class="text-teal-700 text-sm text-center">
+                                 深度强化学习在围棋、电子游戏等复杂决策任务中展现超人表现
+                             </p>
+                         </div>
+                     </div>
+
+                     <h3 class="text-2xl font-bold mb-4 text-purple-700">2.4.4 大语言模型的涌现</h3>
+                     
+                     <p class="text-lg leading-relaxed mb-6">
+                         2017年Transformer架构的提出，以及随后大语言模型（LLM）的发展，标志着AI进入了一个全新的时代。预训练-微调范式的成功，展示了从大规模无标注数据中学习通用知识的巨大潜力。
+                     </p>
+
+                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200 mb-8">
+                         <h4 class="text-lg font-semibold text-amber-800 mb-4">
+                             <i class="fas fa-rocket mr-2"></i>预训练-微调范式的革命性意义
+                         </h4>
+                         <div class="grid md:grid-cols-2 gap-6">
+                             <div>
+                                 <h5 class="font-semibold text-amber-700 mb-3">预训练阶段：</h5>
+                                 <ul class="text-amber-600 space-y-2 text-sm">
+                                     <li>• 使用大规模无标注文本数据</li>
+                                     <li>• 学习语言的通用表示和模式</li>
+                                     <li>• 掌握语法、语义和常识知识</li>
+                                     <li>• 形成强大的语言理解基础</li>
+                                 </ul>
+                             </div>
+                             <div>
+                                 <h5 class="font-semibold text-amber-700 mb-3">微调阶段：</h5>
+                                 <ul class="text-amber-600 space-y-2 text-sm">
+                                     <li>• 使用特定任务的少量标注数据</li>
+                                     <li>• 快速适应具体的应用场景</li>
+                                     <li>• 优化特定任务的性能表现</li>
+                                     <li>• 实现高效的知识迁移</li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200 mb-8">
+                         <h4 class="text-lg font-semibold text-purple-800 mb-3">
+                             <i class="fas fa-star mr-2"></i>大语言模型的涌现能力
+                         </h4>
+                         <p class="text-purple-700 mb-4">
+                             当模型规模达到一定程度时，会出现一些在小模型中不存在的能力，这些被称为"涌现能力"：
+                         </p>
+                         <div class="grid md:grid-cols-2 gap-4">
+                             <div class="bg-white p-4 rounded-lg border border-purple-200">
+                                 <h5 class="font-semibold text-purple-800 mb-2">上下文学习</h5>
+                                 <p class="text-purple-700 text-sm">仅通过少量示例就能学会新任务，无需参数更新</p>
+                             </div>
+                             <div class="bg-white p-4 rounded-lg border border-purple-200">
+                                 <h5 class="font-semibold text-purple-800 mb-2">思维链推理</h5>
+                                 <p class="text-purple-700 text-sm">能够进行逐步推理，解决复杂的逻辑问题</p>
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="text-center my-8">
+                         <img src="../docs/images/2-figures/1757246501849-6.png" alt="大语言模型的发展历程" class="mx-auto rounded-lg shadow-md max-w-full">
+                         <p class="text-sm text-gray-600 mt-2">图 2.8 大语言模型的发展历程和能力演进</p>
+                     </div>
+
+                     <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
+                         <p class="text-lg text-blue-800 font-semibold text-center">
+                             学习范式的革命，<strong>从根本上改变了智能体获取能力的方式</strong>，为现代AI系统的强大能力奠定了基础。
+                         </p>
+                     </div>
+                 </div>
+             </section>
+
+             <!-- 章节总结 -->
+             <section id="chapter-summary" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                 <h2 class="text-3xl font-bold mb-6 text-gradient">
+                     <i class="fas fa-bookmark mr-3"></i>章节总结
+                 </h2>
+                 
+                 <div class="prose max-w-none">
+                     <p class="text-lg leading-relaxed mb-6">
+                         本章回顾了智能体技术从符号主义到现代AI系统的发展历程。我们见证了三次重大的范式转变，每一次都解决了前一代技术的核心局限，同时为智能体的发展开辟了新的道路。
+                     </p>
+
+                     <div class="grid md:grid-cols-3 gap-6 mb-8">
+                         <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-200">
+                             <h3 class="text-lg font-semibold text-blue-800 mb-3">
+                                 <i class="fas fa-cogs mr-2"></i>符号主义时代
+                             </h3>
+                             <ul class="text-blue-700 space-y-2 text-sm">
+                                 <li>• 建立了AI的理论基础</li>
+                                 <li>• 展示了逻辑推理的可能性</li>
+                                 <li>• 暴露了知识获取的瓶颈</li>
+                                 <li>• 为后续发展提供了重要启示</li>
+                             </ul>
+                         </div>
+
+                         <div class="bg-gradient-to-br from-green-50 to-emerald-50 p-6 rounded-xl border border-green-200">
+                             <h3 class="text-lg font-semibold text-green-800 mb-3">
+                                 <i class="fas fa-users mr-2"></i>多智能体思想
+                             </h3>
+                             <ul class="text-green-700 space-y-2 text-sm">
+                                 <li>• 提出了分布式智能的概念</li>
+                                 <li>• 强调了协作和专业化</li>
+                                 <li>• 影响了现代系统架构设计</li>
+                                 <li>• 为可扩展性提供了解决方案</li>
+                             </ul>
+                         </div>
+
+                         <div class="bg-gradient-to-br from-purple-50 to-pink-50 p-6 rounded-xl border border-purple-200">
+                             <h3 class="text-lg font-semibold text-purple-800 mb-3">
+                                 <i class="fas fa-graduation-cap mr-2"></i>学习范式革命
+                             </h3>
+                             <ul class="text-purple-700 space-y-2 text-sm">
+                                 <li>• 解决了知识获取的根本问题</li>
+                                 <li>• 实现了从数据到智能的转化</li>
+                                 <li>• 催生了现代AI的强大能力</li>
+                                 <li>• 开启了通用人工智能的可能</li>
+                             </ul>
+                         </div>
+                     </div>
+
+                     <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-8 rounded-xl text-center mb-8">
+                         <h3 class="text-2xl font-bold mb-4">
+                             <i class="fas fa-lightbulb mr-3"></i>核心洞察
+                         </h3>
+                         <div class="grid md:grid-cols-2 gap-6 text-left">
+                             <div>
+                                 <h4 class="font-semibold mb-2">技术演进规律：</h4>
+                                 <ul class="space-y-1 text-sm">
+                                     <li>• 每个新范式都解决了前代的核心痛点</li>
+                                     <li>• 技术发展遵循"问题驱动"的迭代模式</li>
+                                     <li>• 突破往往来自跨学科的思想融合</li>
+                                 </ul>
+                             </div>
+                             <div>
+                                 <h4 class="font-semibold mb-2">设计原则启示：</h4>
+                                 <ul class="space-y-1 text-sm">
+                                     <li>• 智能是涌现的而非完全设计的</li>
+                                     <li>• 学习能力比预编程规则更重要</li>
+                                     <li>• 适应性是智能系统的核心特征</li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+
+                     <div class="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
+                         <h3 class="text-xl font-bold text-amber-800 mb-4 text-center">
+                             <i class="fas fa-arrow-right mr-2"></i>展望未来
+                         </h3>
+                         <p class="text-amber-700 text-center">
+                             理解智能体发展的历史脉络，有助于我们更好地把握技术发展的趋势，
+                             并为构建下一代智能体系统提供重要的理论指导和实践启示。
+                             在接下来的章节中，我们将深入探讨现代智能体的核心技术和实现方法。
+                         </p>
+                     </div>
+                 </div>
+             </section>
+         </div>
+     </main>
+
+     <script>
+         // 主题切换功能
+         const themeToggle = document.getElementById('theme-toggle');
+         const body = document.body;
+         const themeIcon = themeToggle.querySelector('i');
+
+         // 检查系统主题偏好
+         const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+         const savedTheme = localStorage.getItem('theme');
+         
+         // 初始化主题
+         if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+             body.classList.add('dark');
+             themeIcon.classList.remove('fa-moon');
+             themeIcon.classList.add('fa-sun');
+         }
+
+         themeToggle.addEventListener('click', () => {
+             body.classList.toggle('dark');
+             
+             if (body.classList.contains('dark')) {
+                 themeIcon.classList.remove('fa-moon');
+                 themeIcon.classList.add('fa-sun');
+                 localStorage.setItem('theme', 'dark');
+             } else {
+                 themeIcon.classList.remove('fa-sun');
+                 themeIcon.classList.add('fa-moon');
+                 localStorage.setItem('theme', 'light');
+             }
+         });
+
+         // 平滑滚动到锚点
+         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+             anchor.addEventListener('click', function (e) {
+                 e.preventDefault();
+                 const target = document.querySelector(this.getAttribute('href'));
+                 if (target) {
+                     target.scrollIntoView({
+                         behavior: 'smooth',
+                         block: 'start'
+                     });
+                 }
+             });
+         });
+
+         // 添加页面加载动画
+         window.addEventListener('load', () => {
+             document.querySelectorAll('.fade-in').forEach((element, index) => {
+                 setTimeout(() => {
+                     element.style.opacity = '1';
+                     element.style.transform = 'translateY(0)';
+                 }, index * 100);
+             });
+         });
+
+         // 监听系统主题变化
+         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+             if (!localStorage.getItem('theme')) {
+                 if (e.matches) {
+                     body.classList.add('dark');
+                     themeIcon.classList.remove('fa-moon');
+                     themeIcon.classList.add('fa-sun');
+                 } else {
+                     body.classList.remove('dark');
+                     themeIcon.classList.remove('fa-sun');
+                     themeIcon.classList.add('fa-moon');
+                 }
+             }
+         });
+
+         // 代码复制功能
+         document.querySelectorAll('.code-block').forEach(codeBlock => {
+             const button = document.createElement('button');
+             button.className = 'absolute top-2 right-2 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm transition-colors opacity-0 group-hover:opacity-100';
+             button.textContent = '复制代码';
+             button.addEventListener('click', () => {
+                 const code = codeBlock.querySelector('code').textContent;
+                 navigator.clipboard.writeText(code).then(() => {
+                     button.textContent = '已复制!';
+                     button.classList.add('bg-green-500');
+                     setTimeout(() => {
+                         button.textContent = '复制代码';
+                         button.classList.remove('bg-green-500');
+                     }, 2000);
+                 });
+             });
+             codeBlock.style.position = 'relative';
+             codeBlock.classList.add('group');
+             codeBlock.appendChild(button);
+         });
+
+         // 图片懒加载和错误处理
+         document.querySelectorAll('img').forEach(img => {
+             img.addEventListener('load', function() {
+                 this.style.opacity = '1';
+             });
+             
+             img.addEventListener('error', function() {
+                 this.style.display = 'none';
+                 const placeholder = document.createElement('div');
+                 placeholder.className = 'bg-gray-200 dark:bg-gray-700 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400';
+                 placeholder.innerHTML = '<i class="fas fa-image text-4xl mb-2"></i><br>图片加载失败';
+                 this.parentNode.insertBefore(placeholder, this);
+             });
+         });
+     </script>
+ </body>
+ </html>
+                            SHRDLU被认为是早期人工智能的一个重大成就，它展示了符号主义方法在受限领域内的强大能力。
+                        </p>
+                    </div>
+
+                    <!-- 2.1.3 符号主义面临的根本挑战 -->
+                    <h3 class="text-2xl font-bold mb-6 text-purple-700">2.1.3 符号主义面临的根本挑战</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        尽管符号主义在特定领域取得了显著成功，但随着研究的深入，这一范式的根本局限性逐渐显现。这些挑战不仅是技术层面的，更是认知和哲学层面的，它们最终导致了AI研究重心的转移。
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-database text-white text-xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-red-800">知识获取瓶颈</h4>
+                            </div>
+                            <p class="text-red-700 leading-relaxed">
+                                将人类专家的隐性知识转化为明确的规则极其困难。专家往往无法完全表达他们的决策过程，而知识工程师也难以捕捉所有相关的细节和例外情况。
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-lightbulb text-white text-xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-orange-800">常识问题</h4>
+                            </div>
+                            <p class="text-orange-700 leading-relaxed">
+                                人类拥有大量的常识知识，这些知识通常是隐含的、难以形式化的。要让机器具备人类水平的智能，需要编码数百万条常识规则，这在实践中几乎不可能实现。
+                            </p>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-frame text-white text-xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-yellow-800">框架问题</h4>
+                            </div>
+                            <p class="text-yellow-700 leading-relaxed">
+                                在动态环境中，系统需要确定哪些事实在行动后保持不变，哪些会发生变化。这个看似简单的问题在复杂环境中变得极其困难，需要大量的计算资源。
+                            </p>
+                        </div>
+
+                        <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-exclamation-triangle text-white text-xl"></i>
+                                </div>
+                                <h4 class="text-xl font-bold text-purple-800">系统脆弱性</h4>
+                            </div>
+                            <p class="text-purple-700 leading-relaxed">
+                                符号系统往往缺乏鲁棒性，面对超出预设规则范围的情况时容易失效。它们无法优雅地处理不完整、不确定或矛盾的信息。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-xl border border-red-200 mb-8">
+                        <p class="text-lg text-red-800 font-semibold text-center">
+                            这些根本性挑战表明，<strong>纯粹的符号操作可能不足以实现真正的通用人工智能</strong>，从而为后续范式的出现奠定了基础。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.2 构建一个规则驱动的聊天机器人 -->
+            <section id="rule-based-chatbot" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                <h2 class="text-3xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-robot mr-3"></i>2.2 构建一个规则驱动的聊天机器人
+                </h2>
+                
+                <div class="prose max-w-none">
+                    <p class="text-lg leading-relaxed mb-6">
+                        为了更好地理解符号主义时代智能体的工作原理，让我们通过构建一个简单的规则驱动聊天机器人来体验这一范式的核心思想。我们将以著名的<strong>ELIZA</strong>程序为灵感，实现一个基于模式匹配和文本替换的对话系统。
+                    </p>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.1 ELIZA的设计原理</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        ELIZA由MIT的Joseph Weizenbaum在1964-1966年间开发，是历史上第一个能够进行自然语言对话的计算机程序。ELIZA的核心思想极其简单却又巧妙：通过<strong>模式匹配</strong>和<strong>文本替换</strong>来模拟心理治疗师的对话风格。
+                    </p>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-400 p-6 my-8 rounded-r-lg">
+                        <h4 class="text-lg font-semibold text-blue-800 mb-3">ELIZA的工作原理：</h4>
+                        <ol class="text-blue-700 space-y-2 list-decimal list-inside">
+                            <li><strong>模式识别</strong>：在用户输入中寻找预定义的关键词或模式</li>
+                            <li><strong>文本转换</strong>：根据匹配的模式，应用相应的转换规则</li>
+                            <li><strong>回应生成</strong>：生成看似理解用户意图的回应</li>
+                            <li><strong>代词转换</strong>：将"我"转换为"你"，"我的"转换为"你的"等</li>
+                        </ol>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.2 Python实现</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        下面我们用Python来实现一个简化版的ELIZA系统：
+                    </p>
+
+                    <div class="code-block mb-8">
+<pre><code><span class="comment"># ELIZA聊天机器人实现</span>
+<span class="keyword">import</span> re
+<span class="keyword">import</span> random
+
+<span class="comment"># 定义模式匹配规则</span>
+rules = {
+    <span class="string">r'.*我需要(.*).*'</span>: [
+        <span class="string">'为什么你需要{0}？'</span>,
+        <span class="string">'你真的需要{0}吗？'</span>,
+        <span class="string">'如果你得到了{0}会怎样？'</span>
+    ],
+    <span class="string">r'.*我感到(.*).*'</span>: [
+        <span class="string">'告诉我更多关于这种{0}的感觉。'</span>,
+        <span class="string">'你经常感到{0}吗？'</span>,
+        <span class="string">'什么时候你会感到{0}？'</span>
+    ],
+    <span class="string">r'.*我的(.*).*'</span>: [
+        <span class="string">'你的{0}对你很重要吗？'</span>,
+        <span class="string">'告诉我更多关于你的{0}。'</span>,
+        <span class="string">'你的{0}怎么了？'</span>
+    ],
+    <span class="string">r'.*我是(.*).*'</span>: [
+        <span class="string">'你为什么认为你是{0}？'</span>,
+        <span class="string">'做{0}让你感觉如何？'</span>,
+        <span class="string">'你想成为{0}吗？'</span>
+    ],
+    <span class="string">r'.*因为(.*).*'</span>: [
+        <span class="string">'这是真正的原因吗？'</span>,
+        <span class="string">'还有其他原因吗？'</span>,
+        <span class="string">'这个原因对你意味着什么？'</span>
+    ]
+}
+
+<span class="comment"># 代词转换字典</span>
+pronoun_swap = {
+    <span class="string">'我'</span>: <span class="string">'你'</span>,
+    <span class="string">'我的'</span>: <span class="string">'你的'</span>,
+    <span class="string">'你'</span>: <span class="string">'我'</span>,
+    <span class="string">'你的'</span>: <span class="string">'我的'</span>,
+    <span class="string">'我们'</span>: <span class="string">'你们'</span>,
+    <span class="string">'我们的'</span>: <span class="string">'你们的'</span>
+}
+
+<span class="keyword">def</span> <span class="function">swap_pronouns</span>(text):
+    <span class="string">"""转换代词"""</span>
+    <span class="keyword">for</span> original, replacement <span class="keyword">in</span> pronoun_swap.items():
+        text = text.replace(original, replacement)
+    <span class="keyword">return</span> text
+
+<span class="keyword">def</span> <span class="function">respond</span>(user_input):
+    <span class="string">"""生成回应"""</span>
+    user_input = user_input.strip().lower()
+    
+    <span class="comment"># 遍历所有规则</span>
+    <span class="keyword">for</span> pattern, responses <span class="keyword">in</span> rules.items():
+        match = re.match(pattern, user_input)
+        <span class="keyword">if</span> match:
+            <span class="comment"># 提取匹配的组</span>
+            groups = match.groups()
+            <span class="comment"># 转换代词</span>
+            processed_groups = [swap_pronouns(group) <span class="keyword">for</span> group <span class="keyword">in</span> groups]
+            <span class="comment"># 随机选择一个回应模板</span>
+            response_template = random.choice(responses)
+            <span class="comment"># 格式化回应</span>
+            <span class="keyword">return</span> response_template.format(*processed_groups)
+    
+    <span class="comment"># 默认回应</span>
+    default_responses = [
+        <span class="string">'请告诉我更多。'</span>,
+        <span class="string">'我理解。'</span>,
+        <span class="string">'继续说下去。'</span>,
+        <span class="string">'这很有趣，请继续。'</span>,
+        <span class="string">'你能详细说明一下吗？'</span>
+    ]
+    <span class="keyword">return</span> random.choice(default_responses)
+
+<span class="comment"># 主对话循环</span>
+<span class="keyword">def</span> <span class="function">main</span>():
+    print(<span class="string">"ELIZA: 你好，我是ELIZA。请告诉我你的问题。"</span>)
+    print(<span class="string">"(输入'退出'结束对话)"</span>)
+    
+    <span class="keyword">while</span> <span class="keyword">True</span>:
+        user_input = input(<span class="string">"\n你: "</span>)
+        
+        <span class="keyword">if</span> user_input.lower() <span class="keyword">in</span> [<span class="string">'退出'</span>, <span class="string">'再见'</span>, <span class="string">'bye'</span>]:
+            print(<span class="string">"ELIZA: 再见，希望我们的对话对你有帮助。"</span>)
+            <span class="keyword">break</span>
+        
+        response = respond(user_input)
+        print(<span class="string">f"ELIZA: {response}"</span>)
+
+<span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:
+    main()
+</code></pre>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.3 运行示例</h3>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl border mb-8">
+                        <h5 class="text-lg font-semibold text-gray-800 mb-3">对话示例：</h5>
+                        <div class="space-y-2 font-mono text-sm">
+                            <p><span class="text-blue-600">ELIZA:</span> 你好，我是ELIZA。请告诉我你的问题。</p>
+                            <p><span class="text-green-600">你:</span> 我感到很焦虑</p>
+                            <p><span class="text-blue-600">ELIZA:</span> 告诉我更多关于这种焦虑的感觉。</p>
+                            <p><span class="text-green-600">你:</span> 我需要找到一份工作</p>
+                            <p><span class="text-blue-600">ELIZA:</span> 为什么你需要找到一份工作？</p>
+                            <p><span class="text-green-600">你:</span> 因为我没有收入</p>
+                            <p><span class="text-blue-600">ELIZA:</span> 这是真正的原因吗？</p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.2.4 规则驱动系统的局限性</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        通过这个简单的实现，我们可以清楚地看到规则驱动系统的特点和局限：
+                    </p>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-brain text-white"></i>
+                                </div>
+                                <h4 class="text-lg font-bold text-red-800">缺乏语义理解</h4>
+                            </div>
+                            <p class="text-red-700 text-sm">
+                                系统只是进行表面的模式匹配，并不真正理解用户话语的含义。它无法区分"我感到高兴"和"我感到悲伤"在情感上的根本差异。
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-memory text-white"></i>
+                                </div>
+                                <h4 class="text-lg font-bold text-orange-800">无上下文记忆</h4>
+                            </div>
+                            <p class="text-orange-700 text-sm">
+                                每次回应都是独立的，系统无法记住之前的对话内容，无法进行连贯的多轮对话。
+                            </p>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center mr-3">
+                                    <i class="fas fa-expand-arrows-alt text-white"></i>
+                                </div>
+                                <h4 class="text-lg font-bold text-yellow-800">扩展性问题</h4>
+                            </div>
+                            <p class="text-yellow-700 text-sm">
+                                随着规则数量的增加，系统变得越来越难以维护，规则之间可能产生冲突，性能也会下降。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-yellow-50 to-red-50 p-6 rounded-xl border border-yellow-200 mb-8">
+                        <h4 class="text-lg font-semibold text-yellow-800 mb-3">
+                            <i class="fas fa-lightbulb mr-2"></i>ELIZA效应
+                        </h4>
+                        <p class="text-yellow-700">
+                            有趣的是，尽管ELIZA的工作原理极其简单，但许多用户在与它交互时会产生一种错觉，认为系统真的理解了他们的话语。这种现象被称为<strong>"ELIZA效应"</strong>，它揭示了人类倾向于将智能归因于计算机行为的心理特征。这一效应至今仍然影响着人们对AI系统能力的认知。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2.3 从单体到协作：多智能体思想的萌芽 -->
+            <section id="multi-agent" class="bg-white rounded-xl shadow-lg p-8 mb-8 hover-lift fade-in">
+                <h2 class="text-3xl font-bold mb-6 text-gradient">
+                    <i class="fas fa-users mr-3"></i>2.3 从单体到协作：多智能体思想的萌芽
+                </h2>
+                
+                <div class="prose max-w-none">
+                    <p class="text-lg leading-relaxed mb-6">
+                        随着符号主义局限性的逐渐显现，AI研究者们开始思考一个根本性问题：<strong>智能是否必须集中在单一的、庞大的系统中？</strong> 这一反思催生了一个革命性的想法——也许智能更像是多个简单组件协作的结果，而非单一复杂系统的产物。
+                    </p>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.1 马文·明斯基的《心智社会》</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        1986年，MIT的马文·明斯基（Marvin Minsky）出版了具有里程碑意义的著作《心智社会》（The Society of Mind）。在这本书中，明斯基提出了一个颠覆性的观点：<strong>人类的智能并非来自单一的"智能模块"，而是由大量简单的、相互协作的"智能体"组成的社会。</strong>
+                    </p>
+
+                    <div class="bg-indigo-50 border-l-4 border-indigo-400 p-6 my-8 rounded-r-lg">
+                        <h4 class="text-lg font-semibold text-indigo-800 mb-3">明斯基的核心观点：</h4>
+                        <ul class="text-indigo-700 space-y-2 list-disc list-inside">
+                            <li><strong>智能的分布性</strong>：没有单一的"智能中心"，智能是分布式的</li>
+                            <li><strong>简单组件的复杂行为</strong>：复杂的智能行为可以从简单组件的交互中涌现</li>
+                            <li><strong>层次化组织</strong>：智能体可以组织成层次结构，高层智能体管理低层智能体</li>
+                            <li><strong>专业化分工</strong>：不同的智能体负责不同的专门任务</li>
+                        </ul>
+                    </div>
+
+                    <p class="text-lg leading-relaxed mb-6">
+                        明斯基用一个生动的比喻来解释这一思想：就像一个蚁群，单个蚂蚁的行为很简单，但整个蚁群却能展现出复杂的集体智能——建造复杂的巢穴、寻找食物、分工合作。人类的心智也是如此，由无数个"心理智能体"协作而成。
+                    </p>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.2 对单一模型智能的批判</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        传统的符号主义AI试图构建一个包罗万象的知识库和推理引擎，这种"单体式"的设计思路面临着诸多挑战：
+                    </p>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-red-50 border border-red-200 rounded-xl p-6">
+                            <h4 class="text-lg font-bold text-red-800 mb-3">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>复杂性爆炸
+                            </h4>
+                            <p class="text-red-700">
+                                随着知识库的扩大，系统的复杂性呈指数级增长，维护和调试变得极其困难。
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 border border-orange-200 rounded-xl p-6">
+                            <h4 class="text-lg font-bold text-orange-800 mb-3">
+                                <i class="fas fa-cog mr-2"></i>缺乏模块化
+                            </h4>
+                            <p class="text-orange-700">
+                                单体系统难以实现真正的模块化，一个组件的修改可能影响整个系统的行为。
+                            </p>
+                        </div>
+
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                            <h4 class="text-lg font-bold text-yellow-800 mb-3">
+                                <i class="fas fa-shield-alt mr-2"></i>脆弱性问题
+                            </h4>
+                            <p class="text-yellow-700">
+                                系统的任何一个部分出现问题，都可能导致整个系统的失效，缺乏容错能力。
+                            </p>
+                        </div>
+
+                        <div class="bg-purple-50 border border-purple-200 rounded-xl p-6">
+                            <h4 class="text-lg font-bold text-purple-800 mb-3">
+                                <i class="fas fa-expand mr-2"></i>扩展困难
+                            </h4>
+                            <p class="text-purple-700">
+                                向系统添加新功能需要对整个架构进行重大修改，扩展性极差。
+                            </p>
+                        </div>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.3 智能作为协作实体</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        多智能体思想的核心在于将复杂问题分解为多个相对简单的子问题，每个智能体负责解决其中的一个或几个子问题。通过智能体之间的协作和通信，整个系统能够解决单个智能体无法处理的复杂任务。
+                    </p>
+
+                    <div class="bg-green-50 p-6 rounded-xl border border-green-200 mb-8">
+                        <h4 class="text-lg font-semibold text-green-800 mb-4">
+                            <i class="fas fa-cubes mr-2"></i>案例：搭建积木塔
+                        </h4>
+                        <p class="text-green-700 mb-4">
+                            考虑一个看似简单的任务：让机器人搭建一个积木塔。在单体智能系统中，这需要一个复杂的程序来处理视觉识别、路径规划、力控制等所有方面。
+                        </p>
+                        <p class="text-green-700 mb-4">
+                            而在多智能体系统中，我们可以设计：
+                        </p>
+                        <ul class="text-green-600 space-y-2 list-disc list-inside ml-4">
+                            <li><strong>视觉智能体</strong>：负责识别积木的位置、形状和颜色</li>
+                            <li><strong>规划智能体</strong>：负责制定搭建策略和步骤</li>
+                            <li><strong>运动智能体</strong>：负责控制机械臂的运动</li>
+                            <li><strong>协调智能体</strong>：负责协调各个智能体的工作</li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center my-8">
+                        <img src="../docs/images/2-figures/1757246501849-4.png" alt="多智能体协作搭建积木塔" class="mx-auto rounded-lg shadow-md max-w-full">
+                        <p class="text-sm text-gray-600 mt-2">图 2.6 多智能体协作搭建积木塔的示意图</p>
+                    </div>
+
+                    <h3 class="text-2xl font-bold mb-4 text-purple-700">2.3.4 多智能体系统的理论启发</h3>
+                    
+                    <p class="text-lg leading-relaxed mb-6">
+                        多智能体思想为后续的AI发展提供了重要的理论启发：
+                    </p>
+
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-xl border border-blue-200 mb-8">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="text-lg font-bold text-blue-800 mb-3">
+                                    <i class="fas fa-lightbulb mr-2"></i>设计原则
+                                </h4>
+                                <ul class="text-blue-700 space-y-2 text-sm">
+                                    <li>• <strong>分而治之</strong>：将复杂问题分解为简单子问题</li>
+                                    <li>• <strong>专业化</strong>：每个智能体专注于特定任务</li>
+                                    <li>• <strong>模块化</strong>：智能体可以独立开发和测试</li>
+                                    <li>• <strong>可扩展性</strong>：可以轻松添加新的智能体</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-purple-800 mb-3">
+                                    <i class="fas fa-network-wired mr-2"></i>系统特性
+                                </h4>
+                                <ul class="text-purple-700 space-y-2 text-sm">
+                                    <li>• <strong>鲁棒性</strong>：单个智能体失效不会导致系统崩溃</li>
+                                    <li>• <strong>并行性</strong>：多个智能体可以同时工作</li>
+                                    <li>• <strong>适应性</strong>：系统可以动态调整智能体配置</li>
+                                    <li>• <strong>涌现性</strong>：整体能力超过部分之和</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-green-50 to-blue-50 p-6 rounded-xl border border-green-200 mb-8">
+                        <p class="text-lg text-green-800 font-semibold text-center">
