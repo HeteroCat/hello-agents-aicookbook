@@ -332,6 +332,225 @@
         .dark .timeline-item::before {
             border-color: #1e293b;
         }
+
+        /* 交互式卡片样式 */
+        .agent-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .agent-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+        
+        .agent-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .agent-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        .agent-card-icon {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-card:hover .agent-card-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+        
+        .agent-card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+            transition: color 0.3s ease;
+        }
+        
+        .agent-card-subtitle {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .agent-card-description {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .agent-card-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .agent-card-features li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .agent-card-features li::before {
+            content: '✓';
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .dark .agent-card {
+            background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.8) 100%);
+            border-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        .dark .agent-card-title {
+            color: #f9fafb;
+        }
+        
+        .dark .agent-card-subtitle {
+            color: #9ca3af;
+        }
+        
+        .dark .agent-card-description {
+            color: #d1d5db;
+        }
+        
+        .dark .agent-card-features li {
+            color: #9ca3af;
+        }
+
+        /* 特色标签 */
+        .feature-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin: 0.25rem 0.25rem 0 0;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .dark .feature-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* 对比表格样式 */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(15px);
+        }
+        
+        .comparison-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        
+        .comparison-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            vertical-align: top;
+        }
+        
+        .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .comparison-table .paradigm-name {
+            font-weight: 600;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comparison-table .paradigm-name i {
+            margin-right: 0.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .comparison-table .pros {
+            color: #059669;
+        }
+        
+        .comparison-table .cons {
+            color: #dc2626;
+        }
+        
+        .comparison-table .pros::before {
+            content: '✓ ';
+            font-weight: bold;
+        }
+        
+        .comparison-table .cons::before {
+            content: '✗ ';
+            font-weight: bold;
+        }
+        
+        .dark .comparison-table {
+            background: rgba(31, 41, 55, 0.9);
+        }
+        
+        .dark .comparison-table td {
+            border-bottom-color: rgba(75, 85, 99, 0.3);
+        }
+        
+        .dark .comparison-table .paradigm-name {
+            color: #f9fafb;
+        }
+        
+        .dark .comparison-table tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans transition-colors duration-300">
@@ -392,7 +611,7 @@
 
             <!-- 2.1 符号主义的探索与局限 -->
             <section id="symbolic-ai" class="mb-12">
-                <h2>2.1 符号主义的探索与局限</h2>
+                <h2><i class="fas fa-cogs text-blue-500 mr-3"></i>2.1 符号主义的探索与局限</h2>
                 <p class="mb-6">
                     人工智能的历史始于一个雄心勃勃的设想：如果人类的智能本质上是对符号的操作和逻辑推理，那么我们是否可以通过编程让计算机模拟这一过程，从而实现机器智能？这一思想流派被称为<span class="highlight-text">符号主义（Symbolism）</span>，它主导了人工智能研究的前几十年。
                 </p>
@@ -516,13 +735,100 @@ SHRDLU: 四个</code></pre>
 
             <!-- 2.2 ELIZA：规则驱动的对话系统 -->
             <section id="eliza" class="mb-12">
-                <h2>2.2 ELIZA：规则驱动的对话系统</h2>
+                <h2><i class="fas fa-comments text-green-500 mr-3"></i>2.2 ELIZA：规则驱动的对话系统</h2>
                 <p class="mb-6">
                     在符号主义的探索历程中，有一个系统虽然简单，却产生了深远的影响——<strong>ELIZA</strong>。这个由MIT的约瑟夫·魏岑鲍姆（Joseph Weizenbaum）在1966年开发的程序，是最早的聊天机器人之一，它通过简单的模式匹配和文本替换技术，模拟心理治疗师与患者的对话。
                 </p>
                 <p class="mb-6">
                     ELIZA的意义不仅在于它展示了早期自然语言处理的可能性，更重要的是，它揭示了符号主义方法的本质特征和根本局限。通过深入分析ELIZA的工作机制并亲手实现一个简化版本，我们可以直观地理解规则驱动系统的能力边界。
                 </p>
+
+                <!-- 智能体系统对比卡片 -->
+                <div class="agent-cards-grid mb-8">
+                    <div class="agent-card">
+                        <div class="agent-card-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                            🤖
+                        </div>
+                        <h4 class="agent-card-title">ELIZA</h4>
+                        <p class="agent-card-subtitle">1966 • 规则驱动对话系统</p>
+                        <p class="agent-card-description">
+                            最早的聊天机器人之一，通过模式匹配和文本替换模拟心理治疗师对话。
+                        </p>
+                        <ul class="agent-card-features">
+                            <li>简单模式匹配</li>
+                            <li>文本替换技术</li>
+                            <li>人称代词转换</li>
+                            <li>开放式提问策略</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="feature-tag">符号主义</span>
+                            <span class="feature-tag">对话系统</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card">
+                        <div class="agent-card-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                            🧠
+                        </div>
+                        <h4 class="agent-card-title">MYCIN</h4>
+                        <p class="agent-card-subtitle">1970s • 医疗专家系统</p>
+                        <p class="agent-card-description">
+                            基于规则的专家系统，用于诊断血液感染疾病，展示了知识工程的潜力。
+                        </p>
+                        <ul class="agent-card-features">
+                            <li>规则推理引擎</li>
+                            <li>不确定性处理</li>
+                            <li>解释机制</li>
+                            <li>领域专业知识</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="feature-tag">专家系统</span>
+                            <span class="feature-tag">医疗AI</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card">
+                        <div class="agent-card-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                            🏗️
+                        </div>
+                        <h4 class="agent-card-title">SHRDLU</h4>
+                        <p class="agent-card-subtitle">1970 • 积木世界系统</p>
+                        <p class="agent-card-description">
+                            能够理解自然语言指令并在虚拟积木世界中执行操作的智能体系统。
+                        </p>
+                        <ul class="agent-card-features">
+                            <li>自然语言理解</li>
+                            <li>空间推理</li>
+                            <li>动作执行</li>
+                            <li>上下文记忆</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="feature-tag">NLP</span>
+                            <span class="feature-tag">机器人学</span>
+                        </div>
+                    </div>
+
+                    <div class="agent-card">
+                        <div class="agent-card-icon" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                            🌐
+                        </div>
+                        <h4 class="agent-card-title">现代LLM智能体</h4>
+                        <p class="agent-card-subtitle">2020s • 大语言模型驱动</p>
+                        <p class="agent-card-description">
+                            基于大语言模型的智能体，具备强大的语言理解、推理和工具使用能力。
+                        </p>
+                        <ul class="agent-card-features">
+                            <li>涌现智能</li>
+                            <li>上下文学习</li>
+                            <li>工具调用</li>
+                            <li>多模态理解</li>
+                        </ul>
+                        <div class="mt-3">
+                            <span class="feature-tag">深度学习</span>
+                            <span class="feature-tag">多模态</span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- 2.2.1 ELIZA的工作机制 -->
                 <section id="eliza-mechanism" class="mb-10">
@@ -739,7 +1045,7 @@ Therapist: Goodbye. It was nice talking to you.</code></pre>
 
             <!-- 2.3 马文·明斯基的心智社会 -->
             <section id="society-of-mind" class="mb-12">
-                <h2>2.3 马文·明斯基的心智社会</h2>
+                <h2><i class="fas fa-brain text-purple-500 mr-3"></i>2.3 马文·明斯基的心智社会</h2>
                 <p class="mb-6">
                     符号主义的探索和ELIZA的实践，共同指向了一个问题：通过预设规则构建的、单一的、集中的推理引擎，似乎难以通向真正的智能。无论规则库多么庞大，系统在面对真实世界的模糊性、复杂性和无穷变化时，总是显得僵化而脆弱。这一困境促使一些顶尖的思考者开始反思人工智能最底层的设计哲学。
                 </p>
@@ -839,13 +1145,121 @@ Therapist: Goodbye. It was nice talking to you.</code></pre>
 
             <!-- 2.4 学习范式的演进与现代智能体 -->
             <section id="learning-paradigm" class="mb-12">
-                <h2>2.4 学习范式的演进与现代智能体</h2>
+                <h2><i class="fas fa-graduation-cap text-orange-500 mr-3"></i>2.4 学习范式的演进与现代智能体</h2>
                 <p class="mb-6">
                     符号主义的探索和明斯基的心智社会理论，共同揭示了一个重要问题：仅仅依靠预编程的规则和符号操作，很难构建出真正智能的系统。真正的智能需要<span class="highlight-text">学习能力</span>——从经验中获取知识、适应新环境、改进性能的能力。
                 </p>
                 <p class="mb-6">
                     从20世纪80年代开始，人工智能领域经历了一系列学习范式的变革，每一次变革都深刻影响了智能体的设计思路。让我们追溯这一演进历程，理解现代智能体技术的理论根基。
                 </p>
+
+                <!-- AI范式对比表格 -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold mb-4">AI发展范式对比</h3>
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>范式</th>
+                                <th>核心思想</th>
+                                <th>优势</th>
+                                <th>局限性</th>
+                                <th>代表系统</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="paradigm-name">
+                                        <i class="fas fa-cogs text-blue-500"></i>
+                                        符号主义
+                                    </div>
+                                </td>
+                                <td>通过符号操作和逻辑推理模拟人类智能</td>
+                                <td>
+                                    <div class="pros">逻辑清晰，可解释性强</div>
+                                    <div class="pros">适合专业领域知识表示</div>
+                                </td>
+                                <td>
+                                    <div class="cons">规则编写复杂，难以扩展</div>
+                                    <div class="cons">缺乏学习能力</div>
+                                </td>
+                                <td>ELIZA, MYCIN, SHRDLU</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="paradigm-name">
+                                        <i class="fas fa-network-wired text-green-500"></i>
+                                        联结主义
+                                    </div>
+                                </td>
+                                <td>模拟大脑神经网络结构，通过连接学习</td>
+                                <td>
+                                    <div class="pros">具备学习能力</div>
+                                    <div class="pros">分布式表示，容错性好</div>
+                                </td>
+                                <td>
+                                    <div class="cons">早期计算资源限制</div>
+                                    <div class="cons">缺乏大规模数据</div>
+                                </td>
+                                <td>多层感知机, CNN, RNN</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="paradigm-name">
+                                        <i class="fas fa-gamepad text-purple-500"></i>
+                                        强化学习
+                                    </div>
+                                </td>
+                                <td>通过与环境交互，基于奖励信号学习</td>
+                                <td>
+                                    <div class="pros">无需标注数据</div>
+                                    <div class="pros">适合决策和控制任务</div>
+                                </td>
+                                <td>
+                                    <div class="cons">训练不稳定</div>
+                                    <div class="cons">样本效率低</div>
+                                </td>
+                                <td>Q-Learning, AlphaGo, DQN</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="paradigm-name">
+                                        <i class="fas fa-brain text-orange-500"></i>
+                                        深度学习
+                                    </div>
+                                </td>
+                                <td>深层神经网络自动学习特征表示</td>
+                                <td>
+                                    <div class="pros">端到端学习</div>
+                                    <div class="pros">强大的表示能力</div>
+                                </td>
+                                <td>
+                                    <div class="cons">需要大量数据和计算</div>
+                                    <div class="cons">黑盒模型，可解释性差</div>
+                                </td>
+                                <td>ResNet, Transformer, BERT</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="paradigm-name">
+                                        <i class="fas fa-magic text-red-500"></i>
+                                        大模型时代
+                                    </div>
+                                </td>
+                                <td>预训练大模型展现涌现智能能力</td>
+                                <td>
+                                    <div class="pros">涌现能力强</div>
+                                    <div class="pros">通用性好，少样本学习</div>
+                                </td>
+                                <td>
+                                    <div class="cons">计算成本极高</div>
+                                    <div class="cons">幻觉问题，安全性挑战</div>
+                                </td>
+                                <td>GPT-3/4, ChatGPT, Claude</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <!-- 2.4.1 从符号到联结 -->
                 <section id="connectionism" class="mb-10">
@@ -1053,7 +1467,7 @@ Therapist: Goodbye. It was nice talking to you.</code></pre>
 
             <!-- 2.5 本章小结 -->
             <section id="summary" class="mb-12">
-                <h2>2.5 本章小结</h2>
+                <h2><i class="fas fa-bookmark text-red-500 mr-3"></i>2.5 本章小结</h2>
                 <p class="mb-6">
                     通过回顾智能体发展的历史脉络，我们可以清晰地看到人工智能领域思想演进的轨迹。从符号主义的理性探索，到联结主义的生物启发，再到现代大语言模型的涌现智能，每一次范式转换都深刻影响着智能体的设计理念和技术实现。
                 </p>
@@ -1183,6 +1597,113 @@ Therapist: Goodbye. It was nice talking to you.</code></pre>
                 });
             });
         });
+
+        // 智能体卡片交互效果
+        document.querySelectorAll('.agent-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-8px) scale(1.02)';
+                card.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+                card.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+            });
+        });
+
+        // 时间线项目滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateX(0)';
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, observerOptions);
+
+        // 观察时间线项目
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateX(-30px)';
+            item.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(item);
+        });
+
+        // 观察智能体卡片
+        document.querySelectorAll('.agent-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = `all 0.6s cubic-bezier(0.4, 0, 0.2, 1) ${index * 0.1}s`;
+            observer.observe(card);
+        });
+
+        // 表格行悬停效果增强
+        document.querySelectorAll('.comparison-table tr').forEach(row => {
+            if (row.parentElement.tagName !== 'THEAD') {
+                row.addEventListener('mouseenter', () => {
+                    row.style.transform = 'scale(1.01)';
+                    row.style.transition = 'all 0.2s ease';
+                });
+                
+                row.addEventListener('mouseleave', () => {
+                    row.style.transform = 'scale(1)';
+                });
+            }
+        });
+
+        // 章节标题图标旋转效果
+        document.querySelectorAll('h2 i, h3 i').forEach(icon => {
+            const heading = icon.parentElement;
+            heading.addEventListener('mouseenter', () => {
+                icon.style.transform = 'rotate(10deg) scale(1.1)';
+                icon.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            });
+            
+            heading.addEventListener('mouseleave', () => {
+                icon.style.transform = 'rotate(0deg) scale(1)';
+            });
+        });
+
+        // 特色标签悬停效果
+        document.querySelectorAll('.feature-tag').forEach(tag => {
+            tag.addEventListener('mouseenter', () => {
+                tag.style.transform = 'scale(1.05)';
+                tag.style.transition = 'all 0.2s ease';
+            });
+            
+            tag.addEventListener('mouseleave', () => {
+                tag.style.transform = 'scale(1)';
+            });
+        });
+
+        // 页面滚动进度指示器
+        const createProgressBar = () => {
+            const progressBar = document.createElement('div');
+            progressBar.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 0%;
+                height: 3px;
+                background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06b6d4);
+                z-index: 9999;
+                transition: width 0.1s ease;
+            `;
+            document.body.appendChild(progressBar);
+            
+            window.addEventListener('scroll', () => {
+                const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+                progressBar.style.width = scrolled + '%';
+            });
+        };
+        
+        createProgressBar();
     </script>
 </body>
 </html>
