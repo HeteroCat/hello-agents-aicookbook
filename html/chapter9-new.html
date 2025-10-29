@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第九章 上下文工程 - Hello-Agents</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        accent: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'Noto Sans SC', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', system-ui, sans-serif;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .scroll-indicator {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .timeline-line {
+            background: linear-gradient(180deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a78bfa 0%, #c084fc 100%);
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+        }
+
+        .toc-item {
+            transition: all 0.2s ease;
+        }
+
+        .toc-item:hover {
+            padding-left: 1rem;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+        }
+
+        .floating-shapes {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Floating Background Shapes -->
+    <div class="floating-shapes">
+        <div class="shape w-64 h-64 bg-blue-500 rounded-full blur-3xl" style="top: 10%; left: 10%;"></div>
+        <div class="shape w-96 h-96 bg-purple-500 rounded-full blur-3xl" style="top: 60%; right: 10%; animation-delay: -5s;"></div>
+        <div class="shape w-80 h-80 bg-indigo-500 rounded-full blur-3xl" style="bottom: 10%; left: 30%; animation-delay: -10s;"></div>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 z-50 transition-all duration-300">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <a href="#" class="flex items-center space-x-2 group">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                            <i class="fas fa-layer-group text-white text-lg"></i>
+                        </div>
+                        <span class="text-xl font-bold text-gray-900 dark:text-white">Hello-Agents</span>
+                    </a>
+                    <div class="hidden md:block h-6 w-px bg-gray-300 dark:bg-gray-600"></div>
+                    <span class="hidden md:inline-block text-sm text-gray-600 dark:text-gray-400">第九章 上下文工程</span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button id="toc-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
+                    </button>
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                        <i class="fas fa-moon text-blue-400 hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Table of Contents Sidebar -->
+    <div id="toc-sidebar" class="fixed left-0 top-16 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full transition-transform duration-300 z-40 overflow-y-auto">
+        <div class="p-6">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">目录导航</h3>
+            <nav class="space-y-2">
+                <a href="#introduction" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-book-open mr-2 text-xs"></i>概述
+                </a>
+                <a href="#what-is-context-engineering" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-cogs mr-2 text-xs"></i>什么是上下文工程
+                </a>
+                <a href="#why-important" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-chart-line mr-2 text-xs"></i>为什么上下文工程重要
+                </a>
+                <a href="#contextbuilder" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-cube mr-2 text-xs"></i>ContextBuilder实践
+                </a>
+                <a href="#notetool" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-sticky-note mr-2 text-xs"></i>NoteTool结构化笔记
+                </a>
+                <a href="#terminaltool" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-terminal mr-2 text-xs"></i>TerminalTool即时访问
+                </a>
+                <a href="#case-study" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-code mr-2 text-xs"></i>实战案例
+                </a>
+                <a href="#summary" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
+                    <i class="fas fa-check-circle mr-2 text-xs"></i>本章总结
+                </a>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-16 min-h-screen">
+        <!-- Hero Section -->
+        <section class="relative overflow-hidden bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
+            <div class="absolute inset-0 bg-black/20"></div>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+                <div class="text-center animate-fade-in">
+                    <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                        第九章<span class="block text-3xl md:text-4xl mt-2 text-blue-200">上下文工程</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                        构建能够在长时程任务中保持连贯性与有效性的智能体系统
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4 text-sm">
+                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                            <i class="fas fa-brain mr-2"></i>
+                            长时程记忆
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                            <i class="fas fa-layer-group mr-2"></i>
+                            上下文管理
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 flex items-center">
+                            <i class="fas fa-tools mr-2"></i>
+                            工程化实践
+                        </div>
+                    </div>
+                </div>
+                <div class="scroll-indicator absolute bottom-8 left-1/2 transform -translate-x-1/2">
+                    <i class="fas fa-chevron-down text-2xl"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Introduction Section -->
+        <section id="introduction" class="py-16 bg-white dark:bg-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="animate-slide-up">
+                        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
+                            从提示到<span class="gradient-text">上下文工程</span>
+                        </h2>
+                        <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+                            在前面的章节中，我们已经为智能体引入了记忆系统与RAG。然而，要让智能体在真实复杂场景中稳定地"思考"与"行动"，仅有记忆与检索还不够——我们需要一套工程化方法，持续、系统地为模型构造恰当的"上下文"。
+                        </p>
+                        <div class="space-y-4">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-check text-blue-600 dark:text-blue-400 text-xs"></i>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    可复用、可度量、可演进的方式拼装并优化输入上下文
+                                </p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-check text-blue-600 dark:text-blue-400 text-xs"></i>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    提升智能体的正确性、鲁棒性与效率
+                                </p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0 w-6 h-6 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mt-0.5">
+                                    <i class="fas fa-check text-blue-600 dark:text-blue-400 text-xs"></i>
+                                </div>
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    构建能够在长时程任务中保持连贯性的智能体
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative">
+                        <div class="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 text-white card-hover">
+                            <div class="text-center">
+                                <i class="fas fa-rocket text-6xl mb-4 opacity-80"></i>
+                                <h3 class="text-2xl font-bold mb-2">快速开始</h3>
+                                <p class="text-blue-100 mb-6">安装本章对应的版本</p>
+                                <div class="code-block text-left text-sm">
+                                    <code>pip install hello-agents[all]==0.2.6</code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- What is Context Engineering -->
+        <section id="what-is-context-engineering" class="py-16 bg-gray-50 dark:bg-gray-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        什么是上下文工程
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        从提示工程到上下文工程的演进，关注的是"在每一次模型调用前，如何优化上下文配置"
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Prompt Engineering -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-comment-dots text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">提示工程</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            关注如何编写与组织LLM的指令以获得更优结果，例如系统提示的写法与结构化策略。
+                        </p>
+                        <div class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                句式和措辞优化
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                单轮分类或文本生成
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                关注提示本身的质量
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Context Engineering -->
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6 shadow-lg card-hover border border-blue-200 dark:border-blue-800">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
+                                <i class="fas fa-layer-group text-blue-600 dark:text-blue-400 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">上下文工程</h3>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            在推理阶段，如何策划与维护"最优的信息集合"，包含提示、工具、MCP、外部数据、消息历史等。
+                        </p>
+                        <div class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                整体上下文状态管理
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                跨多次推理轮次
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-angle-right mr-2"></i>
+                                系统性的信息筛选
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Concept -->
+                <div class="mt-12 bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">核心概念</h3>
+                        <p class="text-gray-600 dark:text-gray-300">上下文工程的核心是在LLM的固有约束下优化tokens的效用</p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-brain text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">注意力预算</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                LLM具有有限的工作记忆容量，需要谨慎筛选tokens
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-filter text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">信息筛选</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                从持续扩张的候选信息宇宙中甄别内容
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-chart-line text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">边际收益</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                上下文是有限资源，具有边际收益递减特性
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Important -->
+        <section id="why-important" class="py-16 bg-white dark:bg-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        为什么上下文工程重要
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        理解上下文腐蚀现象，掌握长时程任务的挑战与解决方案
+                    </p>
+                </div>
+
+                <!-- Context Rot Concept -->
+                <div class="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-2xl p-8 mb-12 border border-red-200 dark:border-red-800">
+                    <div class="flex items-center mb-6">
+                        <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mr-4">
+                            <i class="fas fa-exclamation-triangle text-red-600 dark:text-red-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white">上下文腐蚀 (Context Rot)</h3>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                        随着上下文窗口中的tokens增加，模型从上下文中准确回忆信息的能力反而下降。
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">
+                                <i class="fas fa-chart-line text-green-500 mr-2"></i>
+                                短上下文
+                            </h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                高精度信息检索，注意力集中
+                            </p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">
+                                <i class="fas fa-chart-line text-red-500 mr-2"></i>
+                                长上下文
+                            </h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                信息检索精度下降，注意力分散
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Effective Context Anatomy -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                        有效上下文的"解剖学"
+                    </h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800 card-hover">
+                            <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-terminal text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">系统提示</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                语言清晰、直白，信息层级把握在"刚刚好"的高度
+                            </p>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800 card-hover">
+                            <div class="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-tools text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">工具</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                职责单一、相互低重叠，接口语义清晰
+                            </p>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800 card-hover">
+                            <div class="w-10 h-10 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-list-ol text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">示例</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                精挑细选多样且典型的示例，直接画像期望行为
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6 border border-orange-200 dark:border-orange-800 card-hover">
+                            <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-compress text-white"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">压缩整合</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                信息充分但紧致，最小必要信息集
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Three Strategies -->
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                        长时程任务的三大策略
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-compress-alt text-blue-600 dark:text-blue-400 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">压缩整合 (Compaction)</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                                    当对话接近上下文上限时，对其进行高保真总结，并用该摘要重启一个新的上下文窗口。
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    适合需要长对话连续性的任务，强调上下文的"接力"
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-sticky-note text-green-600 dark:text-green-400 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">结构化笔记 (Structured note-taking)</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                                    智能体以固定频率将关键信息写入上下文外的持久化存储，在后续阶段按需拉回。
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    适合有里程碑/阶段性成果的迭代式开发与研究
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-6 flex items-start space-x-4">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-users text-purple-600 dark:text-purple-400 text-lg"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">子代理架构 (Sub-agent architectures)</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                                    主代理负责高层规划与综合，多个专长子代理在"干净的上下文窗口"中各自深挖。
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    适合复杂研究与分析，能从并行探索中获益
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ContextBuilder Section -->
+        <section id="contextbuilder" class="py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        ContextBuilder实践
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        GSSC流水线：统一的上下文管理解决方案
+                    </p>
+                </div>
+
+                <!-- Design Goals -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-plug text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">统一入口</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            将Gather-Select-Structure-Compress抽象为可复用流水线
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-cube text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">稳定形态</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            输出固定骨架的上下文模板，便于调试与A/B测试
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">预算守护</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            在token预算内尽量保留高价值信息
+                        </p>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-sliders-h text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-2">最小规则</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                            基于相关性和新近性的简单评分机制
+                        </p>
+                    </div>
+                </div>
+
+                <!-- GSSC Pipeline -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+                        GSSC流水线详解
+                    </h3>
+
+                    <div class="space-y-8">
+                        <!-- Gather -->
+                        <div class="flex items-start space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">G</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Gather - 多源信息汇集</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    从多个来源汇集候选信息，包括系统指令、记忆系统、RAG系统、对话历史等。
+                                </p>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                                    <div class="text-sm font-mono text-gray-700 dark:text-gray-300">
+                                        <div class="mb-2">信息来源：</div>
+                                        <div class="grid grid-cols-2 gap-2 text-xs">
+                                            <div><i class="fas fa-cog mr-1"></i>系统指令</div>
+                                            <div><i class="fas fa-brain mr-1"></i>记忆系统</div>
+                                            <div><i class="fas fa-search mr-1"></i>RAG系统</div>
+                                            <div><i class="fas fa-comments mr-1"></i>对话历史</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Select -->
+                        <div class="flex items-start space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-green-600 dark:text-green-400">S</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Select - 智能信息选择</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    根据相关性和新近性对候选信息进行评分和选择，采用贪心算法确保在有限预算内选择最有价值的信息。
+                                </p>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                                    <div class="text-sm text-gray-700 dark:text-gray-300">
+                                        <div class="mb-2">评分公式：</div>
+                                        <div class="font-mono text-xs bg-white dark:bg-gray-800 p-2 rounded">
+                                            综合分数 = 相关性权重 × 相关性 + 新近性权重 × 新近性
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Structure -->
+                        <div class="flex items-start space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="w-16 h-16 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-yellow-600 dark:text-yellow-400">S</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Structure - 结构化输出</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    将选中的信息组织成结构化的上下文模板，分为Role & Policies、Task、Evidence、Context、Output等分区。
+                                </p>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                                    <div class="text-sm text-gray-700 dark:text-gray-300">
+                                        <div class="mb-2">模板结构：</div>
+                                        <div class="space-y-1 text-xs">
+                                            <div>[Role & Policies] - 系统指令和角色定义</div>
+                                            <div>[Task] - 当前任务</div>
+                                            <div>[Evidence] - 检索到的证据</div>
+                                            <div>[Context] - 相关上下文</div>
+                                            <div>[Output] - 输出要求</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Compress -->
+                        <div class="flex items-start space-x-6">
+                            <div class="flex-shrink-0">
+                                <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
+                                    <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">C</span>
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Compress - 兜底压缩</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    对超限上下文进行压缩处理，保持结构完整性的同时控制token数量。
+                                </p>
+                                <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                                    <div class="text-sm text-gray-700 dark:text-gray-300">
+                                        <div class="mb-2">压缩策略：</div>
+                                        <div class="space-y-1 text-xs">
+                                            <div>• 分区压缩，保持结构完整性</div>
+                                            <div>• 重要内容优先保留</div>
+                                            <div>• 标记被压缩的内容</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NoteTool Section -->
+        <section id="notetool" class="py-16 bg-white dark:bg-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        NoteTool结构化笔记
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        为长时程任务提供的结构化外部记忆组件
+                    </p>
+                </div>
+
+                <!-- Design Philosophy -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                            <i class="fas fa-lightbulb text-green-600 dark:text-green-400 mr-2"></i>
+                            设计理念
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            NoteTool填补了MemoryTool的空白，提供适合项目式任务的轻量、人类友好的记录方式。
+                        </p>
+                        <div class="space-y-2">
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                Markdown + YAML格式，机器可解析人类可读
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                版本控制友好，支持Git管理
+                            </div>
+                            <div class="flex items-center text-sm text-gray-600 dark:text-gray-300">
+                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                低开销，适合轻量级状态追踪
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                            <i class="fas fa-tasks text-blue-600 dark:text-blue-400 mr-2"></i>
+                            应用场景
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-3">
+                                <h4 class="font-medium text-gray-900 dark:text-white text-sm mb-1">长期项目追踪</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-300">记录阶段性进展、阻塞点、行动计划</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-3">
+                                <h4 class="font-medium text-gray-900 dark:text-white text-sm mb-1">研究任务管理</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-300">文献综述、核心观点、待调研主题</p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg p-3">
+                                <h4 class="font-medium text-gray-900 dark:text-white text-sm mb-1">ContextBuilder配合</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-300">检索相关笔记并注入上下文</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note Format -->
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">笔记存储格式</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3">YAML + Markdown 混合格式</h4>
+                            <div class="code-block text-sm">
+                                <pre>---
+id: note_20250119_153000_0
+title: 项目进展 - 第一阶段
+type: task_state
+tags: [refactoring, phase1]
+created_at: 2025-01-19T15:30:00
+---
+
+# 项目进展 - 第一阶段
+
+## 完成情况
+已完成数据模型层的重构...
+
+## 测试覆盖
+- 单元测试覆盖率: 85%
+- 集成测试覆盖率: 70%</pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-3">核心优势</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-robot text-blue-600 dark:text-blue-400 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900 dark:text-white text-sm">机器可解析</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">YAML元数据支持精确的字段提取和检索</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-green-100 dark:bg-green-900 rounded flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-user text-green-600 dark:text-green-400 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900 dark:text-white text-sm">人类可读</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">Markdown正文支持丰富的格式化</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded flex items-center justify-center flex-shrink-0">
+                                        <i class="fas fa-search text-purple-600 dark:text-purple-400 text-sm"></i>
+                                    </div>
+                                    <div>
+                                        <h5 class="font-medium text-gray-900 dark:text-white text-sm">快速检索</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">索引文件支持快速查找和管理</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Operations -->
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">核心操作</h3>
+                    <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Create</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">创建新笔记</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-eye text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Read</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">读取笔记内容</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-yellow-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-edit text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Update</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">更新现有笔记</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-search text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Search</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">搜索相关笔记</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-indigo-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-list text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">List</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">列出笔记列表</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-orange-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-chart-bar text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Summary</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">生成摘要统计</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center card-hover">
+                            <div class="w-12 h-12 bg-red-500 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-trash text-white"></i>
+                            </div>
+                            <h4 class="font-medium text-gray-900 dark:text-white mb-1">Delete</h4>
+                            <p class="text-xs text-gray-600 dark:text-gray-300">删除指定笔记</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TerminalTool Section -->
+        <section id="terminaltool" class="py-16 bg-gray-50 dark:bg-gray-900">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        TerminalTool即时文件系统访问
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        安全的命令行执行能力，实现"Just-in-time"上下文理念
+                    </p>
+                </div>
+
+                <!-- Security Features -->
+                <div class="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 rounded-2xl p-8 mb-12 border border-red-200 dark:border-red-800">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6">
+                        <i class="fas fa-shield-alt text-red-500 mr-2"></i>
+                        四层安全机制
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-list text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">命令白名单</h4>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                只允许安全的只读命令，完全禁止修改系统的操作
+                            </p>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                允许：ls, cat, grep, find, head, tail等<br>
+                                禁止：rm, mv, cp, chmod等
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-folder text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">工作目录限制</h4>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                沙箱机制确保只能访问指定工作目录及其子目录
+                            </p>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                防止通过../逃逸到系统其他目录
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-clock text-yellow-600 dark:text-yellow-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">超时控制</h4>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                每个命令都有执行时间限制，防止无限循环或资源耗尽
+                            </p>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                默认30秒超时，可配置
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                            <div class="flex items-center mb-3">
+                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-3">
+                                    <i class="fas fa-compress text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-900 dark:text-white">输出大小限制</h4>
+                            </div>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                                限制命令输出的大小，防止内存溢出
+                            </p>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">
+                                默认10MB限制，超大文件会被截断
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Cases -->
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-code text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">代码库探索</h3>
+                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                find . -name '*.py'
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                grep -r 'class UserService' .
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                head -n 50 src/services/user.py
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-green-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-file-alt text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">日志文件分析</h3>
+                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                tail -n 100 app.log | grep ERROR
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                wc -l *.log
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                sort | uniq -c
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                        <div class="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-database text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-900 dark:text-white mb-3">数据文件预览</h3>
+                        <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                head -n 5 data.csv
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                wc -l data/*.csv
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-chevron-right text-xs mr-2 text-gray-400"></i>
+                                cut -d',' -f1
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case Study Section -->
+        <section id="case-study" class="py-16 bg-white dark:bg-gray-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                        长程智能体实战
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                        代码库维护助手：整合三大工具的完整案例
+                    </p>
+                </div>
+
+                <!-- Architecture -->
+                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-2xl p-8 mb-12">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+                        系统架构
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-cube text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">ContextBuilder</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                智能上下文管理<br>
+                                GSSC流水线
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-green-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-sticky-note text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">NoteTool</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                结构化笔记系统<br>
+                                持久化记忆
+                            </p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-20 h-20 bg-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-terminal text-white text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 dark:text-white mb-2">TerminalTool</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                即时文件系统访问<br>
+                                安全命令执行
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Timeline -->
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">
+                        工作流程示例
+                    </h3>
+
+                    <div class="relative">
+                        <!-- Timeline Line -->
+                        <div class="absolute left-8 top-0 bottom-0 w-0.5 timeline-line"></div>
+
+                        <!-- Day 1 -->
+                        <div class="relative flex items-start mb-8">
+                            <div class="flex-shrink-0 w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-bold">Day 1</span>
+                            </div>
+                            <div class="ml-6 flex-1 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">探索代码库</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    使用TerminalTool探索项目结构，理解代码库组织
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 text-xs rounded">
+                                        <i class="fas fa-terminal mr-1"></i>find . -name '*.py'
+                                    </span>
+                                    <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-400 text-xs rounded">
+                                        <i class="fas fa-sticky-note mr-1"></i>记录项目结构
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Day 2 -->
+                        <div class="relative flex items-start mb-8">
+                            <div class="flex-shrink-0 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-bold">Day 2</span>
+                            </div>
+                            <div class="ml-6 flex-1 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">分析代码质量</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    识别代码重复、复杂度问题，自动创建blocker笔记
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-400 text-xs rounded">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>发现问题
+                                    </span>
+                                    <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900 text-yellow-600 dark:text-yellow-400 text-xs rounded">
+                                        <i class="fas fa-code mr-1"></i>代码审查
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Day 3 -->
+                        <div class="relative flex items-start mb-8">
+                            <div class="flex-shrink-0 w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-bold">Day 3</span>
+                            </div>
+                            <div class="ml-6 flex-1 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">规划重构任务</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    基于历史笔记制定优先级，创建详细的重构计划
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-400 text-xs rounded">
+                                        <i class="fas fa-tasks mr-1"></i>任务规划
+                                    </span>
+                                    <span class="px-2 py-1 bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-400 text-xs rounded">
+                                        <i class="fas fa-cube mr-1"></i>上下文优化
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Week Later -->
+                        <div class="relative flex items-start">
+                            <div class="flex-shrink-0 w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center z-10">
+                                <span class="text-white font-bold">Week+</span>
+                            </div>
+                            <div class="ml-6 flex-1 bg-white dark:bg-gray-800 rounded-lg p-6 shadow-lg">
+                                <h4 class="font-semibold text-gray-900 dark:text-white mb-2">检查进度</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                    生成完整报告，统计任务完成情况，为下一阶段做准备
+                                </p>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900 text-orange-600 dark:text-orange-400 text-xs rounded">
+                                        <i class="fas fa-chart-bar mr-1"></i>进度报告
+                                    </span>
+                                    <span class="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded">
+                                        <i class="fas fa-sync mr-1"></i>持续迭代
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary Section -->
+        <section id="summary" class="py-16 bg-gradient-to-br from-blue-600 to-purple-700 text-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">本章总结</h2>
+                    <p class="text-xl text-blue-100">
+                        掌握上下文工程，构建强大的长程智能体系统
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-brain text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">理论层面</h3>
+                        <p class="text-sm text-blue-100">
+                            从提示工程到上下文工程的演进，理解上下文腐蚀现象
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-tools text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">工程实践</h3>
+                        <p class="text-sm text-blue-100">
+                            ContextBuilder、NoteTool、TerminalTool三大核心工具
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-layer-group text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">核心收获</h3>
+                        <p class="text-sm text-blue-100">
+                            分层设计、智能筛选、安全第一、人机协作
+                        </p>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
+                        <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mb-4">
+                            <i class="fas fa-rocket text-white text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold mb-2">未来展望</h3>
+                        <p class="text-sm text-blue-100">
+                            构建生产级智能体应用的重要基础技能
+                        </p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <div class="inline-flex items-center space-x-6 text-blue-100">
+                        <div class="flex items-center">
+                            <i class="fas fa-arrow-right mr-2"></i>
+                            下一章：智能体通信协议
+                        </div>
+                        <div class="w-px h-6 bg-white/30"></div>
+                        <div class="flex items-center">
+                            <i class="fas fa-code mr-2"></i>
+                            完整代码示例
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-gray-300 py-12">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <div class="flex items-center justify-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-layer-group text-white text-sm"></i>
+                        </div>
+                        <span class="text-lg font-semibold text-white">Hello-Agents</span>
+                    </div>
+                    <p class="text-sm text-gray-400 mb-4">
+                        上下文工程 - 构建智能体的长时程记忆与连贯性
+                    </p>
+                    <div class="flex justify-center space-x-6 text-sm">
+                        <a href="#" class="hover:text-white transition-colors">
+                            <i class="fab fa-github mr-1"></i>GitHub
+                        </a>
+                        <a href="#" class="hover:text-white transition-colors">
+                            <i class="fas fa-book mr-1"></i>文档
+                        </a>
+                        <a href="#" class="hover:text-white transition-colors">
+                            <i class="fas fa-users mr-1"></i>社区
+                        </a>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-6">
+                        © 2024 Hello-Agents. Powered by Datawhale.
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- JavaScript -->
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to light
+        const currentTheme = localStorage.getItem('theme') ||
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const theme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+
+        // TOC Toggle
+        const tocToggle = document.getElementById('toc-toggle');
+        const tocSidebar = document.getElementById('toc-sidebar');
+
+        tocToggle.addEventListener('click', () => {
+            tocSidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Close TOC when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!tocSidebar.contains(e.target) && !tocToggle.contains(e.target)) {
+                tocSidebar.classList.add('-translate-x-full');
+            }
+        });
+
+        // Smooth Scrolling for TOC links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Close TOC on mobile after clicking
+                    if (window.innerWidth < 768) {
+                        tocSidebar.classList.add('-translate-x-full');
+                    }
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-slide-up');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Active TOC highlighting
+        const sections = document.querySelectorAll('section[id]');
+        const tocLinks = document.querySelectorAll('#toc-sidebar a[href^="#"]');
+
+        function updateActiveTOC() {
+            const scrollY = window.pageYOffset;
+
+            sections.forEach(section => {
+                const sectionHeight = section.offsetHeight;
+                const sectionTop = section.offsetTop - 100;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                    tocLinks.forEach(link => {
+                        link.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateActiveTOC);
+        updateActiveTOC(); // Initial call
+
+        // Copy code blocks functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalBg = this.style.backgroundColor;
+                    this.style.backgroundColor = '#10b981';
+                    setTimeout(() => {
+                        this.style.backgroundColor = originalBg;
+                    }, 200);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

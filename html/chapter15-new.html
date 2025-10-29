@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十五章 构建赛博小镇 - Hello Agents</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans SC', sans-serif;
+        }
+
+        /* 暗色模式变量 */
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #94a3b8;
+            --border-color: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border-color: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .bg-secondary { background-color: var(--bg-secondary); }
+        .bg-tertiary { background-color: var(--bg-tertiary); }
+        .text-secondary { color: var(--text-secondary); }
+        .text-tertiary { color: var(--text-tertiary); }
+        .border-custom { border-color: var(--border-color); }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--text-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* 代码块样式 */
+        .code-block {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+        }
+
+        /* 图标样式 */
+        .feature-icon {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-icon:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.35);
+        }
+
+        /* 目录样式 */
+        .toc-item {
+            padding: 0.5rem 0;
+            border-left: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .toc-item:hover {
+            border-left-color: var(--accent);
+            background-color: var(--bg-secondary);
+        }
+
+        .toc-item.active {
+            border-left-color: var(--accent);
+            background-color: var(--bg-tertiary);
+        }
+
+        /* NPC卡片样式 */
+        .npc-card {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .npc-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .npc-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 技术栈样式 */
+        .tech-stack-item {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-stack-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent);
+        }
+
+        /* 图片容器 */
+        .image-container {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .image-placeholder {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 2px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-tertiary);
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            height: 8px;
+            background-color: var(--bg-tertiary);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body data-theme="light" class="min-h-screen">
+    <!-- 导航栏 -->
+    <nav class="bg-secondary border-b border-custom sticky top-0 z-50 backdrop-blur-lg bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-2xl text-blue-500"></i>
+                    <span class="font-bold text-xl">Hello Agents</span>
+                    <span class="text-tertiary">|</span>
+                    <span class="text-secondary">第十五章 构建赛博小镇</span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- 搜索框 -->
+                    <div class="hidden md:flex items-center space-x-2 bg-tertiary rounded-lg px-3 py-2">
+                        <i class="fas fa-search text-tertiary"></i>
+                        <input type="text" placeholder="搜索内容..." class="bg-transparent outline-none text-sm w-48">
+                    </div>
+
+                    <!-- 主题切换 -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-tertiary hover:bg-opacity-80 transition-colors">
+                        <i class="fas fa-moon text-yellow-500" id="theme-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- 左侧目录 -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-24 space-y-6">
+                    <!-- 目录 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-list-ul mr-2 text-blue-500"></i>
+                            目录导航
+                        </h3>
+                        <nav id="toc" class="space-y-2 text-sm">
+                            <div class="toc-item cursor-pointer" data-target="overview">
+                                <i class="fas fa-home mr-2 text-tertiary"></i>项目概述
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="npc-system">
+                                <i class="fas fa-users mr-2 text-tertiary"></i>NPC智能体系统
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="affinity">
+                                <i class="fas fa-heart mr-2 text-tertiary"></i>好感度系统
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="backend">
+                                <i class="fas fa-server mr-2 text-tertiary"></i>后端服务
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="godot">
+                                <i class="fas fa-gamepad mr-2 text-tertiary"></i>Godot游戏引擎
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="communication">
+                                <i class="fas fa-exchange-alt mr-2 text-tertiary"></i>前后端通信
+                            </div>
+                            <div class="toc-item cursor-pointer" data-target="summary">
+                                <i class="fas fa-flag-checkered mr-2 text-tertiary"></i>总结展望
+                            </div>
+                        </nav>
+                    </div>
+
+                    <!-- 快速导航 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold text-lg mb-4 flex items-center">
+                            <i class="fas fa-rocket mr-2 text-green-500"></i>
+                            快速开始
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <a href="#quickstart" class="block p-3 bg-tertiary rounded-lg hover:bg-opacity-80 transition-colors">
+                                <i class="fas fa-play-circle mr-2 text-blue-500"></i>
+                                5分钟运行项目
+                            </a>
+                            <a href="#code" class="block p-3 bg-tertiary rounded-lg hover:bg-opacity-80 transition-colors">
+                                <i class="fas fa-code mr-2 text-green-500"></i>
+                                查看源代码
+                            </a>
+                            <a href="#demo" class="block p-3 bg-tertiary rounded-lg hover:bg-opacity-80 transition-colors">
+                                <i class="fas fa-video mr-2 text-purple-500"></i>
+                                演示视频
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 中间内容 -->
+            <div class="lg:col-span-3 space-y-8">
+                <!-- 章节标题 -->
+                <div class="animate-fade-in">
+                    <div class="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 p-1 rounded-2xl">
+                        <div class="bg-secondary rounded-2xl p-8">
+                            <h1 class="text-4xl font-bold mb-4">第十五章 构建赛博小镇</h1>
+                            <p class="text-secondary text-lg leading-relaxed">
+                                探索智能体技术与游戏引擎结合，构建一个充满生命力的AI小镇
+                            </p>
+                            <div class="flex items-center space-x-6 mt-6 text-sm text-tertiary">
+                                <span><i class="fas fa-clock mr-1"></i>预计阅读时间: 25分钟</span>
+                                <span><i class="fas fa-code mr-1"></i>代码示例: 15个</span>
+                                <span><i class="fas fa-chart-line mr-1"></i>难度: 中高级</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目概述 -->
+                <section id="overview" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-home mr-3 text-blue-500"></i>
+                        项目概述与架构设计
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <p class="text-secondary leading-relaxed mb-4">
+                            这一章，我们将探索一个全新的方向：<strong>将智能体技术与游戏引擎结合，构建一个充满生命力的AI小镇</strong>。
+                        </p>
+                        <p class="text-secondary leading-relaxed">
+                            还记得《模拟人生》或《动物森友会》中那些栩栩如生的NPC吗？我们的赛博小镇将是一个类似的项目，但与传统游戏不同的是，我们的NPC拥有真正的"智能"——他们能够理解玩家的对话，记住过去的互动，并根据好感度做出不同的反应。
+                        </p>
+                    </div>
+
+                    <!-- 核心功能 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-secondary rounded-xl p-6 border border-custom">
+                            <div class="flex items-start space-x-4">
+                                <div class="feature-icon">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-2">智能NPC对话系统</h3>
+                                    <p class="text-sm text-secondary">玩家可以与NPC进行自然语言对话，NPC会根据自己的角色设定和记忆做出回应。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-secondary rounded-xl p-6 border border-custom">
+                            <div class="flex items-start space-x-4">
+                                <div class="feature-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-2">记忆系统</h3>
+                                    <p class="text-sm text-secondary">NPC拥有短期记忆和长期记忆，能够记住与玩家的互动历史。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-secondary rounded-xl p-6 border border-custom">
+                            <div class="flex items-start space-x-4">
+                                <div class="feature-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-2">好感度系统</h3>
+                                    <p class="text-sm text-secondary">NPC对玩家的态度会随着互动而变化，从陌生到熟悉，从友好到亲密。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-secondary rounded-xl p-6 border border-custom">
+                            <div class="flex items-start space-x-4">
+                                <div class="feature-icon">
+                                    <i class="fas fa-gamepad"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold mb-2">游戏化交互</h3>
+                                    <p class="text-sm text-secondary">玩家可以在2D像素风格的办公室场景中自由移动，与不同的NPC互动。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 技术架构图 -->
+                    <div class="image-container">
+                        <h3 class="font-semibold mb-4">赛博小镇技术架构</h3>
+                        <div class="image-placeholder">
+                            <i class="fas fa-sitemap text-4xl mb-3"></i>
+                            <p>图 15.1 赛博小镇技术架构</p>
+                            <p class="text-sm mt-2">游戏引擎 + 后端服务 + 智能体系统 + 外部服务</p>
+                        </div>
+                    </div>
+
+                    <!-- 技术选型 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold mb-4 flex items-center">
+                            <i class="fas fa-cogs mr-2 text-purple-500"></i>
+                            技术栈选择
+                        </h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="tech-stack-item">
+                                <i class="fas fa-cube text-2xl text-blue-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">Godot 4.5</h4>
+                                <p class="text-xs text-tertiary mt-1">游戏引擎</p>
+                            </div>
+                            <div class="tech-stack-item">
+                                <i class="fas fa-bolt text-2xl text-green-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">FastAPI</h4>
+                                <p class="text-xs text-tertiary mt-1">后端框架</p>
+                            </div>
+                            <div class="tech-stack-item">
+                                <i class="fas fa-robot text-2xl text-purple-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">HelloAgents</h4>
+                                <p class="text-xs text-tertiary mt-1">智能体框架</p>
+                            </div>
+                            <div class="tech-stack-item">
+                                <i class="fas fa-database text-2xl text-orange-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">Qdrant</h4>
+                                <p class="text-xs text-tertiary mt-1">向量数据库</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- NPC智能体系统 -->
+                <section id="npc-system" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-users mr-3 text-blue-500"></i>
+                        NPC智能体系统
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">基于HelloAgents的SimpleAgent</h3>
+                        <p class="text-secondary mb-4">
+                            在赛博小镇中，每个NPC都是一个独立的智能体。我们使用HelloAgents框架中的SimpleAgent来实现NPC的智能。
+                        </p>
+
+                        <div class="code-block">
+                            <pre>from hello_agents import SimpleAgent, HelloAgentsLLM
+from hello_agents.memory import MemoryManager, WorkingMemory, EpisodicMemory
+
+def create_npc_agent(npc_id: str, name: str, role: str, personality: str):
+    """创建NPC Agent"""
+    # 构建系统提示词
+    system_prompt = f"""你是{name},一位{role}。
+你的性格特点:{personality}
+
+你在Datawhale办公室工作,与同事们一起推动开源社区的发展。
+请根据你的角色和性格,自然地与玩家对话。
+记住你们之前的对话内容,保持对话的连贯性。"""
+
+    # 创建LLM实例
+    llm = HelloAgentsLLM()
+
+    # 创建记忆管理器
+    memory_manager = MemoryManager(
+        working_memory=WorkingMemory(capacity=10, ttl_minutes=120),
+        episodic_memory=EpisodicMemory(
+            db_path=f"memory_data/{npc_id}_episodic.db",
+            collection_name=f"{npc_id}_memories"
+        )
+    )
+
+    # 创建Agent
+    agent = SimpleAgent(
+        name=name,
+        llm=llm,
+        system_prompt=system_prompt,
+        memory_manager=memory_manager
+    )
+
+    return agent</pre>
+                        </div>
+                    </div>
+
+                    <!-- NPC角色介绍 -->
+                    <div class="space-y-6 mb-8">
+                        <h3 class="font-semibold">主要NPC角色</h3>
+
+                        <div class="npc-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    张
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-lg">张三 - Python工程师</h4>
+                                    <p class="text-secondary text-sm mt-1">
+                                        资深的Python工程师，负责HelloAgents框架的核心开发。性格严谨，说话直接，喜欢用技术术语。
+                                    </p>
+                                    <div class="flex items-center space-x-4 mt-3 text-xs text-tertiary">
+                                        <span><i class="fas fa-code mr-1"></i>编程专家</span>
+                                        <span><i class="fas fa-bug mr-1"></i>调试达人</span>
+                                        <span><i class="fas fa-book mr-1"></i>技术分享</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    李
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-lg">李四 - 产品经理</h4>
+                                    <p class="text-secondary text-sm mt-1">
+                                        经验丰富的产品经理，负责HelloAgents框架的产品规划和用户体验设计。性格外向，善于沟通。
+                                    </p>
+                                    <div class="flex items-center space-x-4 mt-3 text-xs text-tertiary">
+                                        <span><i class="fas fa-lightbulb mr-1"></i>需求分析</span>
+                                        <span><i class="fas fa-users mr-1"></i>用户调研</span>
+                                        <span><i class="fas fa-chart-line mr-1"></i>产品规划</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="npc-card">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    王
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-lg">王五 - UI设计师</h4>
+                                    <p class="text-secondary text-sm mt-1">
+                                        富有创意的UI设计师，负责HelloAgents框架的界面设计和视觉呈现。性格温和，审美独特。
+                                    </p>
+                                    <div class="flex items-center space-x-4 mt-3 text-xs text-tertiary">
+                                        <span><i class="fas fa-palette mr-1"></i>界面设计</span>
+                                        <span><i class="fas fa-paint-brush mr-1"></i>视觉创意</span>
+                                        <span><i class="fas fa-mobile-alt mr-1"></i>用户体验</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 记忆系统架构 -->
+                    <div class="image-container">
+                        <h3 class="font-semibold mb-4">记忆系统架构</h3>
+                        <div class="image-placeholder">
+                            <i class="fas fa-brain text-4xl mb-3"></i>
+                            <p>图 15.6 记忆系统架构</p>
+                            <p class="text-sm mt-2">短期记忆 + 长期记忆 + 向量检索</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 好感度系统 -->
+                <section id="affinity" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-heart mr-3 text-red-500"></i>
+                        好感度系统设计
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">五级好感度系统</h3>
+                        <p class="text-secondary mb-6">
+                            NPC对玩家的态度会随着互动而变化，从陌生到挚友，每个等级都有不同的分数范围和对应的行为表现。
+                        </p>
+
+                        <!-- 好感度等级 -->
+                        <div class="space-y-4">
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-gray-500 rounded-full flex items-center justify-center text-white text-sm">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <span class="font-medium">陌生</span>
+                                    </div>
+                                    <span class="text-sm text-tertiary">0-20分</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 20%"></div>
+                                </div>
+                                <p class="text-sm text-secondary mt-2">刚认识玩家，态度礼貌但保持距离。回复简短，不会主动分享个人信息。</p>
+                            </div>
+
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+                                            <i class="fas fa-user-friends"></i>
+                                        </div>
+                                        <span class="font-medium">熟悉</span>
+                                    </div>
+                                    <span class="text-sm text-tertiary">21-40分</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 40%"></div>
+                                </div>
+                                <p class="text-sm text-secondary mt-2">开始记住玩家，愿意进行简单的交流。回复变得更加自然，偶尔会分享工作相关信息。</p>
+                            </div>
+
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">
+                                            <i class="fas fa-smile"></i>
+                                        </div>
+                                        <span class="font-medium">友好</span>
+                                    </div>
+                                    <span class="text-sm text-tertiary">41-60分</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                                <p class="text-sm text-secondary mt-2">把玩家当作朋友，愿意分享更多信息。回复更加详细，会主动询问玩家的情况。</p>
+                            </div>
+
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">
+                                            <i class="fas fa-heart"></i>
+                                        </div>
+                                        <span class="font-medium">亲密</span>
+                                    </div>
+                                    <span class="text-sm text-tertiary">61-80分</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                                <p class="text-sm text-secondary mt-2">非常信任玩家，愿意分享私人话题。回复充满热情，会给玩家提供帮助和建议。</p>
+                            </div>
+
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-sm">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <span class="font-medium">挚友</span>
+                                    </div>
+                                    <span class="text-sm text-tertiary">81-100分</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%"></div>
+                                </div>
+                                <p class="text-sm text-secondary mt-2">把玩家当作最好的朋友，无话不谈。回复非常亲切，会分享内心的想法和感受。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 好感度计算逻辑 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold mb-4">好感度计算逻辑</h3>
+                        <div class="code-block">
+                            <pre>class RelationshipManager:
+    """好感度管理器"""
+
+    def analyze_sentiment(self, player_message: str, npc_reply: str) -> int:
+        """分析对话情感,返回好感度变化值"""
+        prompt = f"""分析以下对话中玩家的态度:
+玩家: {player_message}
+NPC: {npc_reply}
+
+请判断玩家的态度是:
+1. 友好(+5分): 礼貌、热情、表示感谢或赞同
+2. 中立(+2分): 普通的询问或陈述
+3. 不友好(-3分): 粗鲁、冷漠、批评或否定
+
+只返回数字,不要其他内容。"""
+
+        response = self.llm.think([{"role": "user", "content": prompt}])
+        try:
+            score_change = int(response.strip())
+            return max(-3, min(5, score_change))  # 限制在-3到5之间
+        except:
+            return 2  # 默认中立</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 后端服务 -->
+                <section id="backend" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-server mr-3 text-green-500"></i>
+                        后端服务实现
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">FastAPI应用结构</h3>
+                        <p class="text-secondary mb-4">
+                            赛博小镇的后端使用FastAPI框架构建，负责处理Godot前端的请求，调用HelloAgents的NPC Agent，管理NPC状态和好感度。
+                        </p>
+
+                        <!-- API端点 -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-tertiary rounded-lg p-4 text-center">
+                                <i class="fas fa-comments text-2xl text-blue-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">对话接口</h4>
+                                <code class="text-xs text-tertiary">POST /dialogue</code>
+                            </div>
+                            <div class="bg-tertiary rounded-lg p-4 text-center">
+                                <i class="fas fa-users text-2xl text-green-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">NPC状态</h4>
+                                <code class="text-xs text-tertiary">GET /npcs/status</code>
+                            </div>
+                            <div class="bg-tertiary rounded-lg p-4 text-center">
+                                <i class="fas fa-heart text-2xl text-red-500 mb-2"></i>
+                                <h4 class="font-medium text-sm">好感度查询</h4>
+                                <code class="text-xs text-tertiary">GET /affinity/{npc_id}</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 核心代码示例 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold mb-4">对话处理核心逻辑</h3>
+                        <div class="code-block">
+                            <pre>@app.post("/dialogue", response_model=DialogueResponse)
+async def dialogue(request: DialogueRequest):
+    """处理玩家与NPC的对话"""
+    # 1. 验证NPC是否存在
+    if not agent_manager.has_npc(request.npc_id):
+        raise HTTPException(status_code=404, detail=f"NPC {request.npc_id} 不存在")
+
+    # 2. 检查NPC是否忙碌
+    if state_manager.is_npc_busy(request.npc_id):
+        raise HTTPException(status_code=409, detail=f"NPC {request.npc_id} 正在与其他玩家对话")
+
+    # 3. 标记NPC为忙碌状态
+    state_manager.set_npc_busy(request.npc_id, True)
+
+    try:
+        # 4. 获取当前好感度
+        affinity_info = relationship_manager.get_affinity(
+            request.npc_id,
+            request.player_name
+        )
+
+        # 5. 调用Agent生成回复
+        agent = agent_manager.get_agent(request.npc_id, affinity_info["level"])
+        reply = agent.run(request.player_message)
+
+        # 6. 更新好感度
+        new_affinity = relationship_manager.update_affinity(
+            request.npc_id,
+            request.player_name,
+            request.player_message,
+            reply
+        )
+
+        # 7. 记录日志
+        dialogue_logger.log_dialogue(
+            npc_id=request.npc_id,
+            player_name=request.player_name,
+            player_message=request.player_message,
+            npc_reply=reply,
+            affinity_info=new_affinity
+        )
+
+        # 8. 返回回复
+        return DialogueResponse(
+            npc_reply=reply,
+            affinity_level=new_affinity["level"],
+            affinity_score=new_affinity["score"]
+        )
+
+    finally:
+        # 9. 释放NPC状态
+        state_manager.set_npc_busy(request.npc_id, False)</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Godot游戏引擎 -->
+                <section id="godot" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-gamepad mr-3 text-purple-500"></i>
+                        Godot游戏场景构建
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">为什么选择Godot？</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium">开源免费</h4>
+                                    <p class="text-sm text-secondary">MIT许可证，无版权费用</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium">2D优势</h4>
+                                    <p class="text-sm text-secondary">成熟的2D游戏开发支持</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium">学习成本低</h4>
+                                    <p class="text-sm text-secondary">GDScript语法类似Python</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <h4 class="font-medium">易于集成</h4>
+                                    <p class="text-sm text-secondary">支持HTTP通信</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 场景结构 -->
+                    <div class="image-container">
+                        <h3 class="font-semibold mb-4">游戏场景结构</h3>
+                        <div class="image-placeholder">
+                            <i class="fas fa-cube text-4xl mb-3"></i>
+                            <p>图 15.12 赛博小镇的四个核心场景</p>
+                            <p class="text-sm mt-2">Main场景 + Player场景 + NPC场景 + DialogueUI场景</p>
+                        </div>
+                    </div>
+
+                    <!-- 玩家控制代码 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold mb-4">玩家控制实现</h3>
+                        <div class="code-block">
+                            <pre>extends CharacterBody2D
+
+# 移动速度
+@export var speed: float = 200.0
+
+# 当前可交互的NPC
+var nearby_npc: Node = null
+
+# 交互状态(交互时禁用移动)
+var is_interacting: bool = false
+
+func _physics_process(_delta: float):
+    # 如果正在交互,禁用移动
+    if is_interacting:
+        velocity = Vector2.ZERO
+        move_and_slide()
+        return
+
+    # 获取输入方向
+    var input_direction = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+
+    # 设置速度
+    velocity = input_direction * speed
+
+    # 移动
+    move_and_slide()
+
+    # 更新动画和朝向
+    update_animation(input_direction)
+
+func _input(event: InputEvent):
+    # 按E键与NPC交互
+    if event is InputEventKey:
+        if event.pressed and not event.echo:
+            if event.keycode == KEY_E or event.keycode == KEY_ENTER:
+                if nearby_npc != null:
+                    interact_with_npc()</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 前后端通信 -->
+                <section id="communication" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-exchange-alt mr-3 text-orange-500"></i>
+                        前后端通信实现
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">通信架构</h3>
+                        <p class="text-secondary mb-4">
+                            Godot前端与FastAPI后端通过HTTP REST API进行通信，使用异步请求和信号系统保证游戏流畅性。
+                        </p>
+
+                        <!-- 通信流程 -->
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">1</div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">玩家交互</h4>
+                                    <p class="text-sm text-secondary">玩家按E键与NPC发起交互</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm">2</div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">发送请求</h4>
+                                    <p class="text-sm text-secondary">Godot发送HTTP请求到FastAPI后端</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-sm">3</div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">AI处理</h4>
+                                    <p class="text-sm text-secondary">后端调用HelloAgents生成回复</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm">4</div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium">返回结果</h4>
+                                    <p class="text-sm text-secondary">NPC回复返回给Godot前端显示</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- API客户端代码 -->
+                    <div class="bg-secondary rounded-xl p-6 border border-custom">
+                        <h3 class="font-semibold mb-4">API客户端封装</h3>
+                        <div class="code-block">
+                            <pre># api_client.gd
+extends Node
+
+# 信号定义
+signal chat_response_received(npc_name: String, message: String)
+signal chat_error(error_message: String)
+
+func send_chat(npc_name: String, message: String) -> void:
+    """发送对话请求"""
+    var data = {
+        "npc_name": npc_name,
+        "message": message
+    }
+
+    var json_string = JSON.stringify(data)
+    var headers = ["Content-Type: application/json"]
+
+    var error = http_chat.request(
+        Config.API_CHAT,
+        headers,
+        HTTPClient.METHOD_POST,
+        json_string
+    )
+
+    if error != OK:
+        print("[ERROR] 发送对话请求失败: ", error)
+        chat_error.emit("网络请求失败")</pre>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 快速开始 -->
+                <section id="quickstart" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-rocket mr-3 text-green-500"></i>
+                        快速体验：5分钟运行项目
+                    </h2>
+
+                    <div class="bg-gradient-to-r from-green-500 to-blue-500 p-1 rounded-xl">
+                        <div class="bg-secondary rounded-xl p-6">
+                            <h3 class="font-semibold mb-4 text-lg">环境要求</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-tertiary rounded-lg p-4 text-center">
+                                    <i class="fas fa-cube text-2xl text-blue-500 mb-2"></i>
+                                    <h4 class="font-medium">Godot 4.2+</h4>
+                                    <p class="text-sm text-tertiary">游戏引擎</p>
+                                </div>
+                                <div class="bg-tertiary rounded-lg p-4 text-center">
+                                    <i class="fas fa-python text-2xl text-green-500 mb-2"></i>
+                                    <h4 class="font-medium">Python 3.10+</h4>
+                                    <p class="text-sm text-tertiary">后端运行环境</p>
+                                </div>
+                                <div class="bg-tertiary rounded-lg p-4 text-center">
+                                    <i class="fas fa-key text-2xl text-purple-500 mb-2"></i>
+                                    <h4 class="font-medium">LLM API密钥</h4>
+                                    <p class="text-sm text-tertiary">OpenAI/DeepSeek等</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div class="bg-tertiary rounded-lg p-4">
+                                    <h4 class="font-medium mb-2">1. 启动后端服务</h4>
+                                    <div class="code-block text-sm">
+                                        <pre>cd Helloagents-AI-Town/backend
+pip install -r requirements.txt
+cp .env.example .env
+# 编辑.env文件，填写你的API密钥
+python main.py</pre>
+                                    </div>
+                                </div>
+
+                                <div class="bg-tertiary rounded-lg p-4">
+                                    <h4 class="font-medium mb-2">2. 启动Godot游戏</h4>
+                                    <p class="text-sm text-secondary mb-2">
+                                        打开Godot引擎，导入项目，按F5运行游戏
+                                    </p>
+                                    <div class="flex items-center space-x-2 text-sm text-tertiary">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span>使用WASD移动，E键与NPC交互</span>
+                                    </div>
+                                </div>
+
+                                <div class="bg-tertiary rounded-lg p-4">
+                                    <h4 class="font-medium mb-2">3. 开始体验</h4>
+                                    <p class="text-sm text-secondary">
+                                        进入Datawhale办公室，与张三、李四、王五三位NPC同事进行自然语言对话！
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 总结与展望 -->
+                <section id="summary" class="animate-fade-in">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-flag-checkered mr-3 text-red-500"></i>
+                        总结与展望
+                    </h2>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">技术成果</h3>
+                        <p class="text-secondary mb-4">
+                            赛博小镇项目成功将HelloAgents框架与Godot游戏引擎结合，创造出了一个充满生命力的虚拟世界。我们实现了：
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span class="text-sm">智能NPC对话系统</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span class="text-sm">记忆与好感度系统</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span class="text-sm">游戏化交互体验</span>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span class="text-sm">实时日志系统</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-secondary rounded-xl p-6 border border-custom mb-6">
+                        <h3 class="font-semibold mb-4">扩展方向</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <h4 class="font-medium mb-2">多人在线支持</h4>
+                                <p class="text-sm text-secondary">多个玩家可以同时进入同一个办公室，与NPC和其他玩家互动</p>
+                            </div>
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <h4 class="font-medium mb-2">任务系统</h4>
+                                <p class="text-sm text-secondary">NPC可以提供特殊任务，完成后获得奖励和好感度提升</p>
+                            </div>
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <h4 class="font-medium mb-2">NPC之间互动</h4>
+                                <p class="text-sm text-secondary">让NPC之间也能互动，展示更生动的办公室生态</p>
+                            </div>
+                            <div class="bg-tertiary rounded-lg p-4">
+                                <h4 class="font-medium mb-2">更大的世界</h4>
+                                <p class="text-sm text-secondary">扩展到咖啡厅、图书馆、公园等不同的场景</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 p-1 rounded-xl">
+                        <div class="bg-secondary rounded-xl p-6 text-center">
+                            <h3 class="font-semibold mb-2">第十五章 完</h3>
+                            <p class="text-secondary">
+                                在第五部分的毕业设计章节，我们将会学习如何用单智能体和多智能体构造通用智能体
+                            </p>
+                            <div class="mt-4">
+                                <i class="fas fa-arrow-right text-2xl text-blue-500"></i>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="bg-secondary border-t border-custom mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <i class="fas fa-robot text-blue-500"></i>
+                    <span class="font-medium">Hello Agents</span>
+                    <span class="text-tertiary">|</span>
+                    <span class="text-sm text-secondary">AI智能体开发教程</span>
+                </div>
+
+                <div class="flex items-center space-x-6 text-sm text-secondary">
+                    <a href="#" class="hover:text-blue-500 transition-colors">
+                        <i class="fab fa-github mr-1"></i>GitHub
+                    </a>
+                    <a href="#" class="hover:text-blue-500 transition-colors">
+                        <i class="fas fa-book mr-1"></i>文档
+                    </a>
+                    <a href="#" class="hover:text-blue-500 transition-colors">
+                        <i class="fas fa-comments mr-1"></i>社区
+                    </a>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-custom text-center text-sm text-tertiary">
+                <p>© 2024 Hello Agents. 构建智能体，创造未来。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 主题切换
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const body = document.body;
+
+        // 检查系统主题偏好
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const savedTheme = localStorage.getItem('theme');
+
+        // 初始化主题
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        } else if (prefersDark) {
+            body.setAttribute('data-theme', 'dark');
+            updateThemeIcon('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+
+        function updateThemeIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.className = 'fas fa-sun text-yellow-500';
+            } else {
+                themeIcon.className = 'fas fa-moon text-yellow-500';
+            }
+        }
+
+        // 目录导航
+        const tocItems = document.querySelectorAll('.toc-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        tocItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const targetId = item.getAttribute('data-target');
+                const targetSection = document.getElementById(targetId);
+
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+
+                    // 更新活动状态
+                    tocItems.forEach(toc => toc.classList.remove('active'));
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // 滚动监听，更新目录活动状态
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -70% 0px',
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    tocItems.forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('data-target') === id) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // 搜索功能
+        const searchInput = document.querySelector('input[placeholder="搜索内容..."]');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+
+                // 这里可以实现搜索逻辑
+                // 搜索章节标题、内容等
+                console.log('搜索:', query);
+            });
+        }
+
+        // 页面加载动画
+        window.addEventListener('load', () => {
+            const elements = document.querySelectorAll('.animate-fade-in');
+            elements.forEach((el, index) => {
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+
+        // 代码复制功能
+        const codeBlocks = document.querySelectorAll('.code-block');
+        codeBlocks.forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 transition-colors';
+            button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+            button.style.position = 'absolute';
+            button.style.top = '8px';
+            button.style.right = '8px';
+
+            block.style.position = 'relative';
+            block.appendChild(button);
+
+            button.addEventListener('click', () => {
+                const code = block.querySelector('pre').textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>已复制';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+                    }, 2000);
+                });
+            });
+        });
+
+        // 图片懒加载
+        const images = document.querySelectorAll('img[data-src]');
+        const imageObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src;
+                    img.classList.remove('lazy');
+                    imageObserver.unobserve(img);
+                }
+            });
+        });
+
+        images.forEach(img => imageObserver.observe(img));
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

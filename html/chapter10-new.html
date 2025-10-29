@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十章 智能体通信协议 - HelloAgents</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --bg-tertiary: #f1f5f9;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-tertiary: #64748b;
+            --border: #e2e8f0;
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --code-bg: #1e293b;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-tertiary: #94a3b8;
+            --border: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --code-bg: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .protocol-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .protocol-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 32px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 20px;
+            width: 2px;
+            height: calc(100% + 12px);
+            background: var(--border);
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent);
+            color: white;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-tertiary);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .comparison-table tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            border-radius: 8px;
+            padding: 20px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+
+        .floating-nav {
+            position: fixed;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            z-index: 1000;
+        }
+
+        .floating-nav-item {
+            display: block;
+            padding: 8px 12px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .floating-nav-item:hover,
+        .floating-nav-item.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 1001;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-gradient::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .protocol-diagram {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .protocol-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .protocol-node {
+            background: var(--bg-primary);
+            border: 2px solid var(--accent);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            min-width: 120px;
+            position: relative;
+        }
+
+        .protocol-arrow {
+            color: var(--accent);
+            font-size: 24px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-button.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+
+    <!-- Floating Navigation -->
+    <nav class="floating-nav hidden lg:block">
+        <a href="#overview" class="floating-nav-item active">概述</a>
+        <a href="#protocols" class="floating-nav-item">协议对比</a>
+        <a href="#mcp" class="floating-nav-item">MCP</a>
+        <a href="#a2a" class="floating-nav-item">A2A</a>
+        <a href="#anp" class="floating-nav-item">ANP</a>
+        <a href="#implementation" class="floating-nav-item">实现</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-20 relative">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <h1 class="text-5xl font-bold mb-6">第十章 智能体通信协议</h1>
+                <p class="text-xl mb-8 opacity-90">构建智能体之间的桥梁 - 掌握MCP、A2A与ANP协议</p>
+                <div class="flex justify-center gap-4 mb-12">
+                    <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur">
+                        <i class="fas fa-network-wired mr-2"></i>通信协议
+                    </span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur">
+                        <i class="fas fa-plug mr-2"></i>互操作性
+                    </span>
+                    <span class="bg-white/20 px-4 py-2 rounded-full backdrop-blur">
+                        <i class="fas fa-cogs mr-2"></i>架构设计
+                    </span>
+                </div>
+                <div class="flex justify-center gap-6">
+                    <button onclick="scrollToSection('protocols')" class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                        <i class="fas fa-rocket mr-2"></i>开始学习
+                    </button>
+                    <button onclick="scrollToSection('implementation')" class="border-2 border-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition">
+                        <i class="fas fa-code mr-2"></i>实践案例
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="py-20" style="background: var(--bg-secondary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>为什么需要通信协议？
+                </h2>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="protocol-card card-hover">
+                        <div class="feature-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">工具集成困境</h3>
+                        <p style="color: var(--text-secondary);">
+                            传统方式需要为每个外部服务编写专门的适配器，代码重复且难以维护
+                        </p>
+                    </div>
+
+                    <div class="protocol-card card-hover">
+                        <div class="feature-icon">
+                            <i class="fas fa-expand-arrows-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">能力扩展瓶颈</h3>
+                        <p style="color: var(--text-secondary);">
+                            智能体能力被限制在预先定义的工具集内，无法动态发现和使用新服务
+                        </p>
+                    </div>
+
+                    <div class="protocol-card card-hover">
+                        <div class="feature-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">协作机制缺失</h3>
+                        <p style="color: var(--text-secondary);">
+                            复杂任务需要多个专业智能体协作时，缺乏标准的通信和协调机制
+                        </p>
+                    </div>
+                </div>
+
+                <div class="protocol-diagram">
+                    <h3 class="text-2xl font-semibold mb-6 text-center" style="color: var(--text-primary);">HelloAgents 通信协议架构</h3>
+                    <div class="protocol-flow">
+                        <div class="protocol-node">
+                            <i class="fas fa-layer-group text-2xl mb-2" style="color: var(--accent);"></i>
+                            <div class="font-semibold">协议实现层</div>
+                            <div class="text-sm mt-2" style="color: var(--text-tertiary);">MCP、A2A、ANP</div>
+                        </div>
+                        <div class="protocol-arrow">→</div>
+                        <div class="protocol-node">
+                            <i class="fas fa-tools text-2xl mb-2" style="color: var(--accent);"></i>
+                            <div class="font-semibold">工具封装层</div>
+                            <div class="text-sm mt-2" style="color: var(--text-tertiary);">统一Tool接口</div>
+                        </div>
+                        <div class="protocol-arrow">→</div>
+                        <div class="protocol-node">
+                            <i class="fas fa-robot text-2xl mb-2" style="color: var(--accent);"></i>
+                            <div class="font-semibold">智能体集成层</div>
+                            <div class="text-sm mt-2" style="color: var(--text-tertiary);">无缝集成</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Protocol Comparison Section -->
+    <section id="protocols" class="py-20" style="background: var(--bg-primary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-balance-scale text-blue-500 mr-3"></i>三种协议设计理念比较
+                </h2>
+
+                <!-- Tabs -->
+                <div class="flex justify-center mb-12">
+                    <div class="bg-gray-100 dark:bg-gray-800 rounded-lg p-1 inline-flex">
+                        <button class="tab-button active rounded-lg mr-1" onclick="showTab('mcp-tab')">MCP</button>
+                        <button class="tab-button rounded-lg mr-1" onclick="showTab('a2a-tab')">A2A</button>
+                        <button class="tab-button rounded-lg" onclick="showTab('anp-tab')">ANP</button>
+                    </div>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="mcp-tab" class="tab-content active">
+                    <div class="protocol-card mb-8">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                                    <i class="fas fa-plug text-green-500 mr-2"></i>MCP - 智能体与工具的桥梁
+                                </h3>
+                                <p class="mb-4" style="color: var(--text-secondary);">
+                                    标准化智能体与外部工具/资源的通信方式，像USB-C统一设备连接一样，让不同模型无缝访问相同工具。
+                                </p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">统一工具访问接口</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">丰富的上下文共享</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">模型无关的标准化</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="protocol-diagram">
+                                    <h4 class="font-semibold mb-4 text-center">MCP 三层架构</h4>
+                                    <div class="space-y-4">
+                                        <div class="protocol-node">
+                                            <i class="fas fa-desktop mr-2"></i>Host - 用户交互界面
+                                        </div>
+                                        <div class="text-center">↓</div>
+                                        <div class="protocol-node">
+                                            <i class="fas fa-link mr-2"></i>Client - 协议通信层
+                                        </div>
+                                        <div class="text-center">↓</div>
+                                        <div class="protocol-node">
+                                            <i class="fas fa-server mr-2"></i>Server - 功能实现层
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="a2a-tab" class="tab-content">
+                    <div class="protocol-card mb-8">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                                    <i class="fas fa-comments text-purple-500 mr-2"></i>A2A - 智能体间的对话
+                                </h3>
+                                <p class="mb-4" style="color: var(--text-secondary);">
+                                    实现智能体之间的点对点通信，让智能体像人类团队一样进行对话、协商和协作。
+                                </p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-purple-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">对等通信架构</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-purple-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">任务协商机制</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-purple-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">去中心化协作</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="protocol-diagram">
+                                    <h4 class="font-semibold mb-4 text-center">A2A 网状拓扑</h4>
+                                    <div class="relative">
+                                        <div class="protocol-node absolute top-4 left-1/2 transform -translate-x-1/2">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div class="protocol-node absolute top-20 left-1/4">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div class="protocol-node absolute top-20 right-1/4">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div class="protocol-node absolute bottom-4 left-1/3">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                        <div class="protocol-node absolute bottom-4 right-1/3">
+                                            <i class="fas fa-robot"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="anp-tab" class="tab-content">
+                    <div class="protocol-card mb-8">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                                    <i class="fas fa-globe text-orange-500 mr-2"></i>ANP - 智能体网络的基础设施
+                                </h3>
+                                <p class="mb-4" style="color: var(--text-secondary);">
+                                    构建大规模智能体网络的基础设施，提供服务发现、路由选择和网络扩展机制。
+                                </p>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">去中心化服务发现</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">智能路由选择</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <i class="fas fa-check-circle text-orange-500 mr-3"></i>
+                                        <span style="color: var(--text-primary);">动态网络扩展</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="protocol-diagram">
+                                    <h4 class="font-semibold mb-4 text-center">ANP 网络架构</h4>
+                                    <div class="protocol-flow">
+                                        <div class="protocol-node">
+                                            <i class="fas fa-search mr-2"></i>发现服务
+                                        </div>
+                                        <div class="protocol-arrow">⇄</div>
+                                        <div class="protocol-node">
+                                            <i class="fas fa-id-card mr-2"></i>DID验证
+                                        </div>
+                                        <div class="protocol-arrow">⇄</div>
+                                        <div class="protocol-node">
+                                            <i class="fas fa-exchange-alt mr-2"></i>服务调用
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="overflow-x-auto">
+                    <table class="comparison-table">
+                        <thead>
+                            <tr>
+                                <th>特性</th>
+                                <th>MCP</th>
+                                <th>A2A</th>
+                                <th>ANP</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>设计目标</strong></td>
+                                <td>智能体与工具的标准化通信</td>
+                                <td>智能体间的点对点协作</td>
+                                <td>大规模智能体网络基础设施</td>
+                            </tr>
+                            <tr>
+                                <td><strong>适用场景</strong></td>
+                                <td>单个智能体扩展能力</td>
+                                <td>小团队紧密协作</td>
+                                <td>大规模开放网络</td>
+                            </tr>
+                            <tr>
+                                <td><strong>核心抽象</strong></td>
+                                <td>Tools, Resources, Prompts</td>
+                                <td>Tasks, Artifacts</td>
+                                <td>Services, Agents, Messages</td>
+                            </tr>
+                            <tr>
+                                <td><strong>网络拓扑</strong></td>
+                                <td>星型（中心化）</td>
+                                <td>网状（去中心化）</td>
+                                <td>动态发现网络</td>
+                            </tr>
+                            <tr>
+                                <td><strong>生态系统</strong></td>
+                                <td>成熟（丰富的社区服务器）</td>
+                                <td>发展中（Google推动）</td>
+                                <td>初期（概念性框架）</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MCP Deep Dive -->
+    <section id="mcp" class="py-20" style="background: var(--bg-secondary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-plug text-green-500 mr-3"></i>MCP协议深度解析
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">MCP 核心能力</h3>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">工具（Tools）</h4>
+                                <p style="color: var(--text-secondary);">主动执行操作，如文件读取、数据处理、API调用</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">资源（Resources）</h4>
+                                <p style="color: var(--text-secondary);">被动提供数据，如数据库记录、配置文件</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">提示（Prompts）</h4>
+                                <p style="color: var(--text-secondary);">指导性模板，如代码审查、报告生成</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">MCP vs Function Calling</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <h4 class="font-semibold mb-2" style="color: var(--text-primary);">Function Calling</h4>
+                                <ul class="text-sm space-y-1" style="color: var(--text-secondary);">
+                                    <li>• 模型特定实现</li>
+                                    <li>• 需要为每个模型适配</li>
+                                    <li>• 基础的工具调用</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <h4 class="font-semibold mb-2" style="color: var(--text-primary);">MCP协议</h4>
+                                <ul class="text-sm space-y-1" style="color: var(--text-secondary);">
+                                    <li>• 跨模型标准化</li>
+                                    <li>• 丰富的上下文共享</li>
+                                    <li>• 动态工具发现</li>
+                                    <li>• 社区生态支持</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Example -->
+                <div class="protocol-card">
+                    <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-code text-blue-500 mr-2"></i>使用MCP工具示例
+                    </h3>
+                    <div class="code-block">
+                        <pre><code class="language-python">from hello_agents import SimpleAgent, HelloAgentsLLM
+from hello_agents.tools import MCPTool
+
+# 创建智能体
+agent = SimpleAgent(name="助手", llm=HelloAgentsLLM())
+
+# 添加GitHub MCP工具
+github_tool = MCPTool(
+    name="github",
+    server_command=["npx", "-y", "@modelcontextprotocol/server-github"]
+)
+agent.add_tool(github_tool)
+
+# 智能体自动使用MCP工具
+response = agent.run("搜索AI agents相关的GitHub仓库")
+print(response)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- A2A Deep Dive -->
+    <section id="a2a" class="py-20" style="background: var(--bg-primary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-comments text-purple-500 mr-3"></i>A2A协议实战
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">任务生命周期</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">1</div>
+                                <span style="color: var(--text-primary);">创建</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">2</div>
+                                <span style="color: var(--text-primary);">协商</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">3</div>
+                                <span style="color: var(--text-primary);">代理</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">4</div>
+                                <span style="color: var(--text-primary);">执行中</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">5</div>
+                                <span style="color: var(--text-primary);">完成/失败</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">A2A 请求流程</h3>
+                        <div class="space-y-4">
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">代理发现</h4>
+                                <p style="color: var(--text-secondary);">客户端发现可用的Agent服务</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">身份验证</h4>
+                                <p style="color: var(--text-secondary);">基于DID的去中心化身份验证</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">消息发送</h4>
+                                <p style="color: var(--text-secondary);">通过标准API发送请求</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4 class="font-semibold" style="color: var(--text-primary);">流式响应</h4>
+                                <p style="color: var(--text-secondary);">接收处理结果和状态更新</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Service Example -->
+                <div class="protocol-card">
+                    <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-headset text-purple-500 mr-2"></i>智能客服系统案例
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="text-center p-6 rounded-lg" style="background: var(--bg-tertiary);">
+                            <i class="fas fa-user-tie text-4xl text-purple-500 mb-3"></i>
+                            <h4 class="font-semibold mb-2">接待员</h4>
+                            <p class="text-sm" style="color: var(--text-secondary);">分析问题类型，分配给专业专家</p>
+                        </div>
+                        <div class="text-center p-6 rounded-lg" style="background: var(--bg-tertiary);">
+                            <i class="fas fa-cogs text-4xl text-purple-500 mb-3"></i>
+                            <h4 class="font-semibold mb-2">技术专家</h4>
+                            <p class="text-sm" style="color: var(--text-secondary);">回答技术相关问题</p>
+                        </div>
+                        <div class="text-center p-6 rounded-lg" style="background: var(--bg-tertiary);">
+                            <i class="fas fa-shopping-cart text-4xl text-purple-500 mb-3"></i>
+                            <h4 class="font-semibold mb-2">销售顾问</h4>
+                            <p class="text-sm" style="color: var(--text-secondary);">处理价格和购买咨询</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ANP Deep Dive -->
+    <section id="anp" class="py-20" style="background: var(--bg-secondary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-globe text-orange-500 mr-3"></i>ANP协议与大规模网络
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">核心概念</h3>
+                        <div class="space-y-4">
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <h4 class="font-semibold mb-2" style="color: var(--text-primary);">
+                                    <i class="fas fa-search text-orange-500 mr-2"></i>服务发现
+                                </h4>
+                                <p style="color: var(--text-secondary);">基于语义或功能描述查找合适的智能体</p>
+                            </div>
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <h4 class="font-semibold mb-2" style="color: var(--text-primary);">
+                                    <i class="fas fa-route text-orange-500 mr-2"></i>智能路由
+                                </h4>
+                                <p style="color: var(--text-secondary);">根据负载、成本等因素选择最优服务</p>
+                            </div>
+                            <div class="p-4 rounded-lg" style="background: var(--bg-tertiary);">
+                                <h4 class="font-semibold mb-2" style="color: var(--text-primary);">
+                                    <i class="fas fa-id-badge text-orange-500 mr-2"></i>DID身份验证
+                                </h4>
+                                <p style="color: var(--text-secondary);">去中心化的身份验证机制</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="protocol-card">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">ANP工作流程</h3>
+                        <div class="protocol-diagram">
+                            <div class="space-y-3">
+                                <div class="protocol-node">
+                                    <i class="fas fa-search mr-2"></i>1. 发现服务
+                                    <div class="text-xs mt-1" style="color: var(--text-tertiary);">查询服务注册表</div>
+                                </div>
+                                <div class="text-center protocol-arrow">↓</div>
+                                <div class="protocol-node">
+                                    <i class="fas fa-shield-alt mr-2"></i>2. 身份验证
+                                    <div class="text-xs mt-1" style="color: var(--text-tertiary);">DID签名验证</div>
+                                </div>
+                                <div class="text-center protocol-arrow">↓</div>
+                                <div class="protocol-node">
+                                    <i class="fas fa-exchange-alt mr-2"></i>3. 服务调用
+                                    <div class="text-xs mt-1" style="color: var(--text-tertiary);">标准化接口通信</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load Balancing Example -->
+                <div class="protocol-card">
+                    <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-balance-scale text-orange-500 mr-2"></i>负载均衡示例
+                    </h3>
+                    <div class="code-block">
+                        <pre><code class="language-python"># 负载均衡函数
+def get_best_server():
+    """选择负载最低的服务器"""
+    servers = discovery.discover_services(service_type="api")
+    if not servers:
+        return None
+
+    best = min(servers, key=lambda s: s.metadata.get("load", 1.0))
+    return best
+
+# 模拟请求分配
+for i in range(10):
+    server = get_best_server()
+    print(f"请求 {i+1} -> {server.service_name} (负载: {server.metadata['load']:.2f})")</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Implementation Section -->
+    <section id="implementation" class="py-20" style="background: var(--bg-primary);">
+        <div class="container mx-auto px-6">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-8 text-center" style="color: var(--text-primary);">
+                    <i class="fas fa-code text-blue-500 mr-3"></i>实战案例与最佳实践
+                </h2>
+
+                <!-- Weather MCP Server -->
+                <div class="protocol-card mb-8">
+                    <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-cloud-sun text-yellow-500 mr-2"></i>天气查询MCP服务器
+                    </h3>
+                    <p class="mb-6" style="color: var(--text-secondary);">
+                        构建一个真实的天气查询MCP服务器，展示如何将业务逻辑封装为标准MCP工具。
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3" style="color: var(--text-primary);">服务器代码</h4>
+                            <div class="code-block">
+                                <pre><code class="language-python">from hello_agents.protocols import MCPServer
+
+# 创建MCP服务器
+weather_server = MCPServer(
+    name="weather-server",
+    description="天气查询服务"
+)
+
+def get_weather(city: str) -> str:
+    """获取指定城市的天气"""
+    # 实际天气查询逻辑
+    return json.dumps(weather_data)
+
+# 注册工具
+weather_server.add_tool(get_weather)</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3" style="color: var(--text-primary);">使用示例</h4>
+                            <div class="code-block">
+                                <pre><code class="language-python">from hello_agents.tools import MCPTool
+
+# 添加天气工具到Agent
+weather_tool = MCPTool(
+    server_command=["python", "weather_server.py"]
+)
+agent.add_tool(weather_tool)
+
+# Agent可以查询天气
+response = agent.run("北京今天天气怎么样？")</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Multi-Agent Document Assistant -->
+                <div class="protocol-card mb-8">
+                    <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-file-alt text-green-500 mr-2"></i>多智能体文档助手
+                    </h3>
+                    <p class="mb-6" style="color: var(--text-secondary);">
+                        结合MCP和A2A协议，构建一个包含GitHub搜索专家和文档生成专家的协作系统。
+                    </p>
+                    <div class="protocol-diagram">
+                        <div class="protocol-flow">
+                            <div class="protocol-node">
+                                <i class="fab fa-github mr-2"></i>GitHub搜索专家
+                            </div>
+                            <div class="protocol-arrow">→</div>
+                            <div class="protocol-node">
+                                <i class="fas fa-file-alt mr-2"></i>文档生成专家
+                            </div>
+                            <div class="protocol-arrow">→</div>
+                            <div class="protocol-node">
+                                <i class="fas fa-save mr-2"></i>保存报告
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Best Practices -->
+                <div class="protocol-card">
+                    <h3 class="text-2xl font-semibold mb-4" style="color: var(--text-primary);">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>最佳实践建议
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-3" style="color: var(--text-primary);">开发建议</h4>
+                            <ul class="space-y-2" style="color: var(--text-secondary);">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>优先利用成熟的社区MCP服务</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>根据系统规模选择合适的协议</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>为自定义服务器编写清晰的文档</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                    <span>实现适当的错误处理和重试机制</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-3" style="color: var(--text-primary);">学习资源</h4>
+                            <ul class="space-y-2">
+                                <li>
+                                    <a href="https://modelcontextprotocol.io" target="_blank" class="flex items-center text-blue-500 hover:text-blue-600">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        MCP官方文档
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://a2a-protocol.org" target="_blank" class="flex items-center text-blue-500 hover:text-blue-600">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        A2A协议官网
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://agent-network-protocol.com" target="_blank" class="flex items-center text-blue-500 hover:text-blue-600">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        ANP技术白皮书
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://smithery.ai" target="_blank" class="flex items-center text-blue-500 hover:text-blue-600">
+                                        <i class="fas fa-external-link-alt mr-2"></i>
+                                        Smithery发布平台
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary Section -->
+    <section class="py-20 gradient-bg text-white">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-6">本章总结</h2>
+                <p class="text-xl mb-8 opacity-90">
+                    掌握智能体通信协议，构建更强大的AI系统
+                </p>
+
+                <div class="grid md:grid-cols-3 gap-8 mb-12">
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <i class="fas fa-graduation-cap text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">核心概念</h3>
+                        <p class="opacity-90">理解三种协议的设计理念和应用场景</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <i class="fas fa-hands-helping text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">实践技能</h3>
+                        <p class="opacity-90">构建和使用自定义MCP服务器</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <i class="fas fa-rocket text-4xl mb-4"></i>
+                        <h3 class="text-xl font-semibold mb-2">项目实战</h3>
+                        <p class="opacity-90">创建多智能体协作系统</p>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur rounded-lg p-8">
+                    <h3 class="text-2xl font-semibold mb-4">下一步行动</h3>
+                    <div class="flex justify-center gap-6">
+                        <button onclick="showNextChapter()" class="bg-white text-purple-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                            <i class="fas fa-arrow-right mr-2"></i>继续学习
+                        </button>
+                        <button onclick="showExercises()" class="border-2 border-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition">
+                            <i class="fas fa-tasks mr-2"></i>练习题
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12" style="background: var(--bg-tertiary);">
+        <div class="container mx-auto px-6">
+            <div class="text-center">
+                <p style="color: var(--text-secondary);">
+                    <i class="fas fa-heart text-red-500 mx-1"></i>
+                    HelloAgents - 让AI智能体开发更简单
+                </p>
+                <div class="mt-4 flex justify-center gap-6">
+                    <a href="https://github.com/datawhalechina/hello-agents" target="_blank" class="hover:text-blue-500 transition">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="hover:text-blue-500 transition">
+                        <i class="fas fa-book text-xl"></i>
+                    </a>
+                    <a href="#" class="hover:text-blue-500 transition">
+                        <i class="fas fa-comments text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.setAttribute('data-theme', newTheme);
+
+            const icon = document.getElementById('theme-icon');
+            icon.className = newTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+        }
+
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            document.getElementById('theme-icon').className = savedTheme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+
+            // Check system preference
+            if (savedTheme === 'system') {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.body.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
+            }
+        });
+
+        // Tab functionality
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Smooth scroll
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Floating navigation active state
+        window.addEventListener('scroll', function() {
+            const sections = ['overview', 'protocols', 'mcp', 'a2a', 'anp', 'implementation'];
+            const navItems = document.querySelectorAll('.floating-nav-item');
+
+            let current = '';
+            sections.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    const rect = section.getBoundingClientRect();
+                    if (rect.top <= 100 && rect.bottom >= 100) {
+                        current = sectionId;
+                    }
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === '#' + current) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Navigation click handlers
+        document.querySelectorAll('.floating-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                scrollToSection(targetId);
+            });
+        });
+
+        // Placeholder functions for demo
+        function showNextChapter() {
+            alert('下一章即将推出！敬请期待。');
+        }
+
+        function showExercises() {
+            alert('练习题正在准备中，请稍后查看。');
+        }
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all protocol cards
+        document.querySelectorAll('.protocol-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>

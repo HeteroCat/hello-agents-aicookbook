@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第八章 记忆与检索 - HelloAgents框架学习教程</title>
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: all 0.3s ease;
+        }
+
+        /* Code block styling */
+        pre {
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        /* Animation classes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark .glass {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Custom gradient backgrounds */
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hover effects */
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Memory system visualization */
+        .memory-box {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .memory-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .memory-box:hover::before {
+            left: 100%;
+        }
+
+        /* RAG pipeline visualization */
+        .pipeline-item {
+            position: relative;
+        }
+
+        .pipeline-item::after {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid #e5e7eb;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+        }
+
+        .dark .pipeline-item::after {
+            border-left-color: #374151;
+        }
+
+        .pipeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <!-- Navigation Header -->
+    <header class="fixed top-0 w-full glass z-50 shadow-lg">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <i class="fas fa-brain text-2xl gradient-text"></i>
+                    <h1 class="text-xl font-bold">HelloAgents - 第八章</h1>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="#introduction" class="hover:text-purple-600 dark:hover:text-purple-400">简介</a>
+                    <a href="#memory-system" class="hover:text-purple-600 dark:hover:text-purple-400">记忆系统</a>
+                    <a href="#rag-system" class="hover:text-purple-600 dark:hover:text-purple-400">RAG系统</a>
+                    <a href="#case-study" class="hover:text-purple-600 dark:hover:text-purple-400">实战案例</a>
+                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="introduction" class="gradient-bg text-white pt-24 pb-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center fade-in">
+                <h1 class="text-5xl font-bold mb-6">第八章 记忆与检索</h1>
+                <p class="text-xl mb-8">让智能体拥有记忆和知识检索能力</p>
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <div class="glass px-6 py-3 rounded-full">
+                        <i class="fas fa-brain mr-2"></i>记忆系统
+                    </div>
+                    <div class="glass px-6 py-3 rounded-full">
+                        <i class="fas fa-search mr-2"></i>RAG技术
+                    </div>
+                    <div class="glass px-6 py-3 rounded-full">
+                        <i class="fas fa-database mr-2"></i>向量数据库
+                    </div>
+                    <div class="glass px-6 py-3 rounded-full">
+                        <i class="fas fa-cogs mr-2"></i>智能检索
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter Introduction -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 shadow-xl hover-lift">
+                    <h2 class="text-3xl font-bold mb-6 gradient-text">章节概述</h2>
+                    <div class="prose prose-lg dark:prose-invert">
+                        <p class="mb-4">
+                            在前面的章节中，我们构建了HelloAgents框架的基础架构，实现了多种智能体范式和工具系统。
+                            不过，我们的框架还缺少一个关键能力：<strong class="text-purple-600">记忆</strong>。
+                        </p>
+                        <p class="mb-4">
+                            如果智能体无法记住之前的交互内容，也无法从历史经验中学习，那么在连续对话或复杂任务中，
+                            其表现将受到极大限制。
+                        </p>
+                        <p>
+                            本章将在第七章构建的框架基础上，为HelloAgents增加两个核心能力：
+                            <span class="text-purple-600 font-semibold">记忆系统（Memory System）</span>和
+                            <span class="text-purple-600 font-semibold">检索增强生成（Retrieval-Augmented Generation, RAG）</span>。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cognitive Science Background -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">从认知科学到智能体记忆</h2>
+
+                <!-- Human Memory System -->
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-600">
+                            <i class="fas fa-brain mr-3"></i>人类记忆系统启发
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="memory-box bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-700 dark:text-blue-300 mb-2">
+                                    <i class="fas fa-eye mr-2"></i>感觉记忆
+                                </h4>
+                                <p class="text-sm">持续时间极短（0.5-3秒），容量巨大，负责暂时保存感官接收到的所有信息</p>
+                            </div>
+                            <div class="memory-box bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-700 dark:text-green-300 mb-2">
+                                    <i class="fas fa-laptop mr-2"></i>工作记忆
+                                </h4>
+                                <p class="text-sm">持续时间短（15-30秒），容量有限（7±2个项目），负责当前任务的信息处理</p>
+                            </div>
+                            <div class="memory-box bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                                <h4 class="font-semibold text-purple-700 dark:text-purple-300 mb-2">
+                                    <i class="fas fa-database mr-2"></i>长期记忆
+                                </h4>
+                                <p class="text-sm">持续时间长（可达终生），容量几乎无限，包括程序性记忆和陈述性记忆</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-600">
+                            <i class="fas fa-robot mr-3"></i>为何智能体需要记忆与RAG
+                        </h3>
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="font-semibold mb-3 text-red-600">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>对话状态的遗忘
+                                </h4>
+                                <ul class="list-disc list-inside space-y-2 text-sm">
+                                    <li>上下文丢失：在长对话中，早期的重要信息可能会因为上下文窗口限制而丢失</li>
+                                    <li>个性化缺失：Agent无法记住用户的偏好、习惯或特定需求</li>
+                                    <li>学习能力受限：无法从过往的成功或失败经验中学习改进</li>
+                                    <li>一致性问题：在多轮对话中可能出现前后矛盾的回答</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-3 text-orange-600">
+                                    <i class="fas fa-book mr-2"></i>内置知识的局限
+                                </h4>
+                                <ul class="list-disc list-inside space-y-2 text-sm">
+                                    <li>知识时效性：大模型的训练数据有时间截止点，无法获取最新信息</li>
+                                    <li>专业领域知识：通用模型在特定领域的深度知识可能不足</li>
+                                    <li>事实准确性：通过检索验证，减少模型的幻觉问题</li>
+                                    <li>可解释性：提供信息来源，增强回答的可信度</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Memory System Architecture -->
+    <section id="memory-system" class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">记忆系统架构</h2>
+
+                <!-- Memory System Layers -->
+                <div class="mb-12">
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl p-8 shadow-xl">
+                        <h3 class="text-2xl font-bold mb-6 text-center">四层架构设计</h3>
+
+                        <div class="space-y-4">
+                            <div class="pipeline-item bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                                <div class="flex items-center">
+                                    <div class="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-server"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">基础设施层 (Infrastructure Layer)</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                                            MemoryManager • MemoryItem • MemoryConfig • BaseMemory
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pipeline-item bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-layer-group"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">记忆类型层 (Memory Types Layer)</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                                            WorkingMemory • EpisodicMemory • SemanticMemory • PerceptualMemory
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pipeline-item bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                                <div class="flex items-center">
+                                    <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-database"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">存储后端层 (Storage Backend Layer)</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                                            QdrantVectorStore • Neo4jGraphStore • SQLiteDocumentStore
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pipeline-item bg-white dark:bg-gray-700 p-6 rounded-lg shadow-md">
+                                <div class="flex items-center">
+                                    <div class="bg-orange-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-project-diagram"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg">嵌入服务层 (Embedding Service Layer)</h4>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">
+                                            DashScopeEmbedding • LocalTransformerEmbedding • TFIDFEmbedding
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memory Types Detail -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-xl font-bold mb-4 text-blue-600">
+                            <i class="fas fa-laptop-code mr-2"></i>工作记忆 (WorkingMemory)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-clock text-blue-500 mr-2"></i>
+                                <span class="font-semibold">生命周期</span>
+                                <span class="ml-auto text-sm">会话级，TTL管理</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-hdd text-blue-500 mr-2"></i>
+                                <span class="font-semibold">存储方式</span>
+                                <span class="ml-auto text-sm">纯内存存储</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-tachometer-alt text-blue-500 mr-2"></i>
+                                <span class="font-semibold">访问速度</span>
+                                <span class="ml-auto text-sm">极快</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-microchip text-blue-500 mr-2"></i>
+                                <span class="font-semibold">容量限制</span>
+                                <span class="ml-auto text-sm">默认50条</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-xl font-bold mb-4 text-green-600">
+                            <i class="fas fa-history mr-2"></i>情景记忆 (EpisodicMemory)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-infinity text-green-500 mr-2"></i>
+                                <span class="font-semibold">生命周期</span>
+                                <span class="ml-auto text-sm">持久化存储</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-database text-green-500 mr-2"></i>
+                                <span class="font-semibold">存储方式</span>
+                                <span class="ml-auto text-sm">SQLite + Qdrant</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-calendar-alt text-green-500 mr-2"></i>
+                                <span class="font-semibold">时间序列</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-green-500 mr-2"></i>
+                                <span class="font-semibold">会话管理</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-xl font-bold mb-4 text-purple-600">
+                            <i class="fas fa-brain mr-2"></i>语义记忆 (SemanticMemory)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-infinity text-purple-500 mr-2"></i>
+                                <span class="font-semibold">生命周期</span>
+                                <span class="ml-auto text-sm">长期存储</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-project-diagram text-purple-500 mr-2"></i>
+                                <span class="font-semibold">存储方式</span>
+                                <span class="ml-auto text-sm">Neo4j + Qdrant</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-network-wired text-purple-500 mr-2"></i>
+                                <span class="font-semibold">知识图谱</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-lightbulb text-purple-500 mr-2"></i>
+                                <span class="font-semibold">推理能力</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 shadow-xl hover-lift">
+                        <h3 class="text-xl font-bold mb-4 text-orange-600">
+                            <i class="fas fa-eye mr-2"></i>感知记忆 (PerceptualMemory)
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-image text-orange-500 mr-2"></i>
+                                <span class="font-semibold">支持模态</span>
+                                <span class="ml-auto text-sm">文本、图像、音频</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-exchange-alt text-orange-500 mr-2"></i>
+                                <span class="font-semibold">跨模态检索</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                            <div class="flex items-center mb-2">
+                                <i class="fas fa-cubes text-orange-500 mr-2"></i>
+                                <span class="font-semibold">存储隔离</span>
+                                <span class="ml-auto text-sm">按模态分离</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-magic text-orange-500 mr-2"></i>
+                                <span class="font-semibold">语义理解</span>
+                                <span class="ml-auto text-sm">支持</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Memory Tool Operations -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">MemoryTool 核心操作</h2>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-blue-100 dark:bg-blue-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-plus text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">添加记忆 (add)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            支持四种记忆类型的添加，自动分配重要性评分和元数据
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("add", content="...", memory_type="semantic")
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-green-100 dark:bg-green-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-search text-green-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">搜索记忆 (search)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            基于语义相似度和时间近因性的智能检索算法
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("search", query="...", limit=5)
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-purple-100 dark:bg-purple-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-broom text-purple-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">遗忘记忆 (forget)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            支持重要性、时间、容量三种智能遗忘策略
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("forget", strategy="importance_based")
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-orange-100 dark:bg-orange-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-sync text-orange-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">整合记忆 (consolidate)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            将重要的短期记忆自动转换为长期记忆
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("consolidate", from_type="working")
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-red-100 dark:bg-red-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-chart-bar text-red-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">统计信息 (stats)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            获取记忆系统的使用统计和健康状态
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("stats")
+                            </code>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-xl hover-lift">
+                        <div class="bg-teal-100 dark:bg-teal-900/30 w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-file-alt text-teal-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">记忆摘要 (summary)</h3>
+                        <p class="text-gray-600 dark:text-gray-300 mb-4">
+                            生成记忆内容的智能摘要和关键信息提取
+                        </p>
+                        <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
+                            <code class="text-xs">
+                                memory_tool.execute("summary", limit=10)
+                            </code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RAG System -->
+    <section id="rag-system" class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">RAG 检索增强生成系统</h2>
+
+                <!-- RAG Architecture -->
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 rounded-2xl p-8 shadow-xl mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">RAG系统工作原理</h3>
+
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h4 class="font-bold text-lg mb-4 text-blue-600">
+                                <i class="fas fa-file-import mr-2"></i>数据处理流程
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">1</div>
+                                    <span>文档格式转换 (MarkItDown)</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">2</div>
+                                    <span>智能分块处理</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">3</div>
+                                    <span>向量化嵌入</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">4</div>
+                                    <span>存储到向量数据库</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-lg mb-4 text-green-600">
+                                <i class="fas fa-comments mr-2"></i>查询与生成流程
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">1</div>
+                                    <span>接收用户查询</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">2</div>
+                                    <span>检索相关文档</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">3</div>
+                                    <span>构建增强上下文</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="bg-green-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm mr-3">4</div>
+                                    <span>LLM生成回答</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Retrieval Strategies -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">高级检索策略</h3>
+
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-2xl p-8 shadow-xl hover-lift">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-code-branch"></i>
+                                </div>
+                                <h4 class="text-xl font-bold">多查询扩展 (MQE)</h4>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                通过生成语义等价的多样化查询来提高检索召回率，解决用词差异问题
+                            </p>
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="text-sm font-mono mb-2">原始查询：如何学习Python</p>
+                                <p class="text-sm font-mono text-purple-600">扩展查询：</p>
+                                <ul class="text-sm font-mono text-purple-500 ml-4">
+                                    <li>• Python入门教程</li>
+                                    <li>• Python学习方法</li>
+                                    <li>• Python编程指南</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-2xl p-8 shadow-xl hover-lift">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <h4 class="text-xl font-bold">假设文档嵌入 (HyDE)</h4>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                通过生成假设性答案文档来桥接查询和文档的语义鸿沟，"用答案找答案"
+                            </p>
+                            <div class="bg-white dark:bg-gray-700 p-4 rounded-lg">
+                                <p class="text-sm font-mono mb-2">查询：什么是大语言模型？</p>
+                                <p class="text-sm font-mono text-green-600">假设答案：</p>
+                                <p class="text-sm font-mono text-green-500">
+                                    "大语言模型是一种基于深度学习的AI系统，通过海量文本数据训练..."
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAG Tool Operations -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-center">RAGTool 核心功能</h3>
+
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-center hover-lift">
+                            <i class="fas fa-file-plus text-3xl text-blue-600 mb-3"></i>
+                            <h4 class="font-bold mb-2">添加文档</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                支持PDF、Word、Excel等多种格式
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-center hover-lift">
+                            <i class="fas fa-cut text-3xl text-green-600 mb-3"></i>
+                            <h4 class="font-bold mb-2">智能分块</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                基于Markdown结构的语义分割
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-center hover-lift">
+                            <i class="fas fa-vector-square text-3xl text-purple-600 mb-3"></i>
+                            <h4 class="font-bold mb-2">向量化</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                统一嵌入接口，支持多种模型
+                            </p>
+                        </div>
+
+                        <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-4 text-center hover-lift">
+                            <i class="fas fa-magic text-3xl text-orange-600 mb-3"></i>
+                            <h4 class="font-bold mb-2">智能问答</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">
+                                基于检索上下文的增强生成
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Study -->
+    <section id="case-study" class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">实战案例：智能文档问答助手</h2>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-purple-600">
+                        <i class="fas fa-graduation-cap mr-3"></i>案例背景与目标
+                    </h3>
+                    <div class="prose prose-lg dark:prose-invert mb-6">
+                        <p>
+                            基于 Datawhale 的 Happy-LLM 教程PDF文档，构建一个基于Gradio的Web应用，
+                            展示如何使用RAGTool和MemoryTool构建完整的交互式学习助手。
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-blue-600">
+                                <i class="fas fa-cogs mr-2"></i>核心功能
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>智能文档处理：PDF → Markdown → 分块 → 向量化</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>高级检索问答：MQE + HyDE 提升检索精度</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>多层次记忆管理：工作/情景/语义/感知记忆</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check-circle text-blue-500 mt-1 mr-2"></i>
+                                    <span>个性化学习支持：历史记录和进度追踪</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-lg">
+                            <h4 class="font-bold text-lg mb-3 text-green-600">
+                                <i class="fas fa-code mr-2"></i>技术架构
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-laptop-code text-green-500 mt-1 mr-2"></i>
+                                    <span>核心助手类：PDFLearningAssistant</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-laptop-code text-green-500 mt-1 mr-2"></i>
+                                    <span>Web界面：Gradio框架构建</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-laptop-code text-green-500 mt-1 mr-2"></i>
+                                    <span>记忆系统：MemoryTool集成</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-laptop-code text-green-500 mt-1 mr-2"></i>
+                                    <span>知识检索：RAGTool集成</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Implementation Steps -->
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-2xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold mb-6 text-center">五步执行流程</h3>
+
+                    <div class="grid md:grid-cols-5 gap-4">
+                        <div class="text-center">
+                            <div class="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="font-bold">1</span>
+                            </div>
+                            <h4 class="font-bold mb-2">文档加载</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">PDF处理与向量化</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="font-bold">2</span>
+                            </div>
+                            <h4 class="font-bold mb-2">检索记录</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">检索结果记忆化</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="font-bold">3</span>
+                            </div>
+                            <h4 class="font-bold mb-2">记忆管理</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">添加/检索/整合/遗忘</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="bg-orange-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="font-bold">4</span>
+                            </div>
+                            <h4 class="font-bold mb-2">智能路由</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">RAG+Memory整合</p>
+                        </div>
+
+                        <div class="text-center">
+                            <div class="bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <span class="font-bold">5</span>
+                            </div>
+                            <h4 class="font-bold mb-2">报告生成</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">学习统计与分析</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Example -->
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold mb-6">核心代码示例</h3>
+                    <div class="bg-gray-900 rounded-xl overflow-hidden">
+                        <div class="bg-gray-800 px-4 py-3 flex items-center justify-between">
+                            <span class="text-gray-300 text-sm">PDFLearningAssistant.py</span>
+                            <button class="text-gray-400 hover:text-white">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <pre class="p-4 text-sm overflow-x-auto"><code class="language-python">class PDFLearningAssistant:
+    """智能文档问答助手"""
+
+    def __init__(self, user_id: str = "default_user"):
+        self.user_id = user_id
+        self.session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
+        # 初始化工具
+        self.memory_tool = MemoryTool(user_id=user_id)
+        self.rag_tool = RAGTool(rag_namespace=f"pdf_{user_id}")
+
+        # 学习统计
+        self.stats = {
+            "session_start": datetime.now(),
+            "documents_loaded": 0,
+            "questions_asked": 0,
+            "concepts_learned": 0
+        }
+
+    def ask(self, question: str, use_advanced_search: bool = True) -> str:
+        """向文档提问"""
+        # 记录问题到工作记忆
+        self.memory_tool.execute("add",
+            content=f"提问: {question}",
+            memory_type="working",
+            importance=0.6
+        )
+
+        # 使用RAG获取答案
+        answer = self.rag_tool.execute("ask",
+            question=question,
+            enable_advanced_search=use_advanced_search
+        )
+
+        # 记录到情景记忆
+        self.memory_tool.execute("add",
+            content=f"关于'{question}'的学习",
+            memory_type="episodic",
+            importance=0.7
+        )
+
+        return answer</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">快速开始</h2>
+
+                <div class="bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-2xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold mb-6">30秒体验记忆和RAG功能</h3>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6 mb-6">
+                        <h4 class="font-bold mb-4">安装框架</h4>
+                        <pre class="bg-black/30 p-4 rounded-lg text-sm overflow-x-auto"><code>pip install hello-agents[all]==0.2.0</code></pre>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+                        <h4 class="font-bold mb-4">基础使用示例</h4>
+                        <pre class="bg-black/30 p-4 rounded-lg text-sm overflow-x-auto"><code>from hello_agents import SimpleAgent, HelloAgentsLLM
+from hello_agents.tools import MemoryTool, RAGTool
+
+# 创建Agent
+llm = HelloAgentsLLM()
+agent = SimpleAgent(name="智能助手", llm=llm)
+
+# 添加记忆工具
+memory_tool = MemoryTool(user_id="user123")
+agent.tool_registry.register_tool(memory_tool)
+
+# 添加RAG工具
+rag_tool = RAGTool(knowledge_base_path="./knowledge_base")
+agent.tool_registry.register_tool(rag_tool)
+
+# 开始对话
+response = agent.run("你好！请记住我叫张三，我是一名Python开发者")
+print(response)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Chapter Summary -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">本章总结</h2>
+
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl">
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-purple-600">
+                                <i class="fas fa-brain mr-2"></i>记忆系统成果
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>四层架构设计：基础设施、记忆类型、存储后端、嵌入服务</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>四种记忆类型：工作、情景、语义、感知记忆</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>智能遗忘机制：重要性、时间、容量三种策略</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>记忆整合功能：短期到长期记忆的自动转换</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-blue-600">
+                                <i class="fas fa-search mr-2"></i>RAG系统成果
+                            </h3>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>统一文档处理：MarkItDown支持多种格式</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>智能分块策略：基于Markdown结构的语义分割</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>高级检索技术：MQE和HyDE提升检索精度</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>混合检索框架：向量+图+语义推理</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-6">
+                        <h3 class="text-xl font-bold mb-4 text-center">学习建议</h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="text-center">
+                                <i class="fas fa-hammer text-3xl text-purple-600 mb-2"></i>
+                                <h4 class="font-bold mb-2">动手实践</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    从零开始实现基础记忆模块
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-flask text-3xl text-blue-600 mb-2"></i>
+                                <h4 class="font-bold mb-2">实验评估</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    测试不同的嵌入模型和检索策略
+                                </p>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-rocket text-3xl text-green-600 mb-2"></i>
+                                <h4 class="font-bold mb-2">项目应用</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    在真实项目中应用所学知识
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-4 mb-6">
+                    <i class="fas fa-brain text-2xl text-purple-400"></i>
+                    <span class="text-xl font-bold">HelloAgents</span>
+                </div>
+                <p class="text-gray-400 mb-4">
+                    构建具有记忆和知识检索能力的智能体系统
+                </p>
+                <div class="flex justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-book text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-gray-500 text-sm mt-6">
+                    © 2024 HelloAgents. 基于 Datawhale 教程构建
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 bg-purple-600 text-white w-12 h-12 rounded-full shadow-lg hover:bg-purple-700 transition-all duration-300 opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            html.classList.toggle('dark', savedTheme === 'dark');
+        } else {
+            // Default to system preference
+            html.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Smooth Scrolling for Navigation Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Intersection Observer for Fade-in Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add copy-to-clipboard functionality for code blocks
+        document.querySelectorAll('.bg-gray-900 button').forEach(button => {
+            button.addEventListener('click', function() {
+                const codeBlock = this.closest('.bg-gray-900').querySelector('code');
+                const text = codeBlock.textContent;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalIcon = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        this.innerHTML = originalIcon;
+                    }, 2000);
+                });
+            });
+        });
+
+        // Memory box hover effect
+        document.querySelectorAll('.memory-box').forEach(box => {
+            box.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+            });
+            box.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add scroll-based header background
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('bg-white/95', 'dark:bg-gray-900/95');
+                header.classList.remove('glass');
+            } else {
+                header.classList.add('glass');
+                header.classList.remove('bg-white/95', 'dark:bg-gray-900/95');
+            }
+        });
+    </script>
+</body>
+</html>

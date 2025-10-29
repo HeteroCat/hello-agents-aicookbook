@@ -1,0 +1,2220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十三章 智能旅行助手 - HelloAgents教程</title>
+
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Custom Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        gray: {
+                            50: '#f9fafb',
+                            100: '#f3f4f6',
+                            200: '#e5e7eb',
+                            300: '#d1d5db',
+                            400: '#9ca3af',
+                            500: '#6b7280',
+                            600: '#4b5563',
+                            700: '#374151',
+                            800: '#1f2937',
+                            900: '#111827',
+                        }
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
+        /* 代码块样式 */
+        .code-block {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .code-block pre {
+            background: transparent;
+            margin: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            color: white;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        /* 导航样式 */
+        .nav-item {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #3b82f6;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover::after,
+        .nav-item.active::after {
+            width: 100%;
+        }
+
+        /* 卡片悬停效果 */
+        .card-hover {
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-hover::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .card-hover:hover::before {
+            left: 100%;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .dark .card-hover:hover {
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+
+        /* 流程图样式 */
+        .flow-diagram {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 1rem;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flow-diagram::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .flow-node {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .flow-node:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* 目录样式 */
+        .toc-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .toc-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3b82f6;
+        }
+
+        .toc-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            border-left-color: #3b82f6;
+        }
+
+        /* 技术栈标签 */
+        .tech-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 功能卡片 */
+        .feature-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .dark .feature-card {
+            background: #374151;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .dark .feature-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        /* 架构图样式 */
+        .architecture-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .architecture-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: white;
+            border-radius: 0.75rem;
+            z-index: -1;
+        }
+
+        .architecture-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 0.75rem;
+            z-index: -2;
+        }
+
+        /* 响应式隐藏/显示 */
+        @media (max-width: 768px) {
+            .mobile-menu {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .mobile-menu.active {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 shadow-lg z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo和标题 -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            HelloAgents
+                        </h1>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">智能体教程</p>
+                    </div>
+                </div>
+
+                <!-- 桌面导航 -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="nav-item text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
+                        首页
+                    </a>
+                    <a href="#" class="nav-item text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
+                        教程
+                    </a>
+                    <a href="#" class="nav-item active text-blue-600 dark:text-blue-400 font-medium">
+                        第十三章
+                    </a>
+                    <a href="#" class="nav-item text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">
+                        实践
+                    </a>
+                </div>
+
+                <!-- 右侧按钮 -->
+                <div class="flex items-center space-x-4">
+                    <!-- 主题切换 -->
+                    <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden text-gray-700"></i>
+                        <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+                    </button>
+
+                    <!-- 移动端菜单按钮 -->
+                    <button id="mobileMenuToggle" class="md:hidden p-2 rounded-lg bg-gray-100 dark:bg-gray-700">
+                        <i class="fas fa-bars text-gray-700 dark:text-gray-300"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed top-16 left-0 w-64 h-full bg-white dark:bg-gray-800 shadow-xl">
+            <div class="p-4 space-y-4">
+                <a href="#" class="block px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    首页
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    教程
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-400">
+                    第十三章
+                </a>
+                <a href="#" class="block px-4 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+                    实践
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="pt-16 flex">
+        <!-- 侧边栏目录 -->
+        <aside class="hidden lg:block w-64 h-screen bg-white dark:bg-gray-800 shadow-lg fixed left-0 top-16 overflow-y-auto">
+            <div class="p-6">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                    <i class="fas fa-list-ul mr-2 text-blue-600"></i>目录
+                </h3>
+                <nav id="tableOfContents" class="space-y-2">
+                    <!-- 目录内容将由JavaScript生成 -->
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="flex-1 lg:ml-64">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- 文章标题 -->
+                <header class="mb-8 animate-fade-in">
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 rounded-2xl shadow-xl">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-white/20 px-3 py-1 rounded-full text-sm font-medium">
+                                <i class="fas fa-book mr-2"></i>第十三章
+                            </span>
+                            <span class="ml-auto text-sm opacity-90">
+                                <i class="fas fa-clock mr-2"></i>15分钟阅读
+                            </span>
+                        </div>
+                        <h1 class="text-4xl font-bold mb-4">智能旅行助手</h1>
+                        <p class="text-xl opacity-90">
+                            构建完整的AI应用，从理论到实践的完整实现
+                        </p>
+                    </div>
+                </header>
+
+                <!-- 引言部分 -->
+                <section class="mb-12 animate-slide-up">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 shadow-lg">
+                        <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
+                            在前面的章节中，我们从零开始构建了HelloAgents框架，实现了多种智能体范式、工具系统、记忆机制、协议通信和性能评估等核心功能。从本章开始，我们将进入一个全新的阶段：<strong class="text-blue-600 dark:text-blue-400">将所学知识融会贯通，构建完整的实用应用。</strong>
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 功能概览 -->
+                <section class="mb-12">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>核心功能
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-route text-blue-600 dark:text-blue-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">智能行程规划</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">用户输入目的地、日期、偏好等信息，系统自动生成包含景点、餐饮、酒店的完整行程计划。</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-map-marked-alt text-green-600 dark:text-green-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">地图可视化</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">在地图上标注景点位置、绘制游览路线，让行程一目了然。</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-calculator text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">预算计算</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">自动计算门票、酒店、餐饮、交通费用，显示预算明细。</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-edit text-purple-600 dark:text-purple-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">行程编辑</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">支持添加、删除、调整景点，实时更新地图。</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-download text-red-600 dark:text-red-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">导出功能</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">支持导出为PDF或图片，方便保存和分享。</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="flex items-center mb-3">
+                                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center mr-4">
+                                    <i class="fas fa-users text-indigo-600 dark:text-indigo-400 text-xl"></i>
+                                </div>
+                                <h3 class="font-semibold text-gray-800 dark:text-gray-200">多智能体协作</h3>
+                            </div>
+                            <p class="text-gray-600 dark:text-gray-400">多个专业Agent协同工作，提供更精准的旅行规划服务。</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.1 项目概述与架构设计 -->
+                <section id="section-13-1" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.1 项目概述与架构设计
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.1.1 为什么需要智能旅行助手 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-question-circle text-blue-600 mr-2"></i>为什么需要智能旅行助手
+                            </h3>
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p class="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    规划一次旅行是一件既令人兴奋又令人头疼的事情。你需要在网上搜索景点信息，对比不同的攻略，查看天气预报，预订酒店，计算预算，规划路线。这个过程可能需要花费几个小时甚至几天的时间。
+                                </p>
+                                <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-600 p-4 rounded-r-lg my-4">
+                                    <p class="text-gray-700 dark:text-gray-300">
+                                        <strong class="text-blue-600">传统旅行规划的痛点：</strong>
+                                    </p>
+                                    <ul class="list-disc list-inside mt-2 space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li><strong class="text-gray-800 dark:text-gray-200">信息分散</strong> - 需要在多个网站间切换，手动整合信息</li>
+                                        <li><strong class="text-gray-800 dark:text-gray-200">缺少个性化</strong> - 通用攻略不考虑个人偏好和预算限制</li>
+                                        <li><strong class="text-gray-800 dark:text-gray-200">难以调整</strong> - 修改行程需要重新规划，耗时费力</li>
+                                    </ul>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    AI技术为解决这些问题提供了新的可能。想象一下，你只需要告诉系统"我想去北京玩3天，喜欢历史文化，预算中等"，系统就能自动为你生成一个完整的行程计划。
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 13.1.2 技术架构概览 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-layer-group text-green-600 mr-2"></i>技术架构概览
+                            </h3>
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                                系统采用经典的<strong class="text-green-600">前后端分离架构</strong>，分为四个层次：
+                            </p>
+
+                            <!-- 架构图 -->
+                            <div class="flow-diagram mb-6">
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="flow-node">
+                                        <div class="text-center">
+                                            <i class="fas fa-laptop-code text-3xl text-blue-600 mb-2"></i>
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-200">前端层</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">Vue3 + TypeScript</p>
+                                            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                                用户交互<br>数据展示<br>地图可视化
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flow-node">
+                                        <div class="text-center">
+                                            <i class="fas fa-server text-3xl text-green-600 mb-2"></i>
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-200">后端层</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">FastAPI</p>
+                                            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                                API路由<br>数据验证<br>业务逻辑
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flow-node">
+                                        <div class="text-center">
+                                            <i class="fas fa-robot text-3xl text-purple-600 mb-2"></i>
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-200">智能体层</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">HelloAgents</p>
+                                            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                                任务分解<br>工具调用<br>结果整合
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flow-node">
+                                        <div class="text-center">
+                                            <i class="fas fa-cloud text-3xl text-orange-600 mb-2"></i>
+                                            <h4 class="font-semibold text-gray-800 dark:text-gray-200">外部服务层</h4>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">第三方API</p>
+                                            <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                                                高德地图API<br>Unsplash API<br>LLM API
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 数据流转说明 -->
+                            <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+                                    <i class="fas fa-exchange-alt text-blue-600 mr-2"></i>数据流转过程
+                                </h4>
+                                <div class="flex flex-wrap items-center gap-2 text-sm">
+                                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full">用户表单</span>
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
+                                    <span class="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">后端验证</span>
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
+                                    <span class="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full">智能体系统</span>
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
+                                    <span class="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full">外部API</span>
+                                    <i class="fas fa-arrow-right text-gray-400"></i>
+                                    <span class="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full">前端展示</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.1.3 快速体验 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-rocket text-purple-600 mr-2"></i>快速体验：5分钟运行项目
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- 环境要求 -->
+                                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-blue-800 dark:text-blue-200">
+                                        <i class="fas fa-tools mr-2"></i>环境要求
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-center">
+                                            <i class="fab fa-python text-blue-600 mr-2"></i>
+                                            Python 3.10或更高版本
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fab fa-node-js text-green-600 mr-2"></i>
+                                            Node.js 16.0或更高版本
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fab fa-npm text-red-600 mr-2"></i>
+                                            npm 8.0或更高版本
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- API密钥 -->
+                                <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-yellow-800 dark:text-yellow-200">
+                                        <i class="fas fa-key mr-2"></i>API密钥
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-brain text-purple-600 mr-2"></i>
+                                            LLM API (OpenAI、DeepSeek等)
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-map text-blue-600 mr-2"></i>
+                                            高德地图Web服务Key
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-image text-green-600 mr-2"></i>
+                                            Unsplash Access Key
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- 启动命令 -->
+                            <div class="mt-6 space-y-4">
+                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+                                        <i class="fas fa-terminal mr-2"></i>启动后端
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden">
+                                        <pre><code># 1. 进入后端目录
+cd helloagents-trip-planner/backend
+
+# 2. 安装依赖
+pip install -r requirements.txt
+
+# 3. 配置环境变量
+cp .env.example .env
+# 编辑.env文件，填入你的API密钥
+
+# 4. 启动后端服务
+uvicorn app.api.main:app --reload</code></pre>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-gray-800 dark:text-gray-200">
+                                        <i class="fas fa-terminal mr-2"></i>启动前端
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden">
+                                        <pre><code># 1. 进入前端目录
+cd helloagents-trip-planner/frontend
+
+# 2. 安装依赖
+npm install
+
+# 3. 启动前端服务
+npm run dev</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 效果展示 -->
+                            <div class="mt-6 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-4">
+                                <p class="text-center text-gray-700 dark:text-gray-300">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    成功启动后，访问 <code class="bg-white dark:bg-gray-800 px-2 py-1 rounded">http://localhost:5173</code> 即可体验应用
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.2 数据模型设计 -->
+                <section id="section-13-2" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.2 数据模型设计
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.2.1 Web应用中的数据流转 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-exchange-alt text-blue-600 mr-2"></i>Web应用中的数据流转
+                            </h3>
+                            <div class="prose dark:prose-invert max-w-none">
+                                <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
+                                    在构建智能旅行助手时，我们需要解决一个核心问题：<strong class="text-blue-600">如何表示和传递旅行计划数据?</strong>
+                                </p>
+                                <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    数据经历了多次转换：前端表单 → HTTP请求 → 后端Python对象 → 外部API响应 → 后端Python对象 → HTTP响应 → 前端TypeScript对象 → 页面展示。如果没有统一的数据格式，每一步转换都可能出错。
+                                </p>
+                            </div>
+
+                            <!-- 数据流转图 -->
+                            <div class="mt-6 flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                                <span class="px-3 py-2 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-lg font-medium">前端表单</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="px-3 py-2 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-lg font-medium">HTTP请求</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="px-3 py-2 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-lg font-medium">Python对象</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="px-3 py-2 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-lg font-medium">API响应</span>
+                                <i class="fas fa-arrow-right text-gray-400"></i>
+                                <span class="px-3 py-2 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-lg font-medium">页面展示</span>
+                            </div>
+                        </div>
+
+                        <!-- 13.2.2 从字典到Pydantic模型 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-database text-green-600 mr-2"></i>从字典到Pydantic模型
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- 传统字典方式 -->
+                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-red-800 dark:text-red-200">
+                                        <i class="fas fa-times-circle mr-2"></i>传统字典方式
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code># 第一章的做法：使用字典
+attraction = {
+    "name": "故宫",
+    "location": {"lng": 116.397128,"lat": 39.916527},
+    "price": 60
+}
+
+# 访问数据
+lng = attraction["location"]["lng"]</code></pre>
+                                    </div>
+                                    <div class="mt-3 space-y-2 text-sm text-red-700 dark:text-red-300">
+                                        <p><i class="fas fa-exclamation-triangle mr-2"></i>字段名不统一</p>
+                                        <p><i class="fas fa-exclamation-triangle mr-2"></i>类型安全问题</p>
+                                        <p><i class="fas fa-exclamation-triangle mr-2"></i>维护性差</p>
+                                    </div>
+                                </div>
+
+                                <!-- Pydantic模型方式 -->
+                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-green-800 dark:text-green-200">
+                                        <i class="fas fa-check-circle mr-2"></i>Pydantic模型方式
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>from pydantic import BaseModel,Field
+
+class Location(BaseModel):
+    longitude: float = Field(...,description="经度")
+    latitude: float = Field(...,description="纬度")
+
+class Attraction(BaseModel):
+    name: str
+    location: Location
+    ticket_price: int = 0
+
+# 类型安全的访问
+lng = attraction.location.longitude</code></pre>
+                                    </div>
+                                    <div class="mt-3 space-y-2 text-sm text-green-700 dark:text-green-300">
+                                        <p><i class="fas fa-check mr-2"></i>统一字段名</p>
+                                        <p><i class="fas fa-check mr-2"></i>类型安全</p>
+                                        <p><i class="fas fa-check mr-2"></i>易于维护</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.2.3 Pydantic的核心概念 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-cube text-purple-600 mr-2"></i>Pydantic的核心概念
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-purple-800 dark:text-purple-200">
+                                        <i class="fas fa-shapes mr-2"></i>基础概念
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li><strong class="text-purple-600">BaseModel</strong> - 所有数据模型的基类</li>
+                                        <li><strong class="text-purple-600">Field</strong> - 定义字段属性和验证规则</li>
+                                        <li><strong class="text-purple-600">Optional</strong> - 可选字段</li>
+                                        <li><strong class="text-purple-600">List</strong> - 列表字段</li>
+                                        <li><strong class="text-purple-600">field_validator</strong> - 自定义验证器</li>
+                                    </ul>
+                                </div>
+
+                                <!-- 示例代码 -->
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>from pydantic import BaseModel,Field,field_validator
+from typing import Optional,List
+
+class Attraction(BaseModel):
+    name: str = Field(...,description="景点名称")  # 必填
+    rating: float = Field(default=0.0,ge=0,le=5)  # 范围验证
+    visit_duration: int = Field(default=60,gt=0)  # 大于0
+    description: Optional[str] = None  # 可选字段
+
+class DayPlan(BaseModel):
+    date: str
+    attractions: List[Attraction]  # 景点列表
+    hotel: Optional[Hotel] = None  # 可选的酒店信息</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.2.4 自底向上的模型设计 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-sitemap text-orange-600 mr-2"></i>自底向上的模型设计
+                            </h3>
+
+                            <div class="space-y-6">
+                                <!-- 模型层次结构 -->
+                                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-orange-800 dark:text-orange-200">
+                                        <i class="fas fa-layer-group mr-2"></i>模型层次结构
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center p-2 bg-white dark:bg-gray-700 rounded">
+                                            <span class="w-4 h-4 bg-orange-500 rounded-full mr-3"></span>
+                                            <code class="text-sm font-mono">Location</code> - 位置信息(经纬度坐标)
+                                        </div>
+                                        <div class="flex items-center p-2 bg-white dark:bg-gray-700 rounded">
+                                            <span class="w-4 h-4 bg-yellow-500 rounded-full mr-3"></span>
+                                            <code class="text-sm font-mono">Attraction, Meal, Hotel</code> - 基础业务模型
+                                        </div>
+                                        <div class="flex items-center p-2 bg-white dark:bg-gray-700 rounded">
+                                            <span class="w-4 h-4 bg-green-500 rounded-full mr-3"></span>
+                                            <code class="text-sm font-mono">DayPlan, WeatherInfo, Budget</code> - 组合模型
+                                        </div>
+                                        <div class="flex items-center p-2 bg-white dark:bg-gray-700 rounded">
+                                            <span class="w-4 h-4 bg-blue-500 rounded-full mr-3"></span>
+                                            <code class="text-sm font-mono">TripPlan</code> - 顶层模型
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 核心模型示例 -->
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-gray-800 dark:text-gray-200">Location模型</h5>
+                                        <div class="code-block rounded-lg overflow-hidden text-sm">
+                                            <pre><code>class Location(BaseModel):
+    """位置信息(经纬度坐标)"""
+    longitude: float = Field(...,description="经度",ge=-180,le=180)
+    latitude: float = Field(...,description="纬度",ge=-90,le=90)</code></pre>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-gray-800 dark:text-gray-200">Attraction模型</h5>
+                                        <div class="code-block rounded-lg overflow-hidden text-sm">
+                                            <pre><code>class Attraction(BaseModel):
+    """景点信息"""
+    name: str = Field(...,description="景点名称")
+    address: str = Field(...,description="地址")
+    location: Location = Field(...,description="经纬度坐标")
+    visit_duration: int = Field(...,description="建议游览时间(分钟)",gt=0)
+    ticket_price: int = Field(default=0,ge=0,description="门票价格(元)")</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.2.5 数据模型在Web应用中的应用 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-globe text-indigo-600 mr-2"></i>数据模型在Web应用中的应用
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    在FastAPI中，Pydantic模型可以直接用作请求和响应的类型定义。FastAPI会自动进行数据验证、序列化和文档生成。
+                                </p>
+
+                                <!-- FastAPI示例 -->
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>from fastapi import FastAPI
+from app.models.schemas import TripPlanRequest,TripPlan
+
+app = FastAPI()
+
+@app.post("/api/trip/plan", response_model=TripPlan)
+async def create_trip_plan(request: TripPlanRequest) -> TripPlan:
+    """
+    创建旅行计划
+
+    FastAPI自动：
+    1. 验证请求数据(TripPlanRequest)
+    2. 验证响应数据(TripPlan)
+    3. 生成OpenAPI文档
+    """
+    trip_plan = await generate_trip_plan(request)
+    return trip_plan</code></pre>
+                                </div>
+
+                                <!-- TypeScript类型定义 -->
+                                <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-indigo-800 dark:text-indigo-200">
+                                        <i class="fab fa-js-square mr-2"></i>前端TypeScript类型定义
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>interface Location {
+  longitude: number;
+  latitude: number;
+}
+
+interface Attraction {
+  name: string;
+  address: string;
+  location: Location;
+  visit_duration: number;
+  ticket_price: number;
+}
+
+interface TripPlan {
+  city: string;
+  start_date: string;
+  end_date: string;
+  days: DayPlan[];
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.3 多智能体协作设计 -->
+                <section id="section-13-3" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.3 多智能体协作设计
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.3.1 为何需要多智能体 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-users text-blue-600 mr-2"></i>为何需要多智能体
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- 单一Agent的问题 -->
+                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-red-800 dark:text-red-200">
+                                        <i class="fas fa-times-circle mr-2"></i>单一Agent的问题
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-clock text-red-600 mr-2 mt-1"></i>
+                                            <span><strong>时间成本高</strong> - 串行执行多个任务，总时间长</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-tools text-red-600 mr-2 mt-1"></i>
+                                            <span><strong>工具调用限制</strong> - 每次只能执行一个工具</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-code text-red-600 mr-2 mt-1"></i>
+                                            <span><strong>提示词复杂</strong> - 难以维护和调试</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-bug text-red-600 mr-2 mt-1"></i>
+                                            <span><strong>容易出错</strong> - LLM需要同时理解多个任务</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- 多Agent的优势 -->
+                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-green-800 dark:text-green-200">
+                                        <i class="fas fa-check-circle mr-2"></i>多Agent的优势
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-rocket text-green-600 mr-2 mt-1"></i>
+                                            <span><strong>并行执行</strong> - 可以同时处理多个任务</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-user-tie text-green-600 mr-2 mt-1"></i>
+                                            <span><strong>专业化</strong> - 每个Agent专注于特定领域</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-code-branch text-green-600 mr-2 mt-1"></i>
+                                            <span><strong>易于维护</strong> - 模块化设计，便于扩展</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-search text-green-600 mr-2 mt-1"></i>
+                                            <span><strong>易于调试</strong> - 问题定位更准确</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.3.2 Agent角色设计 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-theater-masks text-purple-600 mr-2"></i>Agent角色设计
+                            </h3>
+
+                            <!-- 多Agent协作流程图 -->
+                            <div class="flow-diagram mb-6">
+                                <h4 class="text-white font-semibold mb-4 text-center">多智能体协作流程</h4>
+                                <div class="space-y-4">
+                                    <!-- 用户输入 -->
+                                    <div class="flow-node mx-auto max-w-md">
+                                        <div class="text-center">
+                                            <i class="fas fa-user text-3xl text-blue-600 mb-2"></i>
+                                            <h5 class="font-semibold">用户输入</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">目的地、日期、偏好、预算等</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- 箭头 -->
+                                    <div class="text-center text-white">
+                                        <i class="fas fa-arrow-down text-2xl"></i>
+                                    </div>
+
+                                    <!-- 并行处理的三个Agent -->
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="flow-node">
+                                            <div class="text-center">
+                                                <i class="fas fa-map-marked-alt text-2xl text-green-600 mb-2"></i>
+                                                <h5 class="font-semibold">景点搜索专家</h5>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">搜索景点信息</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flow-node">
+                                            <div class="text-center">
+                                                <i class="fas fa-cloud-sun text-2xl text-blue-600 mb-2"></i>
+                                                <h5 class="font-semibold">天气查询专家</h5>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">查询天气预报</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="flow-node">
+                                            <div class="text-center">
+                                                <i class="fas fa-hotel text-2xl text-purple-600 mb-2"></i>
+                                                <h5 class="font-semibold">酒店推荐专家</h5>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400">推荐酒店信息</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 箭头 -->
+                                    <div class="text-center text-white">
+                                        <i class="fas fa-arrow-down text-2xl"></i>
+                                    </div>
+
+                                    <!-- 规划Agent -->
+                                    <div class="flow-node mx-auto max-w-md">
+                                        <div class="text-center">
+                                            <i class="fas fa-clipboard-list text-3xl text-orange-600 mb-2"></i>
+                                            <h5 class="font-semibold">行程规划专家</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">整合信息生成完整计划</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Agent详细信息 -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2 text-green-800 dark:text-green-200">
+                                        <i class="fas fa-map-marked-alt mr-2"></i>AttractionSearchAgent
+                                    </h5>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">专注于搜索景点信息</p>
+                                    <div class="text-xs bg-white dark:bg-gray-700 rounded p-2">
+                                        <code class="text-green-600">[TOOL_CALL:amap_maps_text_search:keywords=景点,city=北京]</code>
+                                    </div>
+                                </div>
+
+                                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2 text-blue-800 dark:text-blue-200">
+                                        <i class="fas fa-cloud-sun mr-2"></i>WeatherQueryAgent
+                                    </h5>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">专注于查询天气信息</p>
+                                    <div class="text-xs bg-white dark:bg-gray-700 rounded p-2">
+                                        <code class="text-blue-600">[TOOL_CALL:amap_maps_weather:city=北京]</code>
+                                    </div>
+                                </div>
+
+                                <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2 text-purple-800 dark:text-purple-200">
+                                        <i class="fas fa-hotel mr-2"></i>HotelAgent
+                                    </h5>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">专注于搜索酒店信息</p>
+                                    <div class="text-xs bg-white dark:bg-gray-700 rounded p-2">
+                                        <code class="text-purple-600">[TOOL_CALL:amap_maps_text_search:keywords=酒店,city=北京]</code>
+                                    </div>
+                                </div>
+
+                                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                    <h5 class="font-semibold mb-2 text-orange-800 dark:text-orange-200">
+                                        <i class="fas fa-clipboard-list mr-2"></i>PlannerAgent
+                                    </h5>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-2">整合所有信息生成完整计划</p>
+                                    <div class="text-xs bg-white dark:bg-gray-700 rounded p-2">
+                                        <code class="text-orange-600">输出JSON格式的完整旅行计划</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.3.3 Agent协作流程 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-project-diagram text-green-600 mr-2"></i>Agent协作流程
+                            </h3>
+
+                            <div class="code-block rounded-lg overflow-hidden">
+                                <pre><code>class TripPlannerAgent:
+    def __init__(self):
+        self.attraction_agent = SimpleAgent(name="景点搜索", prompt=ATTRACTION_PROMPT)
+        self.weather_agent = SimpleAgent(name="天气查询", prompt=WEATHER_PROMPT)
+        self.hotel_agent = SimpleAgent(name="酒店推荐", prompt=HOTEL_PROMPT)
+        self.planner_agent = SimpleAgent(name="行程规划", prompt=PLANNER_PROMPT)
+
+    def plan_trip(self, request: TripPlanRequest) -> TripPlan:
+        # 步骤1: 景点搜索
+        attraction_response = self.attraction_agent.run(
+            f"请搜索{request.city}的{request.preferences}景点"
+        )
+
+        # 步骤2: 天气查询
+        weather_response = self.weather_agent.run(
+            f"请查询{request.city}的天气"
+        )
+
+        # 步骤3: 酒店推荐
+        hotel_response = self.hotel_agent.run(
+            f"请搜索{request.city}的{request.accommodation}酒店"
+        )
+
+        # 步骤4: 整合生成计划
+        planner_query = self._build_planner_query(
+            request, attraction_response, weather_response, hotel_response
+        )
+        planner_response = self.planner_agent.run(planner_query)
+
+        # 步骤5: 解析JSON
+        trip_plan = self._parse_trip_plan(planner_response)
+        return trip_plan</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- 13.3.4 查询构建 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-search text-orange-600 mr-2"></i>查询构建
+                            </h3>
+
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                                PlannerAgent需要整合所有信息，这个查询需要包含所有必要的信息，而且要组织得清晰有序，让LLM能够准确理解。
+                            </p>
+
+                            <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>def _build_planner_query(self, request, attraction_response, weather_response, hotel_response):
+    return f"""
+请根据以下信息生成{request.city}的{request.days}日旅行计划:
+
+**用户需求:**
+- 目的地: {request.city}
+- 日期: {request.start_date} 至 {request.end_date}
+- 天数: {request.days}天
+- 偏好: {request.preferences}
+- 预算: {request.budget}
+- 交通方式: {request.transportation}
+- 住宿类型: {request.accommodation}
+
+**景点信息:**
+{attraction_response}
+
+**天气信息:**
+{weather_response}
+
+**酒店信息:**
+{hotel_response}
+
+请生成详细的旅行计划,包括每天的景点安排、餐饮推荐、住宿信息和预算明细。
+"""</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.4 MCP工具集成详解 -->
+                <section id="section-13-4" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.4 MCP工具集成详解
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.4.1 为什么不直接调用API -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-question-circle text-blue-600 mr-2"></i>为什么不直接调用API
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- 直接API调用的问题 -->
+                                <div class="bg-red-50 dark:bg-red-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-red-800 dark:text-red-200">
+                                        <i class="fas fa-times-circle mr-2"></i>直接API调用的问题
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li><strong>Agent无法自主调用</strong> - 失去智能决策能力</li>
+                                        <li><strong>参数传递复杂</strong> - 需要手动处理多个参数</li>
+                                        <li><strong>响应解析困难</strong> - 需要编写复杂的解析代码</li>
+                                        <li><strong>工具管理混乱</strong> - 每个API都需要单独管理</li>
+                                    </ul>
+                                </div>
+
+                                <!-- MCP的优势 -->
+                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-green-800 dark:text-green-200">
+                                        <i class="fas fa-check-circle mr-2"></i>MCP的优势
+                                    </h4>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li><strong>标准化协议</strong> - 统一的工具调用接口</li>
+                                        <li><strong>自动扩展</strong> - 自动发现和注册工具</li>
+                                        <li><strong>进程间通信</strong> - 高效的通信机制</li>
+                                        <li><strong>资源共享</strong> - 多Agent共享同一个实例</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.4.2 高德地图MCP集成 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-map text-green-600 mr-2"></i>高德地图MCP集成
+                            </h3>
+
+                            <!-- MCP工具分类 -->
+                            <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 mb-4">
+                                <h4 class="font-semibold mb-3 text-green-800 dark:text-green-200">
+                                    <i class="fas fa-tools mr-2"></i>MCP工具分类
+                                </h4>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                                    <div class="bg-white dark:bg-gray-700 rounded p-2 text-center">
+                                        <i class="fas fa-map-marked-alt text-blue-600 mb-1"></i>
+                                        <div class="font-medium">POI搜索</div>
+                                        <div class="text-xs text-gray-500">景点、酒店等</div>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-700 rounded p-2 text-center">
+                                        <i class="fas fa-route text-green-600 mb-1"></i>
+                                        <div class="font-medium">路线规划</div>
+                                        <div class="text-xs text-gray-500">导航、距离</div>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-700 rounded p-2 text-center">
+                                        <i class="fas fa-cloud-sun text-orange-600 mb-1"></i>
+                                        <div class="font-medium">天气查询</div>
+                                        <div class="text-xs text-gray-500">预报、实况</div>
+                                    </div>
+                                    <div class="bg-white dark:bg-gray-700 rounded p-2 text-center">
+                                        <i class="fas fa-image text-purple-600 mb-1"></i>
+                                        <div class="font-medium">静态地图</div>
+                                        <div class="text-xs text-gray-500">地图图片</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- MCP集成代码 -->
+                            <div class="code-block rounded-lg overflow-hidden">
+                                <pre><code>from hello_agents.tools import MCPTool
+from app.config import get_settings
+
+settings = get_settings()
+
+# 创建MCP工具
+mcp_tool = MCPTool(
+    name="amap_mcp",
+    command="npx",
+    args=["-y", "@sugarforever/amap-mcp-server"],
+    env={"AMAP_API_KEY": settings.amap_api_key},
+    auto_expand=True
+)</code></pre>
+                            </div>
+
+                            <!-- MCP调用流程 -->
+                            <div class="mt-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2 text-blue-800 dark:text-blue-200">
+                                    <i class="fas fa-exchange-alt mr-2"></i>MCP调用流程
+                                </h4>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex items-center">
+                                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                                        <span>Agent生成工具调用标记</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                                        <span>HelloAgents解析标记，提取工具名称和参数</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">3</span>
+                                        <span>构造JSON-RPC消息发送给MCP服务器</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">4</span>
+                                        <span>MCP服务器调用高德地图API</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-2">5</span>
+                                        <span>返回结果给Agent</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.4.3 共享MCP实例 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-share-alt text-purple-600 mr-2"></i>共享MCP实例
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    在我们的多Agent系统中，有三个Agent都需要使用高德地图的工具。共享同一个MCP实例可以节省资源，避免API速率限制。
+                                </p>
+
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>class TripPlannerAgent:
+    def __init__(self):
+        settings = get_settings()
+        self.llm = HelloAgentsLLM()
+
+        # 创建共享的MCP工具实例(只创建一次)
+        self.mcp_tool = MCPTool(
+            name="amap_mcp",
+            command="npx",
+            args=["-y", "@sugarforever/amap-mcp-server"],
+            env={"AMAP_API_KEY": settings.amap_api_key},
+            auto_expand=True
+        )
+
+        # 创建多个Agent,共享同一个MCP工具
+        self.attraction_agent = SimpleAgent(...)
+        self.attraction_agent.add_tool(self.mcp_tool)  # 共享
+
+        self.weather_agent = SimpleAgent(...)
+        self.weather_agent.add_tool(self.mcp_tool)  # 共享
+
+        self.hotel_agent = SimpleAgent(...)
+        self.hotel_agent.add_tool(self.mcp_tool)  # 共享</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.4.4 Unsplash图片API集成 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-image text-orange-600 mr-2"></i>Unsplash图片API集成
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    为景点获取图片，让旅行计划更加生动直观。使用Unsplash API搜索景点图片。
+                                </p>
+
+                                <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-orange-800 dark:text-orange-200">
+                                        <i class="fas fa-code mr-2"></i>UnsplashService实现
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>class UnsplashService:
+    """Unsplash图片服务"""
+
+    def __init__(self, access_key: str):
+        self.access_key = access_key
+        self.base_url = "https://api.unsplash.com"
+
+    def search_photos(self, query: str, per_page: int = 10) -> List[Dict]:
+        """搜索图片"""
+        try:
+            url = f"{self.base_url}/search/photos"
+            params = {
+                "query": query,
+                "per_page": per_page,
+                "client_id": self.access_key
+            }
+
+            response = requests.get(url, params=params, timeout=10)
+            response.raise_for_status()
+
+            data = response.json()
+            results = data.get("results", [])
+
+            # 提取图片URL
+            photos = []
+            for result in results:
+                photos.append({
+                    "url": result["urls"]["regular"],
+                    "description": result.get("description", ""),
+                    "photographer": result["user"]["name"]
+                })
+
+            return photos
+
+        except Exception as e:
+            logger.error(f"搜索图片失败: {e}")
+            return []</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.5 前端开发详解 -->
+                <section id="section-13-5" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.5 前端开发详解
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.5.1 前后端分离的Web架构 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-layer-group text-blue-600 mr-2"></i>前后端分离的Web架构
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- 前端技术栈 -->
+                                <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-blue-800 dark:text-blue-200">
+                                        <i class="fas fa-code mr-2"></i>前端技术栈
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between">
+                                            <span>Vue 3</span>
+                                            <span class="tech-tag">框架</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>TypeScript</span>
+                                            <span class="tech-tag">类型</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Ant Design Vue</span>
+                                            <span class="tech-tag">UI库</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>高德地图JS API</span>
+                                            <span class="tech-tag">地图</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>html2canvas + jsPDF</span>
+                                            <span class="tech-tag">导出</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 项目结构 -->
+                                <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-3 text-green-800 dark:text-green-200">
+                                        <i class="fas fa-folder-tree mr-2"></i>项目结构
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>frontend/
+├── src/
+│   ├── views/              # 页面组件
+│   │   ├── Home.vue        # 首页(表单)
+│   │   └── Result.vue      # 结果页
+│   ├── services/           # API服务
+│   │   └── api.ts
+│   ├── types/              # 类型定义
+│   │   └── index.ts
+│   ├── router/             # 路由配置
+│   │   └── index.ts
+│   ├── App.vue
+│   └── main.ts
+├── package.json
+└── vite.config.ts</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.5.2 类型定义 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-shapes text-purple-600 mr-2"></i>类型定义
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    在前端，我们需要定义对应的TypeScript类型，与后端Pydantic模型保持一致。
+                                </p>
+
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>// frontend/src/types/index.ts
+export interface Location {
+  longitude: number
+  latitude: number
+}
+
+export interface Attraction {
+  name: string
+  address: string
+  location: Location
+  visit_duration: number
+  description: string
+  category?: string
+  rating?: number
+  image_url?: string
+  ticket_price?: number
+}
+
+export interface TripPlan {
+  city: string
+  start_date: string
+  end_date: string
+  days: DayPlan[]
+  weather_info: WeatherInfo[]
+  overall_suggestions: string
+  budget?: Budget
+}
+
+export interface TripPlanRequest {
+  city: string
+  start_date: string
+  end_date: string
+  days: number
+  preferences: string
+  budget: string
+  transportation: string
+  accommodation: string
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.5.3 API服务封装 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-plug text-green-600 mr-2"></i>API服务封装
+                            </h3>
+
+                            <div class="code-block rounded-lg overflow-hidden">
+                                <pre><code>import axios from 'axios'
+import type { TripPlanRequest, TripPlan } from '../types'
+
+const api = axios.create({
+  baseURL: 'http://localhost:8000/api',
+  timeout: 120000, // 2分钟超时
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+
+// 请求拦截器
+api.interceptors.request.use(
+  config => {
+    console.log('发送请求：', config)
+    return config
+  },
+  error => Promise.reject(error)
+)
+
+// 响应拦截器
+api.interceptors.response.use(
+  response => {
+    console.log('收到响应：', response)
+    return response
+  },
+  error => {
+    console.error('请求失败：', error)
+    return Promise.reject(error)
+  }
+)
+
+// 生成旅行计划
+export const generateTripPlan = async (request: TripPlanRequest): Promise<TripPlan> => {
+  const response = await api.post<TripPlan>('/trip/plan', request)
+  return response.data
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- 13.5.4 Home表单设计 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-home text-orange-600 mr-2"></i>Home表单设计
+                            </h3>
+
+                            <div class="space-y-4">
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>// 表单提交逻辑
+const handleSubmit = async () => {
+  loading.value = true
+  loadingProgress.value = 0
+
+  // 模拟进度更新
+  const progressInterval = setInterval(() => {
+    if (loadingProgress.value < 90) {
+      loadingProgress.value += 10
+      if (loadingProgress.value <= 30) loadingStatus.value = '🔍 正在搜索景点...'
+      else if (loadingProgress.value <= 50) loadingStatus.value = '🌤️ 正在查询天气...'
+      else if (loadingProgress.value <= 70) loadingStatus.value = '🏨 正在推荐酒店...'
+      else loadingStatus.value = '📋 正在生成行程计划...'
+    }
+  }, 500)
+
+  try {
+    const response = await generateTripPlan(formData.value)
+    clearInterval(progressInterval)
+    loadingProgress.value = 100
+    router.push({ name: 'result', state: { tripPlan: response } })
+  } catch (error) {
+    clearInterval(progressInterval)
+    message.error('生成计划失败，请重试')
+  } finally {
+    loading.value = false
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.5.5 Result页面展示 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-list-alt text-indigo-600 mr-2"></i>Result页面展示
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    Result页面是整个应用的核心，展示生成的旅行计划，包括行程概览、预算明细、地图可视化、每日行程详情、天气信息。
+                                </p>
+
+                                <!-- 地图初始化 -->
+                                <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                                    <h4 class="font-semibold mb-2 text-indigo-800 dark:text-indigo-200">
+                                        <i class="fas fa-map-marked-alt mr-2"></i>地图初始化
+                                    </h4>
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>const initMap = async () => {
+  const AMap = await AMapLoader.load({
+    key: 'your_amap_web_key',
+    version: '2.0'
+  })
+
+  map = new AMap.Map('amap-container', {
+    zoom: 12,
+    center: [116.397128, 39.916527]
+  })
+
+  // 添加景点标记
+  tripPlan.value.days.forEach((day) => {
+    day.attractions.forEach((attraction, index) => {
+      const marker = new AMap.Marker({
+        position: [attraction.location.longitude, attraction.location.latitude],
+        title: attraction.name,
+        label: { content: `${index + 1}`, direction: 'top' }
+      })
+      map.add(marker)
+    })
+  })
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.6 功能实现详解 -->
+                <section id="section-13-6" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.6 功能实现详解
+                    </h2>
+
+                    <div class="space-y-8">
+                        <!-- 13.6.1 预算计算功能 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-calculator text-blue-600 mr-2"></i>预算计算功能
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-4">
+                                        预算计算逻辑在PlannerAgent中实现，将费用分为四大类：景点门票、酒店住宿、餐饮和交通。
+                                    </p>
+
+                                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-4">
+                                        <h4 class="font-semibold mb-2 text-blue-800 dark:text-blue-200">预算分类</h4>
+                                        <ul class="space-y-2 text-sm">
+                                            <li class="flex items-center">
+                                                <i class="fas fa-ticket-alt text-blue-600 mr-2"></i>
+                                                <span>景点门票 - 根据景点门票价格计算</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-hotel text-green-600 mr-2"></i>
+                                                <span>酒店住宿 - 根据酒店类型和天数计算</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-utensils text-orange-600 mr-2"></i>
+                                                <span>餐饮费用 - 根据餐饮标准和天数计算</span>
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-bus text-purple-600 mr-2"></i>
+                                                <span>交通费用 - 根据交通方式估算</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div class="code-block rounded-lg overflow-hidden">
+                                    <pre><code>// 预算展示组件
+<a-card v-if="tripPlan.budget" title="💰 预算明细">
+  <a-row :gutter="16">
+    <a-col :span="6">
+      <a-statistic title="景点门票" :value="tripPlan.budget.total_attractions" suffix="元" />
+    </a-col>
+    <a-col :span="6">
+      <a-statistic title="酒店住宿" :value="tripPlan.budget.total_hotels" suffix="元" />
+    </a-col>
+    <a-col :span="6">
+      <a-statistic title="餐饮费用" :value="tripPlan.budget.total_meals" suffix="元" />
+    </a-col>
+    <a-col :span="6">
+      <a-statistic title="交通费用" :value="tripPlan.budget.total_transportation" suffix="元" />
+    </a-col>
+  </a-row>
+  <a-divider />
+  <a-row>
+    <a-col :span="24" style="text-align: center;">
+      <a-statistic
+        title="预估总费用"
+        :value="tripPlan.budget.total"
+        suffix="元"
+        :value-style="{ color: '#cf1322', fontSize: '32px', fontWeight: 'bold' }"
+      />
+    </a-col>
+  </a-row>
+</a-card></code></pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.6.2 加载进度条 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-spinner text-green-600 mr-2"></i>加载进度条
+                            </h3>
+
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                                生成旅行计划是一个耗时的操作，需要调用多个Agent和外部API。添加加载进度条和状态提示，提升用户体验。
+                            </p>
+
+                            <div class="code-block rounded-lg overflow-hidden">
+                                <pre><code>const loading = ref(false)
+const loadingProgress = ref(0)
+const loadingStatus = ref('')
+
+const handleSubmit = async () => {
+  loading.value = true
+  loadingProgress.value = 0
+
+  // 模拟进度更新
+  const progressInterval = setInterval(() => {
+    if (loadingProgress.value < 90) {
+      loadingProgress.value += 10
+      if (loadingProgress.value <= 30) loadingStatus.value = '🔍 正在搜索景点...'
+      else if (loadingProgress.value <= 50) loadingStatus.value = '🌤️ 正在查询天气...'
+      else if (loadingProgress.value <= 70) loadingStatus.value = '🏨 正在推荐酒店...'
+      else loadingStatus.value = '📋 正在生成行程计划...'
+    }
+  }, 500)
+
+  try {
+    const response = await generateTripPlan(formData.value)
+    clearInterval(progressInterval)
+    loadingProgress.value = 100
+    loadingStatus.value = '✅ 完成！'
+    router.push({ name: 'result', state: { tripPlan: response } })
+  } catch (error) {
+    clearInterval(progressInterval)
+    message.error('生成计划失败')
+  } finally {
+    loading.value = false
+  }
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <!-- 13.6.3 行程编辑功能 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-edit text-purple-600 mr-2"></i>行程编辑功能
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    AI生成的旅行计划可能不完全符合用户需求，提供行程编辑功能让用户可以自定义行程。
+                                </p>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-lg p-4">
+                                        <h4 class="font-semibold mb-2 text-purple-800 dark:text-purple-200">编辑功能</h4>
+                                        <ul class="space-y-2 text-sm">
+                                            <li><i class="fas fa-arrows-alt-v text-purple-600 mr-2"></i>调整景点顺序</li>
+                                            <li><i class="fas fa-trash text-red-600 mr-2"></i>删除景点</li>
+                                            <li><i class="fas fa-save text-green-600 mr-2"></i>保存修改</li>
+                                            <li><i class="fas fa-undo text-orange-600 mr-2"></i>取消编辑</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>// 移动景点
+const moveAttraction = (dayIndex, attractionIndex, direction) => {
+  const attractions = tripPlan.value.days[dayIndex].attractions
+  const newIndex = direction === 'up' ? attractionIndex - 1 : attractionIndex + 1
+
+  if (newIndex >= 0 && newIndex < attractions.length) {
+    [attractions[attractionIndex], attractions[newIndex]] =
+    [attractions[newIndex], attractions[attractionIndex]]
+  }
+}
+
+// 删除景点
+const deleteAttraction = (dayIndex, attractionIndex) => {
+  tripPlan.value.days[dayIndex].attractions.splice(attractionIndex, 1)
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.6.4 导出功能 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-download text-orange-600 mr-2"></i>导出功能
+                            </h3>
+
+                            <div class="space-y-4">
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    提供两种导出方式：导出为图片和导出为PDF，方便用户保存和分享旅行计划。
+                                </p>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                    <div class="bg-orange-50 dark:bg-orange-900/20 rounded-lg p-4">
+                                        <h4 class="font-semibold mb-2 text-orange-800 dark:text-orange-200">导出方式</h4>
+                                        <ul class="space-y-2 text-sm">
+                                            <li><i class="fas fa-image text-blue-600 mr-2"></i>导出为PNG图片</li>
+                                            <li><i class="fas fa-file-pdf text-red-600 mr-2"></i>导出为PDF文档</li>
+                                            <li><i class="fas fa-high-resolution text-green-600 mr-2"></i>高分辨率输出</li>
+                                            <li><i class="fas fa-palette text-purple-600 mr-2"></i>保持原有样式</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="code-block rounded-lg overflow-hidden text-sm">
+                                        <pre><code>// 导出为图片
+const exportAsImage = async () => {
+  const element = document.getElementById('trip-plan-content')
+  if (!element) return
+
+  const canvas = await html2canvas(element, {
+    backgroundColor: '#ffffff',
+    scale: 2,
+    useCORS: true
+  })
+
+  const link = document.createElement('a')
+  link.download = `${tripPlan.value.city}旅行计划.png`
+  link.href = canvas.toDataURL('image/png')
+  link.click()
+  message.success('导出成功！')
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 13.6.5 侧边导航与锚点跳转 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h3 class="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                <i class="fas fa-compass text-indigo-600 mr-2"></i>侧边导航与锚点跳转
+                            </h3>
+
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                                Result页面的内容很多，提供侧边导航和锚点跳转功能，让用户可以快速定位到感兴趣的部分。
+                            </p>
+
+                            <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-lg p-4">
+                                <h4 class="font-semibold mb-2 text-indigo-800 dark:text-indigo-200">导航菜单</h4>
+                                <div class="code-block rounded-lg overflow-hidden text-sm">
+                                    <pre><code>// 滚动到指定区域
+const scrollToSection = ({ key }) => {
+  activeSection.value = key
+  const element = document.getElementById(key)
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+}
+
+// 菜单项
+<a-menu v-model:selectedKeys="[activeSection]" mode="inline" @click="scrollToSection">
+  <a-menu-item key="overview">📋 行程概览</a-menu-item>
+  <a-menu-item key="budget">💰 预算明细</a-menu-item>
+  <a-menu-item key="map">🗺️ 地图</a-menu-item>
+  <a-menu-item key="days">📅 每日行程</a-menu-item>
+  <a-menu-item key="weather">🌤️ 天气</a-menu-item>
+</a-menu></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 13.7 结语 -->
+                <section id="section-13-7" class="mb-12">
+                    <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-200">
+                        13.7 结语
+                    </h2>
+
+                    <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl p-8 shadow-xl">
+                        <div class="text-center">
+                            <i class="fas fa-trophy text-6xl mb-4 text-yellow-300"></i>
+                            <h3 class="text-2xl font-bold mb-4">恭喜你完成了第十三章的学习！</h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 text-left">
+                                <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                                    <h4 class="font-semibold mb-3 text-yellow-300">
+                                        <i class="fas fa-lightbulb mr-2"></i>你学到了什么
+                                    </h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle mr-2 mt-1"></i>
+                                            <span>系统设计思维：如何将复杂问题分解为多个简单任务</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle mr-2 mt-1"></i>
+                                            <span>工程实践能力：如何将理论知识转化为可运行的代码</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle mr-2 mt-1"></i>
+                                            <span>全栈开发能力：如何整合前后端技术栈</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle mr-2 mt-1"></i>
+                                            <span>AI应用开发：如何利用LLM构建实用的应用</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                                    <h4 class="font-semibold mb-3 text-yellow-300">
+                                        <i class="fas fa-rocket mr-2"></i>下一步可以做什么
+                                    </h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-arrow-right mr-2 mt-1"></i>
+                                            <span>添加更多功能（实时导航、智能推荐等）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-arrow-right mr-2 mt-1"></i>
+                                            <span>优化用户体验（动画、交互、响应式）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-arrow-right mr-2 mt-1"></i>
+                                            <span>扩展到其他领域（购物助手、学习助手等）</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-arrow-right mr-2 mt-1"></i>
+                                            <span>部署到生产环境，服务真实用户</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 p-4 bg-white/10 backdrop-blur rounded-lg">
+                                <p class="text-lg italic">
+                                    "最好的学习方式是实践。不要只是阅读代码，而是要动手修改、扩展、优化。
+                                    每一次实践都会让你对多Agent系统有更深的理解。"
+                                </p>
+                                <p class="mt-4 text-yellow-300">
+                                    祝你在AI应用开发的道路上越走越远！
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 页脚 -->
+                <footer class="mt-16 py-8 border-t border-gray-200 dark:border-gray-700">
+                    <div class="text-center text-gray-600 dark:text-gray-400">
+                        <p class="mb-2">
+                            <i class="fas fa-heart text-red-500"></i>
+                            用心构建的HelloAgents智能体教程
+                        </p>
+                        <div class="flex justify-center space-x-4 text-sm">
+                            <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <i class="fab fa-github mr-1"></i>GitHub
+                            </a>
+                            <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <i class="fas fa-book mr-1"></i>文档
+                            </a>
+                            <a href="#" class="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                <i class="fas fa-users mr-1"></i>社区
+                            </a>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </main>
+
+        <!-- 返回顶部按钮 -->
+        <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300 opacity-0 invisible">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // 初始化主题
+        if (localStorage.getItem('theme') === 'dark' ||
+            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // 移动端菜单切换
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('active');
+        });
+
+        // 生成目录
+        function generateTableOfContents() {
+            const toc = document.getElementById('tableOfContents');
+            const sections = document.querySelectorAll('section[id^="section-"]');
+
+            sections.forEach(section => {
+                const id = section.id;
+                const title = section.querySelector('h2').textContent;
+                const tocItem = document.createElement('a');
+                tocItem.href = `#${id}`;
+                tocItem.className = 'toc-item block px-4 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700';
+                tocItem.textContent = title;
+                tocItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+                    // 更新活动状态
+                    document.querySelectorAll('.toc-item').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    tocItem.classList.add('active');
+                });
+                toc.appendChild(tocItem);
+            });
+        }
+
+        // 监听滚动，更新目录活动状态
+        function updateActiveSection() {
+            const sections = document.querySelectorAll('section[id^="section-"]');
+            const tocItems = document.querySelectorAll('.toc-item');
+
+            let currentSection = '';
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom >= 100) {
+                    currentSection = section.id;
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${currentSection}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        // 返回顶部按钮
+        const backToTopButton = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            // 更新目录活动状态
+            updateActiveSection();
+
+            // 显示/隐藏返回顶部按钮
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 添加代码复制功能
+        function addCodeCopyButtons() {
+            const codeBlocks = document.querySelectorAll('.code-block');
+
+            codeBlocks.forEach(block => {
+                const button = document.createElement('button');
+                button.className = 'absolute top-2 right-2 bg-white/20 hover:bg-white/30 text-white px-2 py-1 rounded text-sm transition-colors';
+                button.innerHTML = '<i class="fas fa-copy"></i>';
+                button.title = '复制代码';
+
+                button.addEventListener('click', () => {
+                    const code = block.querySelector('code').textContent;
+                    navigator.clipboard.writeText(code).then(() => {
+                        button.innerHTML = '<i class="fas fa-check"></i>';
+                        setTimeout(() => {
+                            button.innerHTML = '<i class="fas fa-copy"></i>';
+                        }, 2000);
+                    });
+                });
+
+                block.style.position = 'relative';
+                block.appendChild(button);
+            });
+        }
+
+        // 添加动画效果
+        function addAnimations() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            });
+
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            generateTableOfContents();
+            addCodeCopyButtons();
+            addAnimations();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十六章 毕业设计 - Hello Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .progress-bar {
+            animation: progressLoad 2s ease-out;
+        }
+
+        @keyframes progressLoad {
+            from { width: 0%; }
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+
+        .nav-item:hover {
+            padding-left: 1.5rem;
+        }
+
+        .diagram-box {
+            position: relative;
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border: 2px solid #667eea30;
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 1rem 0;
+        }
+
+        .flow-arrow {
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #667eea;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 1rem;
+            top: 2rem;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .dark .code-block {
+            background: #0f172a;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 scroll-smooth">
+    <!-- 顶部导航 -->
+    <nav class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg z-50 border-b border-gray-200 dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-robot text-2xl text-primary-600 dark:text-primary-400"></i>
+                    <span class="font-bold text-xl text-gray-900 dark:text-white">Hello Agents</span>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <!-- 主题切换按钮 -->
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+
+                    <!-- 返回主页按钮 -->
+                    <a href="../index.html" class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+                        <i class="fas fa-home mr-2"></i>返回主页
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-16">
+        <!-- 侧边导航 -->
+        <aside class="fixed left-0 top-16 bottom-0 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto hidden lg:block">
+            <div class="p-6">
+                <h3 class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-4">目录导航</h3>
+                <nav class="space-y-2">
+                    <a href="#overview" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-book-open mr-3 text-primary-600 dark:text-primary-400"></i>章节概述
+                    </a>
+                    <a href="#project-goals" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-bullseye mr-3 text-primary-600 dark:text-primary-400"></i>项目目标
+                    </a>
+                    <a href="#architecture" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-sitemap mr-3 text-primary-600 dark:text-primary-400"></i>系统架构
+                    </a>
+                    <a href="#implementation" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-cogs mr-3 text-primary-600 dark:text-primary-400"></i>实现步骤
+                    </a>
+                    <a href="#features" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-star mr-3 text-primary-600 dark:text-primary-400"></i>核心功能
+                    </a>
+                    <a href="#timeline" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-calendar-alt mr-3 text-primary-600 dark:text-primary-400"></i>时间规划
+                    </a>
+                    <a href="#evaluation" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-chart-line mr-3 text-primary-600 dark:text-primary-400"></i>评估标准
+                    </a>
+                    <a href="#resources" class="nav-item block px-4 py-2 text-gray-700 dark:text-gray-300 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg">
+                        <i class="fas fa-link mr-3 text-primary-600 dark:text-primary-400"></i>资源链接
+                    </a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 主要内容区域 -->
+        <main class="flex-1 lg:ml-64 min-h-screen">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <!-- 章节标题 -->
+                <header class="mb-12 animate-fade-in">
+                    <div class="text-center">
+                        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+                            <span class="gradient-text">第十六章 毕业设计</span>
+                        </h1>
+                        <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                            构建完整的多智能体协作系统 - 从理论到实践的综合项目
+                        </p>
+                    </div>
+
+                    <!-- 进度指示器 -->
+                    <div class="mt-8 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300">章节进度</span>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">100%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar bg-gradient-to-r from-primary-500 to-purple-600 h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- 章节概述 -->
+                <section id="overview" class="mb-16 animate-slide-up">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-book-open text-primary-600 dark:text-primary-400 mr-4"></i>
+                            章节概述
+                        </h2>
+
+                        <div class="prose prose-lg dark:prose-invert max-w-none">
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-6">
+                                毕业设计是学习旅程的终点，也是理论与实践结合的最好机会。本章将指导您完成一个完整的多智能体协作系统的开发，
+                                这是一个综合性的项目，将涵盖前面章节学习的所有核心概念和技术。
+                            </p>
+
+                            <div class="grid md:grid-cols-2 gap-6 mt-8">
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                        <i class="fas fa-graduation-cap text-blue-600 dark:text-blue-400 mr-2"></i>
+                                        学习目标
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                            <span>整合多智能体系统的核心概念</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                            <span>掌握系统设计与架构方法</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                            <span>实现协作式智能体通信机制</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-500 mr-2 mt-1"></i>
+                                            <span>构建可扩展的分布式架构</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                        <i class="fas fa-trophy text-purple-600 dark:text-purple-400 mr-2"></i>
+                                        项目成果
+                                    </h3>
+                                    <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                                            <span>完整的协作型智能体系统</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                                            <span>详细的技术文档与报告</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                                            <span>可部署的演示应用</span>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-star text-yellow-500 mr-2 mt-1"></i>
+                                            <span>项目经验与技术积累</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 项目目标 -->
+                <section id="project-goals" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-bullseye text-primary-600 dark:text-primary-400 mr-4"></i>
+                            项目目标
+                        </h2>
+
+                        <div class="space-y-6">
+                            <div class="border-l-4 border-primary-500 pl-6">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-3">主要目标</h3>
+                                <p class="text-gray-700 dark:text-gray-300">
+                                    设计并实现一个支持多智能体协作的智能任务管理系统，该系统能够：
+                                </p>
+                                <ul class="mt-3 space-y-2 text-gray-600 dark:text-gray-400">
+                                    <li>• 自动分解复杂任务并分配给适合的智能体</li>
+                                    <li>• 实现智能体间的实时通信与协调</li>
+                                    <li>• 提供任务进度监控与结果聚合</li>
+                                    <li>• 支持动态负载均衡与故障恢复</li>
+                                </ul>
+                            </div>
+
+                            <div class="grid md:grid-cols-3 gap-4 mt-8">
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">5+</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">智能体类型</div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">100%</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">任务自动化</div>
+                                </div>
+                                <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <div class="text-3xl font-bold text-primary-600 dark:text-primary-400 mb-2">24/7</div>
+                                    <div class="text-sm text-gray-600 dark:text-gray-400">系统可用性</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 系统架构 -->
+                <section id="architecture" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-sitemap text-primary-600 dark:text-primary-400 mr-4"></i>
+                            系统架构
+                        </h2>
+
+                        <div class="diagram-box">
+                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 text-center">多智能体协作系统架构</h3>
+
+                            <!-- 架构层次图 -->
+                            <div class="space-y-6">
+                                <!-- 用户界面层 -->
+                                <div class="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 flow-arrow">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-desktop text-blue-600 dark:text-blue-400 mr-3"></i>
+                                            <span class="font-semibold text-gray-900 dark:text-white">用户界面层</span>
+                                        </div>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Web Dashboard / CLI Interface</span>
+                                    </div>
+                                </div>
+
+                                <!-- API网关层 -->
+                                <div class="bg-green-100 dark:bg-green-900/30 rounded-lg p-4 flow-arrow">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-door-open text-green-600 dark:text-green-400 mr-3"></i>
+                                            <span class="font-semibold text-gray-900 dark:text-white">API网关层</span>
+                                        </div>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Request Routing / Authentication</span>
+                                    </div>
+                                </div>
+
+                                <!-- 协调管理层 -->
+                                <div class="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 flow-arrow">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-tasks text-purple-600 dark:text-purple-400 mr-3"></i>
+                                            <span class="font-semibold text-gray-900 dark:text-white">协调管理层</span>
+                                        </div>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Task Scheduler / Resource Manager</span>
+                                    </div>
+                                </div>
+
+                                <!-- 智能体层 -->
+                                <div class="bg-orange-100 dark:bg-orange-900/30 rounded-lg p-4">
+                                    <div class="mb-4">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center">
+                                                <i class="fas fa-robot text-orange-600 dark:text-orange-400 mr-3"></i>
+                                                <span class="font-semibold text-gray-900 dark:text-white">智能体层</span>
+                                            </div>
+                                            <span class="text-sm text-gray-600 dark:text-gray-400">Specialized Agents</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- 智能体类型 -->
+                                    <div class="grid md:grid-cols-3 gap-3 mt-4">
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 text-center">
+                                            <i class="fas fa-brain text-pink-500 mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">分析智能体</div>
+                                        </div>
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 text-center">
+                                            <i class="fas fa-code text-blue-500 mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">执行智能体</div>
+                                        </div>
+                                        <div class="bg-white dark:bg-gray-800 rounded p-3 text-center">
+                                            <i class="fas fa-chart-line text-green-500 mb-2"></i>
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">监控智能体</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 数据层 -->
+                                <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-database text-gray-600 dark:text-gray-400 mr-3"></i>
+                                            <span class="font-semibold text-gray-900 dark:text-white">数据存储层</span>
+                                        </div>
+                                        <span class="text-sm text-gray-600 dark:text-gray-400">Vector DB / Message Queue</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 实现步骤 -->
+                <section id="implementation" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-cogs text-primary-600 dark:text-primary-400 mr-4"></i>
+                            实现步骤
+                        </h2>
+
+                        <div class="space-y-8">
+                            <!-- 步骤1 -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+                                    1
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">环境搭建与基础配置</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                        设置开发环境，配置必要的依赖和工具链，建立项目基础结构。
+                                    </p>
+                                    <div class="code-block text-sm">
+                                        <pre># 创建项目结构
+mkdir multi-agent-system
+cd multi-agent-system
+
+# 初始化Python环境
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
+
+# 安装核心依赖
+pip install fastapi uvicorn pydantic
+pip install asyncio-a2a-websockets
+pip install langchain openai</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 步骤2 -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+                                    2
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">智能体基础框架开发</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                        实现智能体的基类和核心功能，包括消息处理、状态管理和基本行为模式。
+                                    </p>
+                                    <div class="code-block text-sm">
+                                        <pre>class BaseAgent:
+    def __init__(self, agent_id: str, capabilities: List[str]):
+        self.agent_id = agent_id
+        self.capabilities = capabilities
+        self.state = "idle"
+
+    async def process_message(self, message: Message):
+        # 处理接收到的消息
+        pass
+
+    async def execute_task(self, task: Task):
+        # 执行分配的任务
+        pass</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 步骤3 -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+                                    3
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">通信机制实现</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                        建立智能体间的通信协议，支持异步消息传递和事件驱动架构。
+                                    </p>
+                                    <div class="code-block text-sm">
+                                        <pre>class MessageBroker:
+    def __init__(self):
+        self.agents = {}
+        self.message_queue = asyncio.Queue()
+
+    async def register_agent(self, agent: BaseAgent):
+        self.agents[agent.agent_id] = agent
+
+    async def broadcast_message(self, message: Message):
+        # 广播消息给所有相关智能体
+        pass</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 步骤4 -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+                                    4
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">任务调度与协调</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                        开发任务分解、分配和协调机制，确保多智能体协作的高效性。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- 步骤5 -->
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold">
+                                    5
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">监控与可视化</h3>
+                                    <p class="text-gray-700 dark:text-gray-300 mb-3">
+                                        构建系统监控仪表板，实时展示智能体状态、任务进度和系统性能指标。
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 核心功能 -->
+                <section id="features" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-star text-primary-600 dark:text-primary-400 mr-4"></i>
+                            核心功能
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-blue-600 text-white rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-network-wired"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">智能协作网络</h3>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm">
+                                    支持智能体间动态组网，根据任务需求自动形成协作团队，实现高效的资源分配和任务执行。
+                                </p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-green-600 text-white rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">实时性能分析</h3>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm">
+                                    提供详细的性能监控和分析功能，包括任务完成率、响应时间、资源利用率等关键指标。
+                                </p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 rounded-lg p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-purple-600 text-white rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">安全与权限控制</h3>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm">
+                                    实现多层安全机制，包括身份验证、访问控制、数据加密和审计日志，确保系统安全运行。
+                                </p>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-lg p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-orange-600 text-white rounded-lg flex items-center justify-center mr-4">
+                                        <i class="fas fa-expand-arrows-alt"></i>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">弹性扩展能力</h3>
+                                </div>
+                                <p class="text-gray-700 dark:text-gray-300 text-sm">
+                                    支持水平和垂直扩展，能够根据负载动态调整智能体数量和资源分配，保证系统稳定性。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 时间规划 -->
+                <section id="timeline" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-calendar-alt text-primary-600 dark:text-primary-400 mr-4"></i>
+                            时间规划
+                        </h2>
+
+                        <div class="relative">
+                            <div class="timeline-line"></div>
+
+                            <div class="space-y-8">
+                                <!-- 第1-2周 -->
+                                <div class="flex items-start ml-8">
+                                    <div class="absolute left-4 w-6 h-6 bg-primary-600 rounded-full border-4 border-white dark:border-gray-800"></div>
+                                    <div class="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">第1-2周：项目启动</h3>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">2周</span>
+                                        </div>
+                                        <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                            <li>• 需求分析与系统设计</li>
+                                            <li>• 技术选型与环境搭建</li>
+                                            <li>• 项目计划制定</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 第3-6周 -->
+                                <div class="flex items-start ml-8">
+                                    <div class="absolute left-4 w-6 h-6 bg-primary-600 rounded-full border-4 border-white dark:border-gray-800"></div>
+                                    <div class="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">第3-6周：核心开发</h3>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">4周</span>
+                                        </div>
+                                        <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                            <li>• 智能体框架实现</li>
+                                            <li>• 通信机制开发</li>
+                                            <li>• 任务调度系统</li>
+                                            <li>• 基础功能测试</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 第7-8周 -->
+                                <div class="flex items-start ml-8">
+                                    <div class="absolute left-4 w-6 h-6 bg-primary-600 rounded-full border-4 border-white dark:border-gray-800"></div>
+                                    <div class="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">第7-8周：功能完善</h3>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">2周</span>
+                                        </div>
+                                        <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                            <li>• 高级功能开发</li>
+                                            <li>• 性能优化</li>
+                                            <li>• 安全机制实现</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- 第9-10周 -->
+                                <div class="flex items-start ml-8">
+                                    <div class="absolute left-4 w-6 h-6 bg-primary-600 rounded-full border-4 border-white dark:border-gray-800"></div>
+                                    <div class="flex-1 bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">第9-10周：测试与部署</h3>
+                                            <span class="text-sm text-gray-500 dark:text-gray-400">2周</span>
+                                        </div>
+                                        <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                                            <li>• 系统集成测试</li>
+                                            <li>• 性能压力测试</li>
+                                            <li>• 文档编写</li>
+                                            <li>• 部署上线</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 评估标准 -->
+                <section id="evaluation" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-chart-line text-primary-600 dark:text-primary-400 mr-4"></i>
+                            评估标准
+                        </h2>
+
+                        <div class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <!-- 技术指标 -->
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                        <i class="fas fa-microchip text-blue-600 dark:text-blue-400 mr-2"></i>
+                                        技术指标
+                                    </h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-700 dark:text-gray-300">系统响应时间</span>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">&lt; 100ms</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-700 dark:text-gray-300">任务完成率</span>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">&gt; 95%</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-700 dark:text-gray-300">并发处理能力</span>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">1000+ 任务</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-700 dark:text-gray-300">系统可用性</span>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">99.9%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 功能完整性 -->
+                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg p-6">
+                                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                        <i class="fas fa-check-double text-green-600 dark:text-green-400 mr-2"></i>
+                                        功能完整性
+                                    </h3>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                            <span class="text-gray-700 dark:text-gray-300">多智能体协作机制</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                            <span class="text-gray-700 dark:text-gray-300">动态任务分配</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                            <span class="text-gray-700 dark:text-gray-300">实时监控面板</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                            <span class="text-gray-700 dark:text-gray-300">故障自动恢复</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 创新性评估 -->
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-lg p-6">
+                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                                    <i class="fas fa-lightbulb text-purple-600 dark:text-purple-400 mr-2"></i>
+                                    创新性评估
+                                </h3>
+                                <div class="grid md:grid-cols-3 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">算法创新</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">新颖的协作算法和优化策略</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">架构设计</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">可扩展的系统架构设计</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">应用场景</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">创新的实际应用场景</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 资源链接 -->
+                <section id="resources" class="mb-16">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 card-hover">
+                        <h2 class="text-3xl font-bold text-gray-900 dark:text-white mb-6 flex items-center">
+                            <i class="fas fa-link text-primary-600 dark:text-primary-400 mr-4"></i>
+                            资源链接
+                        </h2>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">技术文档</h3>
+                                <a href="#" class="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-book text-primary-600 dark:text-primary-400 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">多智能体系统设计指南</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">详细的技术实现文档</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-code text-primary-600 dark:text-primary-400 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">API参考文档</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">完整的接口说明</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">学习资源</h3>
+                                <a href="#" class="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-video text-primary-600 dark:text-primary-400 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">视频教程</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">实战演示视频</div>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                                    <i class="fas fa-github text-primary-600 dark:text-primary-400 mr-3"></i>
+                                    <div>
+                                        <div class="font-medium text-gray-900 dark:text-white">源代码仓库</div>
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">完整的项目代码</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 章节总结 -->
+                <section class="mb-16">
+                    <div class="bg-gradient-to-r from-primary-600 to-purple-600 rounded-xl shadow-lg p-8 text-white">
+                        <h2 class="text-3xl font-bold mb-6">章节总结</h2>
+                        <div class="prose prose-lg prose-invert max-w-none">
+                            <p class="mb-6">
+                                毕业设计项目将帮助您综合运用前面章节学习的所有知识，构建一个完整的多智能体协作系统。
+                                通过这个项目，您将深入理解智能体系统的架构设计、实现细节和最佳实践。
+                            </p>
+                            <div class="grid md:grid-cols-3 gap-6 mt-8">
+                                <div class="text-center">
+                                    <i class="fas fa-trophy text-4xl mb-3"></i>
+                                    <h3 class="text-xl font-semibold mb-2">项目成果</h3>
+                                    <p class="text-sm opacity-90">完成可部署的智能体系统</p>
+                                </div>
+                                <div class="text-center">
+                                    <i class="fas fa-graduation-cap text-4xl mb-3"></i>
+                                    <h3 class="text-xl font-semibold mb-2">学习收获</h3>
+                                    <p class="text-sm opacity-90">掌握系统设计核心技能</p>
+                                </div>
+                                <div class="text-center">
+                                    <i class="fas fa-rocket text-4xl mb-3"></i>
+                                    <h3 class="text-xl font-semibold mb-2">未来发展</h3>
+                                    <p class="text-sm opacity-90">为AI领域发展奠定基础</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 主题切换功能
+        const themeToggle = document.getElementById('theme-toggle');
+        const html = document.documentElement;
+
+        // 检查系统主题偏好
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.classList.add('dark');
+        } else {
+            html.classList.remove('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 滚动动画
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // 观察所有section
+        document.querySelectorAll('section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+
+        // 高亮当前导航项
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-item');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('bg-primary-50', 'dark:bg-primary-900/20');
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.classList.add('bg-primary-50', 'dark:bg-primary-900/20');
+                }
+            });
+        });
+
+        // 添加代码复制功能
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 px-3 py-1 bg-gray-600 text-white text-sm rounded hover:bg-gray-700 transition-colors';
+            button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+            button.style.position = 'absolute';
+            button.style.top = '0.5rem';
+            button.style.right = '0.5rem';
+
+            block.style.position = 'relative';
+            block.appendChild(button);
+
+            button.addEventListener('click', () => {
+                const text = block.querySelector('pre').textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>已复制';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+                    }, 2000);
+                });
+            });
+        });
+
+        // 添加加载动画
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
+</body>
+</html>

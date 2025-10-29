@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第六章 框架开发实践 - Hello Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .framework-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .framework-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .feature-list li {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-lang);
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #475569;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+        }
+
+        .toc-item {
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .toc-item:hover {
+            border-left-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .toc-item.active {
+            border-left-color: #667eea;
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .comparison-table {
+            overflow-x: auto;
+        }
+
+        .comparison-table table {
+            min-width: 800px;
+        }
+
+        .progress-step {
+            position: relative;
+        }
+
+        .progress-step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 100%;
+            height: 2px;
+            background: #e5e7eb;
+            z-index: -1;
+        }
+
+        .progress-step:last-child::after {
+            display: none;
+        }
+
+        .progress-step.active::after {
+            background: #667eea;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .framework-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            margin: 0 auto 1rem;
+        }
+
+        .dark-mode {
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        .dark-mode .bg-white {
+            background: #1e293b;
+        }
+
+        .dark-mode .text-gray-800 {
+            color: #e2e8f0;
+        }
+
+        .dark-mode .text-gray-600 {
+            color: #cbd5e1;
+        }
+
+        .dark-mode .bg-gray-50 {
+            background: #1e293b;
+        }
+
+        .dark-mode .border-gray-200 {
+            border-color: #334155;
+        }
+
+        .dark-mode .shadow-lg {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+
+        .nav-fixed {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .dark-mode .nav-fixed {
+            background: rgba(15, 23, 42, 0.9);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Theme Toggle -->
+    <button id="themeToggle" class="theme-toggle bg-white dark:bg-gray-800 p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+        <i class="fas fa-moon dark:hidden text-gray-600"></i>
+        <i class="fas fa-sun hidden dark:block text-yellow-400"></i>
+    </button>
+
+    <!-- Navigation -->
+    <nav class="nav-fixed border-b border-gray-200 dark:border-gray-700 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <i class="fas fa-cube text-purple-600 text-2xl"></i>
+                <h1 class="text-xl font-bold">第六章 框架开发实践</h1>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="../index.html" class="text-gray-600 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-home mr-2"></i>首页
+                </a>
+                <a href="#frameworks" class="text-gray-600 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-layer-group mr-2"></i>框架对比
+                </a>
+                <a href="#conclusion" class="text-gray-600 hover:text-purple-600 transition-colors">
+                    <i class="fas fa-bookmark mr-2"></i>本章小结
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+        <!-- Introduction Section -->
+        <section class="mb-12 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-purple-600">
+                    <i class="fas fa-rocket mr-3"></i>从手动实现到框架开发
+                </h2>
+                <p class="text-lg text-gray-600 mb-6 leading-relaxed">
+                    在第四章中，我们通过编写原生代码，实现了 ReAct、Plan-and-Solve 和 Reflection 这几种智能体的核心工作流。
+                    这个过程让我们对智能体的内在执行逻辑有了理解。随后，在第五章，我们切换到"使用者"的视角，体验了低代码平台带来的便捷与高效。
+                </p>
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-6 border-l-4 border-purple-600">
+                    <h3 class="text-xl font-semibold mb-3 text-purple-800">
+                        <i class="fas fa-bullseye mr-2"></i>本章目标
+                    </h3>
+                    <p class="text-gray-700">
+                        探讨如何利用业界主流的一些<strong>智能体框架</strong>，来高效、规范地构建可靠的智能体应用。
+                        我们将首先概览当前市面上主流的智能体框架，然后通过对几个具有代表性框架的实战案例，
+                        来体验框架驱动的开发模式。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Framework Section -->
+        <section class="mb-12 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 text-indigo-600">
+                    <i class="fas fa-question-circle mr-3"></i>为何需要智能体框架
+                </h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <h3 class="font-semibold text-lg mb-3 text-blue-800">
+                            <i class="fas fa-code mr-2"></i>提升代码复用与开发效率
+                        </h3>
+                        <p class="text-gray-700">
+                            框架提供通用的 Agent 基类或执行器，封装了智能体运行的核心循环，
+                            避免重复劳动，让我们专注于业务逻辑。
+                        </p>
+                    </div>
+                    <div class="bg-green-50 rounded-lg p-6">
+                        <h3 class="font-semibold text-lg mb-3 text-green-800">
+                            <i class="fas fa-puzzle-piece mr-2"></i>实现组件解耦与可扩展性
+                        </h3>
+                        <p class="text-gray-700">
+                            分离模型层、工具层、记忆层等关注点，使得整个系统极具可扩展性，
+                            更换或升级任何一个组件都变得简单。
+                        </p>
+                    </div>
+                    <div class="bg-yellow-50 rounded-lg p-6">
+                        <h3 class="font-semibold text-lg mb-3 text-yellow-800">
+                            <i class="fas fa-database mr-2"></i>标准化复杂的状态管理
+                        </h3>
+                        <p class="text-gray-700">
+                            提供强大而通用的状态管理机制，处理上下文窗口限制、历史信息持久化、
+                            多轮对话状态跟踪等复杂问题。
+                        </p>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-6">
+                        <h3 class="font-semibold text-lg mb-3 text-purple-800">
+                            <i class="fas fa-search mr-2"></i>简化可观测性与调试过程
+                        </h3>
+                        <p class="text-gray-700">
+                            内置强大的可观测性能力，通过事件回调机制在关键节点自动触发日志记录，
+                            轻松追踪和调试智能体的完整运行轨迹。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Table of Contents -->
+        <section class="mb-8 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-bold mb-4 text-gray-800">
+                    <i class="fas fa-list mr-2"></i>本章内容导航
+                </h2>
+                <div class="grid md:grid-cols-4 gap-3">
+                    <a href="#framework-autogen" class="toc-item p-3 rounded-lg hover:bg-gray-50 transition-all">
+                        <div class="font-medium text-blue-600">AutoGen</div>
+                        <div class="text-sm text-gray-500">以对话驱动协作</div>
+                    </a>
+                    <a href="#framework-agentscope" class="toc-item p-3 rounded-lg hover:bg-gray-50 transition-all">
+                        <div class="font-medium text-green-600">AgentScope</div>
+                        <div class="text-sm text-gray-500">工程化多智能体平台</div>
+                    </a>
+                    <a href="#framework-camel" class="toc-item p-3 rounded-lg hover:bg-gray-50 transition-all">
+                        <div class="font-medium text-orange-600">CAMEL</div>
+                        <div class="text-sm text-gray-500">角色扮演协作</div>
+                    </a>
+                    <a href="#framework-langgraph" class="toc-item p-3 rounded-lg hover:bg-gray-50 transition-all">
+                        <div class="font-medium text-purple-600">LangGraph</div>
+                        <div class="text-sm text-gray-500">状态机工作流</div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Framework Comparison -->
+        <section id="frameworks" class="mb-12 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-6 text-center text-purple-600">
+                    <i class="fas fa-layer-group mr-3"></i>四大智能体框架对比
+                </h2>
+
+                <!-- Comparison Table -->
+                <div class="comparison-table mb-8">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-gradient-to-r from-purple-100 to-indigo-100">
+                                <th class="border border-gray-300 px-4 py-3 text-left font-semibold">框架</th>
+                                <th class="border border-gray-300 px-4 py-3 text-left font-semibold">设计理念</th>
+                                <th class="border border-gray-300 px-4 py-3 text-left font-semibold">核心特点</th>
+                                <th class="border border-gray-300 px-4 py-3 text-left font-semibold">适用场景</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-blue-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3 font-medium text-blue-600">AutoGen</td>
+                                <td class="border border-gray-300 px-4 py-3">以对话驱动协作</td>
+                                <td class="border border-gray-300 px-4 py-3">群聊对话、角色专业化、流程自动化</td>
+                                <td class="border border-gray-300 px-4 py-3">软件开发团队、任务协作</td>
+                            </tr>
+                            <tr class="hover:bg-green-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3 font-medium text-green-600">AgentScope</td>
+                                <td class="border border-gray-300 px-4 py-3">工程化优先</td>
+                                <td class="border border-gray-300 px-4 py-3">消息驱动、分布式部署、高并发</td>
+                                <td class="border border-gray-300 px-4 py-3">大规模生产应用、实时交互</td>
+                            </tr>
+                            <tr class="hover:bg-orange-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3 font-medium text-orange-600">CAMEL</td>
+                                <td class="border border-gray-300 px-4 py-3">角色扮演协作</td>
+                                <td class="border border-gray-300 px-4 py-3">引导性提示、自主协作、轻量级</td>
+                                <td class="border border-gray-300 px-4 py-3">内容创作、专业协作</td>
+                            </tr>
+                            <tr class="hover:bg-purple-50 transition-colors">
+                                <td class="border border-gray-300 px-4 py-3 font-medium text-purple-600">LangGraph</td>
+                                <td class="border border-gray-300 px-4 py-3">状态机工作流</td>
+                                <td class="border border-gray-300 px-4 py-3">图结构、循环支持、精确控制</td>
+                                <td class="border border-gray-300 px-4 py-3">复杂工作流、决策系统</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- AutoGen Framework -->
+        <section id="framework-autogen" class="mb-12 animate-fade-in">
+            <div class="framework-card bg-white rounded-xl shadow-lg p-8">
+                <div class="framework-icon bg-blue-100 text-blue-600">
+                    <i class="fas fa-comments text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 text-blue-600">
+                    <i class="fas fa-robot mr-3"></i>AutoGen：以对话驱动协作
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    AutoGen 的核心思想是通过对话实现协作。它将多智能体系统抽象为一个由多个"可对话"智能体组成的群聊。
+                    开发者可以定义不同角色，并设定它们之间的交互规则。
+                </p>
+
+                <!-- Architecture -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-sitemap mr-2"></i>架构特点
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-blue-600 mb-2">分层设计</h4>
+                            <p class="text-sm text-gray-600">autogen-core 作为底层基础，autogen-agentchat 提供高级接口</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-blue-600 mb-2">异步优先</h4>
+                            <p class="text-sm text-gray-600">全面采用 async/await，提升并发处理能力</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-blue-600 mb-2">模块化组件</h4>
+                            <p class="text-sm text-gray-600">AssistantAgent 和 UserProxyAgent 分离思考与行动</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code Example -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-code mr-2"></i>核心代码示例
+                    </h3>
+                    <div class="code-block" data-lang="Python">
+<pre># 定义团队协作流程
+from autogen_agentchat.teams import RoundRobinGroupChat
+from autogen_agentchat.conditions import TextMentionTermination
+
+team_chat = RoundRobinGroupChat(
+    participants=[
+        product_manager,
+        engineer,
+        code_reviewer,
+        user_proxy
+    ],
+    termination_condition=TextMentionTermination("TERMINATE"),
+    max_turns=20,
+)
+
+# 运行协作流程
+result = await Console(team_chat.run_stream(task=task))</pre>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-blue-800">
+                        <i class="fas fa-laptop-code mr-2"></i>实战案例：软件开发团队
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        构建一个模拟的软件开发团队，由产品经理、工程师、代码审查员和用户代理组成，
+                        协作开发比特币价格显示应用。
+                    </p>
+                    <div class="grid md:grid-cols-4 gap-3">
+                        <div class="bg-white rounded p-3 text-center">
+                            <i class="fas fa-user-tie text-blue-500 text-2xl mb-2"></i>
+                            <div class="font-medium">产品经理</div>
+                            <div class="text-sm text-gray-500">需求分析</div>
+                        </div>
+                        <div class="bg-white rounded p-3 text-center">
+                            <i class="fas fa-code text-green-500 text-2xl mb-2"></i>
+                            <div class="font-medium">工程师</div>
+                            <div class="text-sm text-gray-500">代码实现</div>
+                        </div>
+                        <div class="bg-white rounded p-3 text-center">
+                            <i class="fas fa-search text-yellow-500 text-2xl mb-2"></i>
+                            <div class="font-medium">代码审查员</div>
+                            <div class="text-sm text-gray-500">质量保证</div>
+                        </div>
+                        <div class="bg-white rounded p-3 text-center">
+                            <i class="fas fa-user text-purple-500 text-2xl mb-2"></i>
+                            <div class="font-medium">用户代理</div>
+                            <div class="text-sm text-gray-500">测试验证</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AgentScope Framework -->
+        <section id="framework-agentscope" class="mb-12 animate-fade-in">
+            <div class="framework-card bg-white rounded-xl shadow-lg p-8">
+                <div class="framework-icon bg-green-100 text-green-600">
+                    <i class="fas fa-network-wired text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 text-green-600">
+                    <i class="fas fa-cogs mr-3"></i>AgentScope：工程化优先的多智能体平台
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    AgentScope 专为构建大规模、高可靠性的多智能体应用而设计。它不仅提供了直观易用的编程接口，
+                    更重要的是内置了分布式部署、容错恢复、可观测性等企业级特性。
+                </p>
+
+                <!-- Architecture -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-layer-group mr-2"></i>分层架构体系
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                            <div class="flex-1 bg-white rounded p-3 shadow">
+                                <strong>基础组件层：</strong>Message、Memory、Model API、Tool
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-400 rounded-full mr-3"></div>
+                            <div class="flex-1 bg-white rounded p-3 shadow">
+                                <strong>智能体基础设施层：</strong>预构建智能体、ReAct范式、异步执行
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-300 rounded-full mr-3"></div>
+                            <div class="flex-1 bg-white rounded p-3 shadow">
+                                <strong>多智能体协作层：</strong>MsgHub消息中心、Pipeline工作流编排
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-200 rounded-full mr-3"></div>
+                            <div class="flex-1 bg-white rounded p-3 shadow">
+                                <strong>开发与部署层：</strong>AgentScope Runtime、AgentScope Studio
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Message-Driven Architecture -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-envelope mr-2"></i>消息驱动架构
+                    </h3>
+                    <div class="code-block" data-lang="Python">
+<pre># 消息的标准结构
+from agentscope.message import Msg
+
+message = Msg(
+    name="Alice",           # 发送者名称
+    content="Hello, Bob!",  # 消息内容
+    role="user",           # 角色类型
+    metadata={             # 元数据信息
+        "timestamp": "2024-01-15T10:30:00Z",
+        "message_type": "text",
+        "priority": "normal"
+    }
+)</pre>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <div class="bg-green-50 rounded-lg p-4">
+                            <h4 class="font-medium text-green-800 mb-2">核心优势</h4>
+                            <ul class="feature-list text-sm text-gray-700 space-y-1">
+                                <li>异步解耦：发送方和接收方在时间上解耦</li>
+                                <li>位置透明：自动处理本地和远程通信</li>
+                                <li>可观测性：每条消息都可被记录和追踪</li>
+                                <li>可靠性：消息持久化和重试机制</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 rounded-lg p-4">
+                            <h4 class="font-medium text-blue-800 mb-2">MsgHub 特性</h4>
+                            <ul class="feature-list text-sm text-gray-700 space-y-1">
+                                <li>灵活的消息路由：点对点、广播、组播</li>
+                                <li>消息持久化：自动保存到数据库</li>
+                                <li>原生分布式支持：RPC 跨节点通信</li>
+                                <li>容错机制：异常处理和故障恢复</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-green-800">
+                        <i class="fas fa-chess mr-2"></i>实战案例：三国狼人杀游戏
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        构建融合中国古典文化的"三国狼人杀"游戏，展示 AgentScope 在处理复杂多智能体交互、
+                        实时协作和策略博弈方面的优势。
+                    </p>
+                    <div class="bg-white rounded-lg p-4 mb-4">
+                        <h4 class="font-medium text-gray-800 mb-2">游戏流程设计</h4>
+                        <div class="flex items-center justify-between text-sm">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-moon text-purple-600"></i>
+                                </div>
+                                <div>夜晚阶段</div>
+                            </div>
+                            <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-sun text-yellow-600"></i>
+                                </div>
+                                <div>白天讨论</div>
+                            </div>
+                            <div class="flex-1 h-0.5 bg-gray-300 mx-2"></div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-vote-yea text-red-600"></i>
+                                </div>
+                                <div>投票阶段</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div class="bg-white rounded p-3">
+                            <div class="font-medium text-purple-600 mb-1">角色建模</div>
+                            <div class="text-sm text-gray-600">游戏角色 + 三国人格双重身份</div>
+                        </div>
+                        <div class="bg-white rounded p-3">
+                            <div class="font-medium text-green-600 mb-1">并发处理</div>
+                            <div class="text-sm text-gray-600">异步消息传递与决策收集</div>
+                        </div>
+                        <div class="bg-white rounded p-3">
+                            <div class="font-medium text-blue-600 mb-1">容错机制</div>
+                            <div class="text-sm text-gray-600">异常处理确保游戏持续进行</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CAMEL Framework -->
+        <section id="framework-camel" class="mb-12 animate-fade-in">
+            <div class="framework-card bg-white rounded-xl shadow-lg p-8">
+                <div class="framework-icon bg-orange-100 text-orange-600">
+                    <i class="fas fa-theater-masks text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 text-orange-600">
+                    <i class="fas fa-masks-theater mr-3"></i>CAMEL：角色扮演自主协作
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    CAMEL 专注于探索如何在最少的人类干预下，让两个智能体通过"角色扮演"自主协作解决复杂任务。
+                    其核心是角色扮演和引导性提示两大概念。
+                </p>
+
+                <!-- Core Concepts -->
+                <div class="grid md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-orange-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-orange-800">
+                            <i class="fas fa-user-tag mr-2"></i>角色扮演
+                        </h3>
+                        <p class="text-gray-700 mb-3">
+                            一个任务通常由两个智能体协作完成：
+                        </p>
+                        <div class="space-y-3">
+                            <div class="bg-white rounded p-3">
+                                <div class="font-medium text-orange-600">AI User</div>
+                                <div class="text-sm text-gray-600">提出需求、下达指令、构思任务步骤</div>
+                            </div>
+                            <div class="bg-white rounded p-3">
+                                <div class="font-medium text-blue-600">AI Assistant</div>
+                                <div class="text-sm text-gray-600">执行具体操作、提供解决方案</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-yellow-800">
+                            <i class="fas fa-lightbulb mr-2"></i>引导性提示
+                        </h3>
+                        <p class="text-gray-700 mb-3">
+                            精心设计的初始指令包含：
+                        </p>
+                        <ul class="feature-list text-sm text-gray-700 space-y-1">
+                            <li>明确自身角色</li>
+                            <li>告知协作者角色</li>
+                            <li>定义共同目标</li>
+                            <li>设定行为约束和沟通协议</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Code Example -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-code mr-2"></i>核心代码实现
+                    </h3>
+                    <div class="code-block" data-lang="Python">
+<pre># 初始化角色扮演会话
+role_play_session = RolePlaying(
+    assistant_role_name="心理学家",
+    user_role_name="作家",
+    task_prompt=task_prompt,
+    with_task_specify=False,
+)
+
+# 启动自动化对话
+input_msg = role_play_session.init_chat()
+while n < chat_turn_limit:
+    assistant_response, user_response = role_play_session.step(input_msg)
+
+    # 检查任务完成标志
+    if "<CAMEL_TASK_DONE>" in user_response.msg.content:
+        break
+
+    input_msg = assistant_response.msg</pre>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="bg-gradient-to-r from-orange-50 to-yellow-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-orange-800">
+                        <i class="fas fa-book mr-2"></i>实战案例：AI科普电子书创作
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        让 AI 心理学家与 AI 作家合作，共同创作关于"拖延症心理学"的短篇电子书。
+                    </p>
+
+                    <!-- Collaboration Process -->
+                    <div class="bg-white rounded-lg p-4 mb-4">
+                        <h4 class="font-medium text-gray-800 mb-3">协作流程</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
+                                <div class="flex-1">
+                                    <div class="font-medium">框架搭建与目标对齐</div>
+                                    <div class="text-sm text-gray-600">作家提出结构框架，心理学家进行专业补充</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
+                                <div class="flex-1">
+                                    <div class="font-medium">核心内容生成与知识转译</div>
+                                    <div class="text-sm text-gray-600">心理学家提供专业知识，作家转化为通俗语言</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center font-bold mr-3">3</div>
+                                <div class="flex-1">
+                                    <div class="font-medium">迭代优化与质量保证</div>
+                                    <div class="text-sm text-gray-600">双方协作完善内容，确保准确性和可读性</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold mr-3">4</div>
+                                <div class="flex-1">
+                                    <div class="font-medium">总结与升华</div>
+                                    <div class="text-sm text-gray-600">完成实用建议总结和全书回顾</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div class="bg-white rounded p-3">
+                            <div class="font-medium text-blue-600 mb-1">AI 心理学家</div>
+                            <div class="text-sm text-gray-600">提供专业学术见解和实证研究支持</div>
+                        </div>
+                        <div class="bg-white rounded p-3">
+                            <div class="font-medium text-green-600 mb-1">AI 作家</div>
+                            <div class="text-sm text-gray-600">将复杂概念转化为生动易懂的文字</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LangGraph Framework -->
+        <section id="framework-langgraph" class="mb-12 animate-fade-in">
+            <div class="framework-card bg-white rounded-xl shadow-lg p-8">
+                <div class="framework-icon bg-purple-100 text-purple-600">
+                    <i class="fas fa-project-diagram text-4xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold mb-4 text-purple-600">
+                    <i class="fas fa-sitemap mr-3"></i>LangGraph：状态机工作流
+                </h2>
+                <p class="text-lg text-gray-600 mb-6">
+                    LangGraph 将智能体的执行流程建模为状态机，并将其表示为有向图。
+                    节点代表计算步骤，边定义跳转逻辑，天然支持循环，使得构建迭代、反思的复杂工作流变得直观。
+                </p>
+
+                <!-- Core Components -->
+                <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-cube mr-2"></i>三个基本构成要素
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-4">
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-purple-600 mb-2">
+                                <i class="fas fa-database mr-2"></i>全局状态 (State)
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-2">TypedDict 定义的数据结构</p>
+                            <div class="code-block text-xs" data-lang="Python">class AgentState(TypedDict):
+    messages: List[str]
+    current_task: str
+    final_answer: str</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-purple-600 mb-2">
+                                <i class="fas fa-circle-nodes mr-2"></i>节点 (Nodes)
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-2">执行具体任务的函数</p>
+                            <div class="code-block text-xs" data-lang="Python">def planner_node(state: AgentState):
+    # 执行规划逻辑
+    return updated_state</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 shadow">
+                            <h4 class="font-medium text-purple-600 mb-2">
+                                <i class="fas fa-arrow-right mr-2"></i>边 (Edges)
+                            </h4>
+                            <p class="text-sm text-gray-600 mb-2">定义工作流方向</p>
+                            <div class="code-block text-xs" data-lang="Python">def should_continue(state):
+    return "continue" or "end"</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Workflow Diagram -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-route mr-2"></i>工作流构建示例
+                    </h3>
+                    <div class="code-block" data-lang="Python">
+<pre># 构建状态图工作流
+workflow = StateGraph(AgentState)
+
+# 添加节点
+workflow.add_node("planner", planner_node)
+workflow.add_node("executor", executor_node)
+
+# 设置入口和连接
+workflow.set_entry_point("planner")
+workflow.add_edge("planner", "executor")
+
+# 添加条件边（支持循环）
+workflow.add_conditional_edges(
+    "executor",
+    should_continue,
+    {
+        "continue_to_planner": "planner",
+        "end_workflow": END
+    }
+)
+
+# 编译并运行
+app = workflow.compile()
+result = app.stream(inputs)</pre>
+                    </div>
+                </div>
+
+                <!-- Use Case -->
+                <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-3 text-purple-800">
+                        <i class="fas fa-search mr-2"></i>实战案例：三步问答助手
+                    </h3>
+                    <p class="text-gray-700 mb-4">
+                        构建遵循清晰三步流程的问答助手：理解用户查询意图 → 搜索相关信息 → 生成最终答案。
+                    </p>
+
+                    <!-- Three-Step Process -->
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-white rounded-lg p-4 text-center">
+                            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-brain text-blue-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-medium text-blue-600 mb-2">步骤 1：理解</h4>
+                            <p class="text-sm text-gray-600">分析用户查询意图，生成优化的搜索关键词</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 text-center">
+                            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-search text-green-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-medium text-green-600 mb-2">步骤 2：搜索</h4>
+                            <p class="text-sm text-gray-600">使用 Tavily API 执行真实网络搜索</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-4 text-center">
+                            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-comment-dots text-purple-600 text-2xl"></i>
+                            </div>
+                            <h4 class="font-medium text-purple-600 mb-2">步骤 3：回答</h4>
+                            <p class="text-sm text-gray-600">基于搜索结果生成准确、有用的回答</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-4">
+                        <h4 class="font-medium text-gray-800 mb-2">核心优势</h4>
+                        <div class="grid md:grid-cols-2 gap-3">
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <div class="text-sm text-gray-600">
+                                    <strong>高度可控性：</strong>精确规划智能体的每一步行为
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <div class="text-sm text-gray-600">
+                                    <strong>循环支持：</strong>轻松构建反思-修正循环
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <div class="text-sm text-gray-600">
+                                    <strong>模块化设计：</strong>每个节点都是独立的 Python 函数
+                                </div>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-2"></i>
+                                <div class="text-sm text-gray-600">
+                                    <strong>人机协作：</strong>轻松插入人工审核节点
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Framework Comparison Summary -->
+        <section class="mb-12 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">
+                    <i class="fas fa-balance-scale mr-3"></i>框架设计权衡：涌现式协作 vs 显式控制
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-blue-800">
+                            <i class="fas fa-magic mr-2"></i>涌现式协作
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <i class="fas fa-robot text-blue-600 mt-1 mr-3"></i>
+                                <div>
+                                    <div class="font-medium">AutoGen & CAMEL</div>
+                                    <div class="text-sm text-gray-600">通过角色定义和对话规则让协作行为自然涌现</div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded p-3">
+                                <h4 class="font-medium text-gray-800 mb-2">特点</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 更贴近人类交互模式</li>
+                                    <li>• 动态、不可预测的社会性协作</li>
+                                    <li>• 依赖提示工程和角色设计</li>
+                                    <li>• 调试难度较高（对话历史分析）</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-800">
+                            <i class="fas fa-cogs mr-2"></i>显式控制
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <i class="fas fa-project-diagram text-green-600 mt-1 mr-3"></i>
+                                <div>
+                                    <div class="font-medium">LangGraph & AgentScope</div>
+                                    <div class="text-sm text-gray-600">明确预定义每个步骤和跳转条件</div>
+                                </div>
+                            </div>
+                            <div class="bg-white rounded p-3">
+                                <h4 class="font-medium text-gray-800 mb-2">特点</h4>
+                                <ul class="text-sm text-gray-600 space-y-1">
+                                    <li>• 高度可靠性和可预测性</li>
+                                    <li>• 精确的流程控制和状态管理</li>
+                                    <li>• 需要更多前期代码（Boilerplate）</li>
+                                    <li>• 适合生产级应用开发</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Engineering Dimension -->
+                <div class="bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-industry mr-2"></i>工程化维度
+                    </h3>
+                    <div class="bg-white rounded-lg p-4">
+                        <p class="text-gray-700 mb-4">
+                            无论选择哪种协作范式，从实验原型推向生产应用都必须面对工程挑战：
+                        </p>
+                        <div class="grid md:grid-cols-4 gap-3">
+                            <div class="text-center p-3">
+                                <i class="fas fa-bolt text-yellow-500 text-2xl mb-2"></i>
+                                <div class="font-medium">高并发</div>
+                                <div class="text-sm text-gray-500">处理大规模并发请求</div>
+                            </div>
+                            <div class="text-center p-3">
+                                <i class="fas fa-shield-alt text-green-500 text-2xl mb-2"></i>
+                                <div class="font-medium">容错性</div>
+                                <div class="text-sm text-gray-500">异常处理和故障恢复</div>
+                            </div>
+                            <div class="text-center p-3">
+                                <i class="fas fa-server text-blue-500 text-2xl mb-2"></i>
+                                <div class="font-medium">分布式</div>
+                                <div class="text-sm text-gray-500">跨节点部署和通信</div>
+                            </div>
+                            <div class="text-center p-3">
+                                <i class="fas fa-chart-line text-purple-500 text-2xl mb-2"></i>
+                                <div class="font-medium">可观测性</div>
+                                <div class="text-sm text-gray-500">监控、日志和调试</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter Conclusion -->
+        <section id="conclusion" class="mb-12 animate-fade-in">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg p-8 text-white">
+                <h2 class="text-3xl font-bold mb-6">
+                    <i class="fas fa-bookmark mr-3"></i>本章小结
+                </h2>
+                <p class="text-lg mb-6 leading-relaxed">
+                    通过本章对四个主流智能体框架的深入分析和实战体验，我们看到了智能体构建的多样化路径。
+                    每个框架都有其独特的设计哲学和适用场景，反映了"涌现式协作"与"显式控制"之间的设计权衡。
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <i class="fas fa-key mr-2"></i>核心洞察
+                        </h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2 text-green-300"></i>
+                                <span>智能体构建没有唯一标准答案，需要根据具体需求选择合适的范式</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2 text-green-300"></i>
+                                <span>从"能运行"到"能稳定服务"需要解决工程化挑战</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2 text-green-300"></i>
+                                <span>理解框架设计哲学有助于成为更好的工具使用者和设计者</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-6">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <i class="fas fa-arrow-right mr-2"></i>下一章预告
+                        </h3>
+                        <p class="mb-4">
+                            在下一章中，我们将进入本教程的核心内容，从零开始，亲手构建一个属于我们自己的智能体框架，
+                            将所有理论与实践融会贯通。
+                        </p>
+                        <div class="flex items-center text-white/80">
+                            <i class="fas fa-code mr-2"></i>
+                            <span>第七章：从零构建智能体框架</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- References -->
+        <section class="mb-12 animate-fade-in">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">
+                    <i class="fas fa-book mr-3"></i>参考文献
+                </h2>
+                <div class="space-y-3 text-sm text-gray-600">
+                    <div class="flex items-start">
+                        <span class="font-medium mr-2">[1]</span>
+                        <span>Wu Q, Bansal G, Zhang J, et al. Autogen: Enabling next-gen LLM applications via multi-agent conversations[C]//First Conference on Language Modeling. 2024.</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="font-medium mr-2">[2]</span>
+                        <span>Gao D, Li Z, Pan X, et al. Agentscope: A flexible yet robust multi-agent platform[J]. arXiv preprint arXiv:2402.14034, 2024.</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="font-medium mr-2">[3]</span>
+                        <span>Li G, Hammoud H, Itani H, et al. Camel: Communicative agents for" mind" exploration of large language model society[J]. Advances in Neural Information Processing Systems, 2023, 36: 51991-52008.</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="font-medium mr-2">[4]</span>
+                        <span>LangChain. LangGraph [EB/OL]. (2024). https://github.com/langchain-ai/langgraph.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="mb-2">Hello Agents - 第六章 框架开发实践</p>
+            <p class="text-gray-400 text-sm">© 2024 Datawhale. 智能体学习平台</p>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') ||
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const theme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            observer.observe(el);
+        });
+
+        // Table of Contents active state
+        const tocItems = document.querySelectorAll('.toc-item');
+        const sections = document.querySelectorAll('section[id]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            tocItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Code block copy functionality
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.className = 'absolute top-2 right-2 bg-gray-700 text-white px-2 py-1 rounded text-xs hover:bg-gray-600 transition-colors';
+            button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+            block.style.position = 'relative';
+            block.appendChild(button);
+
+            button.addEventListener('click', () => {
+                const code = block.textContent;
+                navigator.clipboard.writeText(code).then(() => {
+                    button.innerHTML = '<i class="fas fa-check mr-1"></i>已复制';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

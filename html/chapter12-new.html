@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十二章 智能体性能评估 - HelloAgents教程</title>
+
+    <!-- TailwindCSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- KaTeX for math formulas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --secondary: #10b981;
+            --accent: #f59e0b;
+            --neutral: #6b7280;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hover-scale {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .hover-scale:hover {
+            transform: scale(1.02);
+        }
+
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+        }
+
+        .dark .code-block {
+            background: #0f172a;
+        }
+
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+
+        .nav-item {
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid var(--primary);
+        }
+
+        .metric-card {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .metric-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        .katex-display {
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+    </style>
+</head>
+<body class="scroll-smooth">
+    <div id="app" class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+
+        <!-- Header -->
+        <header class="sticky top-0 z-50 glass-effect shadow-lg">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="animate-float">
+                            <i class="fas fa-robot text-3xl text-blue-600 dark:text-blue-400"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold gradient-text">智能体性能评估</h1>
+                            <p class="text-sm text-gray-600 dark:text-gray-300">HelloAgents框架第十二章</p>
+                        </div>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-all">
+                        <i class="fas fa-moon text-gray-600 dark:hidden"></i>
+                        <i class="fas fa-sun text-yellow-400 hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="container mx-auto px-4 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+                <!-- Sidebar Navigation -->
+                <aside class="lg:col-span-1">
+                    <div class="sticky top-24 glass-effect rounded-xl p-6 shadow-xl">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                            <i class="fas fa-list-ul mr-2"></i>目录导航
+                        </h3>
+                        <nav id="sidebarNav" class="space-y-2">
+                            <!-- Navigation items will be generated by JavaScript -->
+                        </nav>
+
+                        <!-- Progress Indicator -->
+                        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                            <h4 class="text-sm font-semibold mb-3 text-gray-600 dark:text-gray-400">阅读进度</h4>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                                <div id="progressBar" class="progress-bar bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <p id="progressText" class="text-xs mt-2 text-gray-500 dark:text-gray-400">0% 已读</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Content Area -->
+                <article class="lg:col-span-3">
+                    <div class="prose prose-lg dark:prose-invert max-w-none">
+
+                        <!-- Introduction Section -->
+                        <section class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8 hover-scale">
+                            <div class="flex items-center mb-6">
+                                <i class="fas fa-chart-line text-4xl text-blue-600 dark:text-blue-400 mr-4"></i>
+                                <div>
+                                    <h2 class="text-3xl font-bold gradient-text">第十二章 智能体性能评估</h2>
+                                    <p class="text-gray-600 dark:text-gray-300 mt-2">构建完整的智能体评估体系</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 mb-6">
+                                <p class="text-lg leading-relaxed text-gray-700 dark:text-gray-200">
+                                    在前面的章节中，我们构建了HelloAgents框架的核心功能，实现了多种智能体范式、工具系统、记忆机制和强化学习训练等。在构建智能体系统时，我们还需要解决一个核心问题：<strong class="text-blue-600 dark:text-blue-400">如何客观地评估智能体的性能？</strong>
+                                </p>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                                <div class="bg-blue-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <i class="fas fa-question-circle text-2xl text-blue-600 dark:text-blue-400 mb-2"></i>
+                                    <p class="font-semibold">智能体是否具备预期的能力？</p>
+                                </div>
+                                <div class="bg-green-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <i class="fas fa-tasks text-2xl text-green-600 dark:text-green-400 mb-2"></i>
+                                    <p class="font-semibold">在不同任务上的表现如何？</p>
+                                </div>
+                                <div class="bg-purple-50 dark:bg-gray-700 rounded-lg p-4 text-center">
+                                    <i class="fas fa-balance-scale text-2xl text-purple-600 dark:text-purple-400 mb-2"></i>
+                                    <p class="font-semibold">与其他智能体相比处于什么水平？</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 border-l-4 border-amber-500">
+                                <h3 class="text-xl font-semibold mb-3 text-amber-800 dark:text-amber-300">
+                                    <i class="fas fa-lightbulb mr-2"></i>本章核心内容
+                                </h3>
+                                <p class="text-gray-700 dark:text-gray-200">
+                                    本章将为HelloAgents增加<strong class="text-amber-600 dark:text-amber-400">性能评估系统（Evaluation System）</strong>。我们将深入理解智能体评估的理论基础，并实现评估的工具。
+                                </p>
+                            </div>
+                        </section>
+
+                        <!-- Learning Objectives -->
+                        <section id="learning-objectives" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-target mr-3"></i>学习目标
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="metric-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-tools text-2xl text-blue-600 dark:text-blue-400 mr-3"></i>
+                                        <h4 class="font-semibold text-lg">BFCL评估</h4>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-200">掌握工具调用能力评估方法，理解AST匹配算法，实现函数调用准确性评估</p>
+                                </div>
+
+                                <div class="metric-card bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-brain text-2xl text-green-600 dark:text-green-400 mr-3"></i>
+                                        <h4 class="font-semibold text-lg">GAIA评估</h4>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-200">学习通用AI助手能力评估，掌握准精确匹配算法，评估综合问题解决能力</p>
+                                </div>
+
+                                <div class="metric-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-database text-2xl text-purple-600 dark:text-purple-400 mr-3"></i>
+                                        <h4 class="font-semibold text-lg">数据生成评估</h4>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-200">理解LLM Judge和Win Rate评估方法，掌握数据质量评估技术</p>
+                                </div>
+
+                                <div class="metric-card bg-gradient-to-br from-amber-50 to-amber-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center mb-3">
+                                        <i class="fas fa-cogs text-2xl text-amber-600 dark:text-amber-400 mr-3"></i>
+                                        <h4 class="font-semibold text-lg">评估系统集成</h4>
+                                    </div>
+                                    <p class="text-gray-700 dark:text-gray-200">构建完整的评估体系，实现自动化评估流程和报告生成</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Architecture Overview -->
+                        <section id="architecture" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-sitemap mr-3"></i>评估体系架构
+                            </h3>
+
+                            <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 mb-6">
+                                <div class="text-center mb-6">
+                                    <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full mb-4">
+                                        <i class="fas fa-robot text-white text-2xl"></i>
+                                    </div>
+                                    <h4 class="text-xl font-semibold mb-2">HelloAgents评估体系</h4>
+                                    <p class="text-gray-600 dark:text-gray-300">三层架构设计，全面覆盖智能体能力评估</p>
+                                </div>
+
+                                <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow-md">
+                                        <i class="fas fa-layer-group text-3xl text-blue-600 dark:text-blue-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-2">数据层</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Dataset负责数据加载和管理</p>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow-md">
+                                        <i class="fas fa-play-circle text-3xl text-green-600 dark:text-green-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-2">评估层</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Evaluator负责执行评估流程</p>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center shadow-md">
+                                        <i class="fas fa-chart-bar text-3xl text-purple-600 dark:text-purple-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-2">指标层</h5>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">Metrics负责计算评估指标</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="text-center">
+                                    <div class="bg-blue-100 dark:bg-blue-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-300">01</span>
+                                    </div>
+                                    <h4 class="font-semibold mb-2">BFCL评估</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">工具调用能力评估</p>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="bg-green-100 dark:bg-green-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl font-bold text-green-600 dark:text-green-300">02</span>
+                                    </div>
+                                    <h4 class="font-semibold mb-2">GAIA评估</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">通用AI助手能力评估</p>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="bg-purple-100 dark:bg-purple-900 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                        <span class="text-2xl font-bold text-purple-600 dark:text-purple-300">03</span>
+                                    </div>
+                                    <h4 class="font-semibold mb-2">数据生成评估</h4>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">生成数据质量评估</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- BFCL Section -->
+                        <section id="bfcl-section" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-tools mr-3"></i>BFCL：工具调用能力评估
+                            </h3>
+
+                            <div class="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 mb-6">
+                                <h4 class="text-xl font-semibold mb-4 text-blue-800 dark:text-blue-300">
+                                    <i class="fas fa-info-circle mr-2"></i>BFCL基准介绍
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-200 mb-4">
+                                    BFCL (Berkeley Function Calling Leaderboard) 是由加州大学伯克利分校推出的函数调用能力评估基准。它评估智能体理解用户意图、选择合适工具、正确构造函数调用的能力。
+                                </p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-blue-600 dark:text-blue-400">评估类别</h5>
+                                        <ul class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Simple：单函数调用</li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Multiple：多函数调用</li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Parallel：并行函数调用</li>
+                                            <li><i class="fas fa-check-circle text-green-500 mr-2"></i>Irrelevance：判断是否需要调用</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-blue-600 dark:text-blue-400">核心特点</h5>
+                                        <ul class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                                            <li><i class="fas fa-star text-amber-500 mr-2"></i>AST匹配算法</li>
+                                            <li><i class="fas fa-star text-amber-500 mr-2"></i>1120+测试样本</li>
+                                            <li><i class="fas fa-star text-amber-500 mr-2"></i>社区活跃</li>
+                                            <li><i class="fas fa-star text-amber-500 mr-2"></i>官方评估工具</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BFCL Metrics -->
+                            <h4 class="text-xl font-semibold mb-4">评估指标</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                                <div class="metric-card bg-gradient-to-br from-blue-50 to-blue-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <i class="fas fa-percentage text-2xl text-blue-600 dark:text-blue-400"></i>
+                                        <span class="text-2xl font-bold text-blue-600 dark:text-blue-400">Accuracy</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">AST匹配成功的样本比例</p>
+                                    <div class="mt-3 bg-blue-200 dark:bg-blue-800 rounded-full h-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="metric-card bg-gradient-to-br from-green-50 to-green-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <i class="fas fa-code text-2xl text-green-600 dark:text-green-400"></i>
+                                        <span class="text-2xl font-bold text-green-600 dark:text-green-400">AST Match</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">抽象语法树匹配率</p>
+                                    <div class="mt-3 bg-green-200 dark:bg-green-800 rounded-full h-2">
+                                        <div class="bg-green-600 h-2 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="metric-card bg-gradient-to-br from-purple-50 to-purple-100 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <i class="fas fa-list text-2xl text-purple-600 dark:text-purple-400"></i>
+                                        <span class="text-2xl font-bold text-purple-600 dark:text-purple-400">Category</span>
+                                    </div>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">分类准确率</p>
+                                    <div class="mt-3 bg-purple-200 dark:bg-purple-800 rounded-full h-2">
+                                        <div class="bg-purple-600 h-2 rounded-full" style="width: 78%"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Code Example -->
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+                                <h5 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                    <i class="fas fa-code mr-2"></i>BFCL评估示例
+                                </h5>
+                                <pre class="code-block p-4 rounded-lg overflow-x-auto"><code class="language-python"># 使用BFCLEvaluationTool一键评估
+from hello_agents import SimpleAgent, HelloAgentsLLM
+from hello_agents.tools import BFCLEvaluationTool
+
+# 创建智能体
+llm = HelloAgentsLLM()
+agent = SimpleAgent(name="TestAgent", llm=llm)
+
+# 创建BFCL评估工具
+bfcl_tool = BFCLEvaluationTool()
+
+# 运行评估
+results = bfcl_tool.run(
+    agent=agent,
+    category="simple_python",
+    max_samples=5
+)
+
+print(f"准确率: {results['overall_accuracy']:.2%}")
+print(f"正确数: {results['correct_samples']}/{results['total_samples']}")</code></pre>
+                            </div>
+                        </section>
+
+                        <!-- GAIA Section -->
+                        <section id="gaia-section" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-brain mr-3"></i>GAIA：通用AI助手能力评估
+                            </h3>
+
+                            <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 mb-6">
+                                <h4 class="text-xl font-semibold mb-4 text-green-800 dark:text-green-300">
+                                    <i class="fas fa-info-circle mr-2"></i>GAIA基准介绍
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-200 mb-4">
+                                    GAIA (General AI Assistants) 是由Meta AI和Hugging Face联合推出的评估基准，专注于评估AI助手的通用能力。它包含466个真实世界问题，分为三个难度级别。
+                                </p>
+
+                                <!-- GAIA Levels -->
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-green-100 dark:bg-green-900 rounded-lg p-4 text-center">
+                                        <div class="text-3xl font-bold text-green-600 dark:text-green-300 mb-2">Level 1</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">零步推理任务</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">53个样本</p>
+                                    </div>
+
+                                    <div class="bg-yellow-100 dark:bg-yellow-900 rounded-lg p-4 text-center">
+                                        <div class="text-3xl font-bold text-yellow-600 dark:text-yellow-300 mb-2">Level 2</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">中等难度任务</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">62个样本</p>
+                                    </div>
+
+                                    <div class="bg-red-100 dark:bg-red-900 rounded-lg p-4 text-center">
+                                        <div class="text-3xl font-bold text-red-600 dark:text-red-300 mb-2">Level 3</div>
+                                        <p class="text-sm text-gray-700 dark:text-gray-300">复杂推理任务</p>
+                                        <p class="text-xs text-gray-600 dark:text-gray-400 mt-1">50个样本</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GAIA Features -->
+                            <h4 class="text-xl font-semibold mb-4">核心能力评估</h4>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                                <div class="text-center">
+                                    <div class="bg-blue-100 dark:bg-blue-900 rounded-lg p-4">
+                                        <i class="fas fa-project-diagram text-2xl text-blue-600 dark:text-blue-400 mb-2"></i>
+                                        <p class="text-sm font-semibold">多步推理</p>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="bg-green-100 dark:bg-green-900 rounded-lg p-4">
+                                        <i class="fas fa-book text-2xl text-green-600 dark:text-green-400 mb-2"></i>
+                                        <p class="text-sm font-semibold">知识运用</p>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="bg-purple-100 dark:bg-purple-900 rounded-lg p-4">
+                                        <i class="fas fa-images text-2xl text-purple-600 dark:text-purple-400 mb-2"></i>
+                                        <p class="text-sm font-semibold">多模态理解</p>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <div class="bg-amber-100 dark:bg-amber-900 rounded-lg p-4">
+                                        <i class="fas fa-globe text-2xl text-amber-600 dark:text-amber-400 mb-2"></i>
+                                        <p class="text-sm font-semibold">网页浏览</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GAIA Metrics -->
+                            <h4 class="text-xl font-semibold mb-4">准精确匹配算法</h4>
+                            <div class="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+                                <div class="mb-4">
+                                    <p class="text-gray-700 dark:text-gray-200 mb-2">
+                                        GAIA使用准精确匹配（Quasi Exact Match）评估算法，核心思想是先对答案进行归一化处理，然后进行精确匹配：
+                                    </p>
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center">
+                                        <div class="katex-display">
+                                            <div id="gaia-formula"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-green-600 dark:text-green-400">归一化规则</h5>
+                                        <ul class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                                            <li><i class="fas fa-check text-green-500 mr-2"></i>数字：移除逗号和单位符号</li>
+                                            <li><i class="fas fa-check text-green-500 mr-2"></i>字符串：转小写，移除冠词</li>
+                                            <li><i class="fas fa-check text-green-500 mr-2"></i>列表：按字母顺序排序</li>
+                                            <li><i class="fas fa-check text-green-500 mr-2"></i>空格：移除多余空格</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <h5 class="font-semibold mb-2 text-blue-600 dark:text-blue-400">评估指标</h5>
+                                        <ul class="text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                                            <li><i class="fas fa-chart-line text-blue-500 mr-2"></i>精确匹配率</li>
+                                            <li><i class="fas fa-chart-line text-blue-500 mr-2"></i>分级准确率</li>
+                                            <li><i class="fas fa-chart-line text-blue-500 mr-2"></i>难度递进下降率</li>
+                                            <li><i class="fas fa-chart-line text-blue-500 mr-2"></i>平均推理步骤数</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Data Generation Section -->
+                        <section id="data-generation-section" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-database mr-3"></i>数据生成质量评估
+                            </h3>
+
+                            <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6 mb-6">
+                                <h4 class="text-xl font-semibold mb-4 text-purple-800 dark:text-purple-300">
+                                    <i class="fas fa-info-circle mr-2"></i>AIME数学题目生成评估
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-200 mb-4">
+                                    以AIME（美国数学邀请赛）风格的数学题目生成为例，介绍如何评估生成数据的质量。我们采用三种互补的评估方法：LLM Judge、Win Rate和人工验证。
+                                </p>
+
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-gavel text-2xl text-purple-600 dark:text-purple-400 mr-3"></i>
+                                            <h5 class="font-semibold">LLM Judge</h5>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">使用LLM作为评委，从正确性、清晰度、难度匹配、完整性四个维度评分</p>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-trophy text-2xl text-amber-600 dark:text-amber-400 mr-3"></i>
+                                            <h5 class="font-semibold">Win Rate</h5>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">通过成对对比评估生成数据相对于真题的质量</p>
+                                    </div>
+
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
+                                        <div class="flex items-center mb-3">
+                                            <i class="fas fa-user-check text-2xl text-green-600 dark:text-green-400 mr-3"></i>
+                                            <h5 class="font-semibold">人工验证</h5>
+                                        </div>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300">基于Gradio的Web界面，支持专家人工验证</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Evaluation Process -->
+                            <h4 class="text-xl font-semibold mb-4">评估流程</h4>
+                            <div class="relative">
+                                <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-purple-600 to-pink-600"></div>
+
+                                <div class="space-y-6">
+                                    <div class="flex items-center">
+                                        <div class="bg-purple-600 text-white rounded-full w-16 h-16 flex items-center justify-center z-10">
+                                            <span class="font-bold">01</span>
+                                        </div>
+                                        <div class="ml-6 bg-purple-50 dark:bg-purple-900 rounded-lg p-4 flex-1">
+                                            <h5 class="font-semibold mb-1">题目生成</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-300">使用HelloAgents框架生成AIME风格题目，支持批量生成和进度保存</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <div class="bg-amber-600 text-white rounded-full w-16 h-16 flex items-center justify-center z-10">
+                                            <span class="font-bold">02</span>
+                                        </div>
+                                        <div class="ml-6 bg-amber-50 dark:bg-amber-900 rounded-lg p-4 flex-1">
+                                            <h5 class="font-semibold mb-1">LLM Judge评估</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-300">多维度质量评估，生成详细评分报告</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <div class="bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center z-10">
+                                            <span class="font-bold">03</span>
+                                        </div>
+                                        <div class="ml-6 bg-green-50 dark:bg-green-900 rounded-lg p-4 flex-1">
+                                            <h5 class="font-semibold mb-1">Win Rate评估</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-300">成对对比评估，计算胜率统计</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center">
+                                        <div class="bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center z-10">
+                                            <span class="font-bold">04</span>
+                                        </div>
+                                        <div class="ml-6 bg-blue-50 dark:bg-blue-900 rounded-lg p-4 flex-1">
+                                            <h5 class="font-semibold mb-1">人工验证</h5>
+                                            <p class="text-sm text-gray-600 dark:text-gray-300">Web界面验证，专家质量把关</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Implementation Details -->
+                        <section id="implementation" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-cogs mr-3"></i>核心实现细节
+                            </h3>
+
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4 text-blue-800 dark:text-blue-300">
+                                        <i class="fas fa-cube mr-2"></i>模块化设计
+                                    </h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-blue-600 dark:text-blue-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">Dataset层</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">负责数据加载和管理，支持多种数据源</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-blue-600 dark:text-blue-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">Evaluator层</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">执行评估流程，处理模型调用</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-blue-600 dark:text-blue-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">Metrics层</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">计算各种评估指标和统计</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4 text-green-800 dark:text-green-300">
+                                        <i class="fas fa-wrench mr-2"></i>工具化封装
+                                    </h4>
+                                    <ul class="space-y-3">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">统一接口</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">所有评估功能封装成Tool类</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">工作流集成</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">可直接被智能体调用</p>
+                                            </div>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong class="text-gray-800 dark:text-gray-200">参数验证</strong>
+                                                <p class="text-sm text-gray-600 dark:text-gray-300">严格的参数检查和错误处理</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Technical Features -->
+                            <div class="mt-6 bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
+                                <h4 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-200">
+                                    <i class="fas fa-star mr-2"></i>技术特色
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                    <div class="text-center">
+                                        <i class="fas fa-code text-3xl text-purple-600 dark:text-purple-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-1">AST匹配</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">智能语法树匹配</p>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <i class="fas fa-images text-3xl text-blue-600 dark:text-blue-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-1">多模态支持</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">文本、图像、文件</p>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <i class="fas fa-gavel text-3xl text-amber-600 dark:text-amber-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-1">LLM Judge</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">AI自动评估</p>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <i class="fas fa-trophy text-3xl text-green-600 dark:text-green-400 mb-3"></i>
+                                        <h5 class="font-semibold mb-1">Win Rate</h5>
+                                        <p class="text-xs text-gray-600 dark:text-gray-300">成对对比评估</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Best Practices -->
+                        <section id="best-practices" class="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl mb-8">
+                            <h3 class="text-2xl font-bold mb-6 gradient-text">
+                                <i class="fas fa-lightbulb mr-3"></i>最佳实践建议
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4 text-amber-800 dark:text-amber-300">
+                                        <i class="fas fa-rocket mr-2"></i>渐进式评估
+                                    </h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center">
+                                            <div class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">1</div>
+                                            <span class="text-sm text-gray-700 dark:text-gray-200">从小样本开始（5个样本）</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">2</div>
+                                            <span class="text-sm text-gray-700 dark:text-gray-200">扩展到中等规模（50个样本）</span>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="bg-amber-600 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-3">3</div>
+                                            <span class="text-sm text-gray-700 dark:text-gray-200">最后进行完整评估（全部样本）</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4 text-blue-800 dark:text-blue-300">
+                                        <i class="fas fa-balance-scale mr-2"></i>多类别评估
+                                    </h4>
+                                    <p class="text-sm text-gray-700 dark:text-gray-200 mb-3">
+                                        评估不同难度的任务，全面了解智能体能力：
+                                    </p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs">Simple</span>
+                                        <span class="bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-3 py-1 rounded-full text-xs">Multiple</span>
+                                        <span class="bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 px-3 py-1 rounded-full text-xs">Parallel</span>
+                                        <span class="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-3 py-1 rounded-full text-xs">Irrelevance</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Quality Standards -->
+                            <div class="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-700 dark:to-gray-600 rounded-xl p-6">
+                                <h4 class="text-lg font-semibold mb-4 text-green-800 dark:text-green-300">
+                                    <i class="fas fa-award mr-2"></i>质量标准
+                                </h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">4.0/5.0</div>
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">LLM Judge平均分</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">45%+</div>
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">Win Rate</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">80%+</div>
+                                        <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">通过率</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Summary -->
+                        <section id="summary" class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 shadow-xl text-white">
+                            <h3 class="text-2xl font-bold mb-6">
+                                <i class="fas fa-flag-checkered mr-3"></i>本章小结
+                            </h3>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div class="bg-white bg-opacity-20 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4">核心成就</h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <span>构建了完整的智能体评估体系</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <span>实现了BFCL和GAIA官方评估标准</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <span>开发了数据生成质量评估工具</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-check-circle mr-2"></i>
+                                            <span>提供了自动化评估和报告生成</span>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="bg-white bg-opacity-20 rounded-xl p-6">
+                                    <h4 class="text-lg font-semibold mb-4">技术要点</h4>
+                                    <ul class="space-y-2">
+                                        <li class="flex items-center">
+                                            <i class="fas fa-star mr-2"></i>
+                                            <span>AST匹配算法</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-star mr-2"></i>
+                                            <span>准精确匹配算法</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-star mr-2"></i>
+                                            <span>LLM Judge评估</span>
+                                        </li>
+                                        <li class="flex items-center">
+                                            <i class="fas fa-star mr-2"></i>
+                                            <span>Win Rate对比评估</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="text-center">
+                                <p class="text-xl mb-4">
+                                    <i class="fas fa-quote-left mr-2"></i>
+                                    评估是智能体开发的重要环节，它让我们能够客观衡量智能体的能力、发现和修复问题、持续改进系统。
+                                    <i class="fas fa-quote-right ml-2"></i>
+                                </p>
+                                <div class="inline-flex items-center bg-white text-indigo-600 rounded-full px-6 py-3">
+                                    <i class="fas fa-trophy mr-2"></i>
+                                    <span class="font-bold">恭喜完成第十二章学习！</span>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
+                </article>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white py-8 mt-12">
+            <div class="container mx-auto px-4 text-center">
+                <div class="flex items-center justify-center mb-4">
+                    <i class="fas fa-robot text-3xl text-blue-400 mr-3"></i>
+                    <h3 class="text-xl font-bold">HelloAgents</h3>
+                </div>
+                <p class="text-gray-400 mb-4">智能体开发教程 - 构建完整的AI Agent系统</p>
+                <div class="flex justify-center space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-book text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </a>
+                </div>
+                <p class="text-sm text-gray-500 mt-6">
+                    © 2024 HelloAgents. 本页面基于Datawhale Hello-Agents教程构建
+                </p>
+            </div>
+        </footer>
+
+        <!-- Back to Top Button -->
+        <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-600 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-blue-700 transition-all opacity-0 invisible">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+
+    </div>
+
+    <script>
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme management
+            const themeToggle = document.getElementById('themeToggle');
+            const html = document.documentElement;
+
+            // Check for saved theme preference or default to light
+            const currentTheme = localStorage.getItem('theme') ||
+                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+            if (currentTheme === 'dark') {
+                html.classList.add('dark');
+            }
+
+            themeToggle.addEventListener('click', function() {
+                html.classList.toggle('dark');
+                localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+            });
+
+            // Generate navigation
+            generateNavigation();
+
+            // Initialize progress tracking
+            initProgressTracking();
+
+            // Initialize back to top button
+            initBackToTop();
+
+            // Render math formulas
+            renderMathFormulas();
+
+            // Initialize animations
+            initAnimations();
+        });
+
+        // Generate sidebar navigation
+        function generateNavigation() {
+            const sections = [
+                { id: 'learning-objectives', title: '学习目标', icon: 'fa-target' },
+                { id: 'architecture', title: '体系架构', icon: 'fa-sitemap' },
+                { id: 'bfcl-section', title: 'BFCL评估', icon: 'fa-tools' },
+                { id: 'gaia-section', title: 'GAIA评估', icon: 'fa-brain' },
+                { id: 'data-generation-section', title: '数据生成评估', icon: 'fa-database' },
+                { id: 'implementation', title: '实现细节', icon: 'fa-cogs' },
+                { id: 'best-practices', title: '最佳实践', icon: 'fa-lightbulb' },
+                { id: 'summary', title: '本章小结', icon: 'fa-flag-checkered' }
+            ];
+
+            const navContainer = document.getElementById('sidebarNav');
+            sections.forEach(section => {
+                const navItem = document.createElement('a');
+                navItem.href = `#${section.id}`;
+                navItem.className = 'nav-item block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 rounded-lg transition-all';
+                navItem.innerHTML = `
+                    <i class="fas ${section.icon} mr-2 text-blue-600 dark:text-blue-400"></i>
+                    ${section.title}
+                `;
+                navContainer.appendChild(navItem);
+            });
+        }
+
+        // Initialize progress tracking
+        function initProgressTracking() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            function updateProgress() {
+                const scrollTop = window.pageYOffset;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+
+                progressBar.style.width = scrollPercent + '%';
+                progressText.textContent = Math.round(scrollPercent) + '% 已读';
+            }
+
+            window.addEventListener('scroll', updateProgress);
+            updateProgress();
+        }
+
+        // Initialize back to top button
+        function initBackToTop() {
+            const backToTopButton = document.getElementById('backToTop');
+
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.remove('opacity-0', 'invisible');
+                    backToTopButton.classList.add('opacity-100', 'visible');
+                } else {
+                    backToTopButton.classList.add('opacity-0', 'invisible');
+                    backToTopButton.classList.remove('opacity-100', 'visible');
+                }
+            });
+
+            backToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Render math formulas
+        function renderMathFormulas() {
+            // GAIA formula
+            const gaiaFormula = document.getElementById('gaia-formula');
+            if (gaiaFormula) {
+                katex.render(
+                    "\\text{Quasi\\_Exact\\_Match}(A_{\\text{pred}}, A_{\\text{true}}) = \\begin{cases} 1 & \\text{if } \\mathcal{N}(A_{\\text{pred}}) = \\mathcal{N}(A_{\\text{true}}) \\\\ 0 & \\text{otherwise} \\end{cases}",
+                    gaiaFormula,
+                    {
+                        displayMode: true,
+                        throwOnError: false
+                    }
+                );
+            }
+        }
+
+        // Initialize animations
+        function initAnimations() {
+            // Smooth scroll for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        }
+
+        // Highlight current section in navigation
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navItems = document.querySelectorAll('.nav-item');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('bg-blue-50', 'dark:bg-gray-700', 'border-l-3', 'border-blue-600');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('bg-blue-50', 'dark:bg-gray-700', 'border-l-3', 'border-blue-600');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

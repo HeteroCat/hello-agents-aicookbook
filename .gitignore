@@ -68,3 +68,4 @@ coverage/
 *.njsproj
 *.sln
 *.sw?
+*.claude

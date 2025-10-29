@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第十一章 Agentic-RL</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
+                        },
+                        accent: {
+                            500: '#f59e0b',
+                            600: '#d97706'
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .linear-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .scroll-smooth {
+            scroll-behavior: smooth;
+        }
+
+        .math-formula {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 3px solid #6366f1;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+        }
+
+        .timeline-dot {
+            position: relative;
+        }
+
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #6366f1;
+            border-radius: 50%;
+            left: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .highlight-blue {
+            background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300 scroll-smooth">
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full z-50 glass-effect transition-all duration-300">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-brain text-2xl text-primary-600 dark:text-primary-400"></i>
+                    <h1 class="text-xl font-bold highlight-blue">Agentic-RL</h1>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-6">
+                    <a href="#overview" class="hover:text-primary-600 transition-colors">概述</a>
+                    <a href="#training-flow" class="hover:text-primary-600 transition-colors">训练流程</a>
+                    <a href="#sft" class="hover:text-primary-600 transition-colors">SFT训练</a>
+                    <a href="#grpo" class="hover:text-primary-600 transition-colors">GRPO训练</a>
+                    <a href="#evaluation" class="hover:text-primary-600 transition-colors">评估分析</a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <button id="darkModeToggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="linear-gradient text-white py-20 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
+                    第十一章 Agentic-RL
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 animate-slide-up opacity-90">
+                    基于强化学习的智能体训练
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 animate-slide-up">
+                    <div class="glass-effect px-6 py-3 rounded-full">
+                        <i class="fas fa-robot mr-2"></i>
+                        多智能体系统
+                    </div>
+                    <div class="glass-effect px-6 py-3 rounded-full">
+                        <i class="fas fa-chart-line mr-2"></i>
+                        强化学习
+                    </div>
+                    <div class="glass-effect px-6 py-3 rounded-full">
+                        <i class="fas fa-brain mr-2"></i>
+                        推理能力
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview" class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-lightbulb text-accent-500 mr-3"></i>
+                    从LLM训练到Agentic RL
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl">
+                        <h3 class="text-xl font-semibold mb-4 text-primary-700 dark:text-primary-300">
+                            <i class="fas fa-question-circle mr-2"></i>
+                            核心问题
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-chevron-right text-primary-500 mt-1 mr-3"></i>
+                                <span>如何让智能体具备更强的推理能力？</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-chevron-right text-primary-500 mt-1 mr-3"></i>
+                                <span>如何让智能体学会更好地使用工具？</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-chevron-right text-primary-500 mt-1 mr-3"></i>
+                                <span>如何让智能体能够自我改进？</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-pink-100 dark:from-gray-700 dark:to-gray-600 p-6 rounded-xl">
+                        <h3 class="text-xl font-semibold mb-4 text-purple-700 dark:text-purple-300">
+                            <i class="fas fa-target mr-2"></i>
+                            解决方案
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>引入强化学习训练能力</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>训练高级智能体能力</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                                <span>构建完整训练pipeline</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Core Concepts -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold mb-6 text-center">核心理念对比</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="bg-primary-100 dark:bg-primary-900">
+                                    <th class="border p-4 text-left">维度</th>
+                                    <th class="border p-4 text-left">传统训练 (PBRFT)</th>
+                                    <th class="border p-4 text-left">Agentic RL</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="border p-4 font-semibold">任务性质</td>
+                                    <td class="border p-4">单轮对话优化</td>
+                                    <td class="border p-4">多步序贯决策</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="border p-4 font-semibold">状态空间</td>
+                                    <td class="border p-4">静态提示</td>
+                                    <td class="border p-4">动态演化环境</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="border p-4 font-semibold">行动空间</td>
+                                    <td class="border p-4">纯文本生成</td>
+                                    <td class="border p-4">文本+工具+环境操作</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                    <td class="border p-4 font-semibold">优化目标</td>
+                                    <td class="border p-4">短期响应质量</td>
+                                    <td class="border p-4">长期任务成功</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Six Core Abilities -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-6 text-center">六大核心能力</h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-brain text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">推理能力</h4>
+                            <p class="text-sm opacity-90">多步逻辑推导，学习推理策略</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-tools text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">工具使用</h4>
+                            <p class="text-sm opacity-90">API/工具调用，学会何时用、如何用</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-memory text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">记忆管理</h4>
+                            <p class="text-sm opacity-90">长期信息保持，学习记忆管理</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-orange-500 to-orange-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-route text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">规划能力</h4>
+                            <p class="text-sm opacity-90">行动序列规划，学会动态规划</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-pink-500 to-pink-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-sync-alt text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">自我改进</h4>
+                            <p class="text-sm opacity-90">自我反思优化，从错误中学习</p>
+                        </div>
+                        <div class="bg-gradient-to-br from-indigo-500 to-indigo-600 p-6 rounded-xl text-white transform hover:scale-105 transition-transform">
+                            <i class="fas fa-eye text-3xl mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">感知能力</h4>
+                            <p class="text-sm opacity-90">多模态理解，视觉推理和工具使用</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Training Architecture -->
+    <section id="training-flow" class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-cogs text-accent-500 mr-3"></i>
+                    LLM训练全景图
+                </h2>
+
+                <!-- Training Flow Visualization -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg mb-8">
+                    <div class="space-y-8">
+                        <!-- Pretraining Stage -->
+                        <div class="flex items-center space-x-4">
+                            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+                                <i class="fas fa-book text-blue-600 dark:text-blue-300 text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-xl font-semibold mb-2">预训练阶段</h4>
+                                <p class="text-gray-600 dark:text-gray-300 mb-2">
+                                    目标：让模型学习语言的基本规律和世界知识
+                                </p>
+                                <div class="math-formula">
+                                    <strong>损失函数：</strong> ℒ<sub>pretrain</sub> = -∑<sub>t=1</sub><sup>T</sup> log P(x<sub>t</sub> | x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>t-1</sub>; θ)
+                                </div>
+                                <div class="flex flex-wrap gap-2 mt-3">
+                                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                        <i class="fas fa-database mr-1"></i>海量数据
+                                    </span>
+                                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                        <i class="fas fa-microchip mr-1"></i>高计算成本
+                                    </span>
+                                    <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full text-sm">
+                                        <i class="fas fa-language mr-1"></i>通用能力
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Arrow -->
+                        <div class="flex justify-center">
+                            <i class="fas fa-arrow-down text-2xl text-gray-400"></i>
+                        </div>
+
+                        <!-- Post-training Stages -->
+                        <div class="space-y-6">
+                            <h4 class="text-xl font-semibold text-center mb-4">后训练阶段</h4>
+
+                            <!-- SFT -->
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-graduation-cap text-green-600 dark:text-green-300"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h5 class="text-lg font-semibold text-green-700 dark:text-green-300">监督微调 (SFT)</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">学习遵循指令和对话格式</p>
+                                    <div class="math-formula text-sm">
+                                        ℒ<sub>SFT</sub> = -∑<sub>i=1</sub><sup>N</sup> log P(y<sub>i</sub> | x<sub>i</sub>; θ)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RM -->
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-star text-yellow-600 dark:text-yellow-300"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h5 class="text-lg font-semibold text-yellow-700 dark:text-yellow-300">奖励建模 (RM)</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">学习人类的偏好</p>
+                                    <div class="math-formula text-sm">
+                                        ℒ<sub>RM</sub> = -E[(x,y<sub>w</sub>,y<sub>l</sub>)] [log σ(r<sub>φ</sub>(x,y<sub>w</sub>) - r<sub>φ</sub>(x,y<sub>l</sub>))]
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- RLHF -->
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-chart-line text-purple-600 dark:text-purple-300"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h5 class="text-lg font-semibold text-purple-700 dark:text-purple-300">强化学习微调 (RLHF/RLAIF)</h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">使用PPO算法优化策略</p>
+                                    <div class="math-formula text-sm">
+                                        ℒ<sub>PPO</sub> = E[r<sub>φ</sub>(x,y)] - β · D<sub>KL</sub>(π<sub>θ</sub> || π<sub>ref</sub>)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dataset Section -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-database text-accent-500 mr-3"></i>
+                    数据集与奖励函数
+                </h2>
+
+                <!-- GSM8K Dataset -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6">GSM8K数学推理数据集</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div class="bg-blue-50 dark:bg-gray-700 p-6 rounded-xl">
+                            <h4 class="text-lg font-semibold mb-4 text-blue-700 dark:text-blue-300">
+                                <i class="fas fa-chart-bar mr-2"></i>数据集统计
+                            </h4>
+                            <ul class="space-y-3">
+                                <li class="flex justify-between">
+                                    <span>训练样本：</span>
+                                    <span class="font-semibold">7,473</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>测试样本：</span>
+                                    <span class="font-semibold">1,319</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>难度级别：</span>
+                                    <span class="font-semibold">小学数学 (2-8年级)</span>
+                                </li>
+                                <li class="flex justify-between">
+                                    <span>推理步骤：</span>
+                                    <span class="font-semibold">2-8步</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-gray-700 p-6 rounded-xl">
+                            <h4 class="text-lg font-semibold mb-4 text-green-700 dark:text-green-300">
+                                <i class="fas fa-check-circle mr-2"></i>选择理由
+                            </h4>
+                            <ul class="space-y-2">
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>明确的正确答案，可自动评估</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>需要多步推理，典型场景</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                                    <span>推理能力可迁移到其他领域</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example Problem -->
+                <div class="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl mb-8">
+                    <h4 class="text-lg font-semibold mb-4">
+                        <i class="fas fa-pencil-alt mr-2"></i>示例问题
+                    </h4>
+                    <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                        <p class="mb-3">
+                            <strong>问题：</strong> Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?
+                        </p>
+                        <p class="text-gray-600 dark:text-gray-300">
+                            <strong>答案：</strong> Natalia sold 48/2 = 24 clips in May.<br>
+                            Natalia sold 48+24 = 72 clips altogether in April and May.<br>
+                            <strong>#### 72</strong>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Reward Functions -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-6">奖励函数设计</h3>
+                    <div class="space-y-6">
+                        <!-- Accuracy Reward -->
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="text-lg font-semibold mb-3">
+                                <i class="fas fa-bullseye text-blue-500 mr-2"></i>
+                                准确率奖励
+                            </h4>
+                            <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <div class="math-formula text-sm">
+                                    r<sub>acc</sub>(a, a*) = { 1 if a = a*; 0 otherwise }
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+                                    二值奖励函数，答案正确得1分，错误得0分
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Length Penalty -->
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h4 class="text-lg font-semibold mb-3">
+                                <i class="fas fa-compress-alt text-green-500 mr-2"></i>
+                                长度惩罚
+                            </h4>
+                            <div class="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <div class="math-formula text-sm">
+                                    r<sub>length</sub>(a, a*, l) = r<sub>acc</sub>(a, a*) - α · max(0, l - l<sub>target</sub>)
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+                                    鼓励模型生成简洁的回答，避免冗长啰嗦
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step Reward -->
+                        <div class="border-l-4 border-purple-500 pl-6">
+                            <h4 class="text-lg font-semibold mb-3">
+                                <i class="fas fa-list-ol text-purple-500 mr-2"></i>
+                                步骤奖励
+                            </h4>
+                            <div class="bg-purple-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <div class="math-formula text-sm">
+                                    r<sub>step</sub>(a, a*, s) = r<sub>acc</sub>(a, a*) + β · s
+                                </div>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 mt-2">
+                                    鼓励模型生成清晰的推理步骤，提高可解释性
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SFT Training Section -->
+    <section id="sft" class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-graduation-cap text-accent-500 mr-3"></i>
+                    SFT监督微调
+                </h2>
+
+                <!-- Why SFT -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-semibold mb-6">为什么需要SFT？</h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-red-600 dark:text-red-400">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                预训练模型的问题
+                            </h4>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-red-500 mt-1 mr-2"></i>
+                                    <span>输出格式不结构化</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-red-500 mt-1 mr-2"></i>
+                                    <span>推理过程混乱</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-red-500 mt-1 mr-2"></i>
+                                    <span>没有明确答案</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="space-y-4">
+                            <h4 class="font-semibold text-green-600 dark:text-green-400">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                SFT后的改进
+                            </h4>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-green-500 mt-1 mr-2"></i>
+                                    <span>结构清晰（Step 1, Step 2...）</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-green-500 mt-1 mr-2"></i>
+                                    <span>推理正确有序</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-arrow-right text-green-500 mt-1 mr-2"></i>
+                                    <span>答案明确一致</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LoRA -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-microchip text-blue-500 mr-2"></i>
+                        LoRA: 参数高效微调
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                            <h4 class="font-semibold mb-2">核心思想</h4>
+                            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3">
+                                模型微调时的参数变化可以用低秩矩阵表示
+                            </p>
+                            <div class="math-formula text-sm">
+                                ΔW = BA，其中 B ∈ ℝ<sup>d×r</sup>, A ∈ ℝ<sup>r×k</sup>, r ≪ min(d, k)
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-green-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-700 dark:text-green-300 mb-2">优势</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li><i class="fas fa-check text-green-500 mr-1"></i>显存占用大幅降低</li>
+                                    <li><i class="fas fa-check text-green-500 mr-1"></i>训练速度更快</li>
+                                    <li><i class="fas fa-check text-green-500 mr-1"></i>易于部署</li>
+                                    <li><i class="fas fa-check text-green-500 mr-1"></i>防止过拟合</li>
+                                </ul>
+                            </div>
+                            <div class="bg-yellow-50 dark:bg-gray-700 p-4 rounded-lg">
+                                <h4 class="font-semibold text-yellow-700 dark:text-yellow-300 mb-2">关键参数</h4>
+                                <ul class="space-y-1 text-sm">
+                                    <li><strong>Rank (r):</strong> 典型值 4-64，默认8</li>
+                                    <li><strong>Alpha:</strong> 缩放因子，通常等于rank</li>
+                                    <li><strong>Target:</strong> 注意力层 (q_proj, k_proj...)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SFT Example -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-code text-purple-500 mr-2"></i>
+                        SFT训练示例
+                    </h3>
+                    <div class="code-block">
+                        <pre>from hello_agents.tools import RLTrainingTool
+
+# 创建训练工具
+rl_tool = RLTrainingTool()
+
+# SFT训练
+result = rl_tool.run({
+    "action": "train",
+    "algorithm": "sft",
+    "model_name": "Qwen/Qwen3-0.6B",
+    "output_dir": "./models/sft_model",
+    "max_samples": 100,
+    "num_epochs": 3,
+    "batch_size": 4,
+    "learning_rate": 5e-5,
+    "use_lora": True,
+    "lora_rank": 8,
+    "lora_alpha": 16,
+})</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- GRPO Training Section -->
+    <section id="grpo" class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-chart-line text-accent-500 mr-3"></i>
+                    GRPO训练
+                </h2>
+
+                <!-- PPO vs GRPO -->
+                <div class="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-700 p-8 rounded-xl mb-8">
+                    <h3 class="text-xl font-semibold mb-6">从PPO到GRPO的改进</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-semibold text-blue-600 dark:text-blue-400 mb-4">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                PPO的问题
+                            </h4>
+                            <ul class="space-y-2 text-sm">
+                                <li>需要训练Value Model</li>
+                                <li>需要维护四个模型</li>
+                                <li>训练不稳定</li>
+                                <li>容易出现奖励崩塌</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-green-600 dark:text-green-400 mb-4">
+                                <i class="fas fa-lightbulb mr-2"></i>
+                                GRPO的改进
+                            </h4>
+                            <ul class="space-y-2 text-sm">
+                                <li>不需要Value Model</li>
+                                <li>使用组内相对奖励</li>
+                                <li>简化训练流程</li>
+                                <li>提高训练稳定性</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRPO Formula -->
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl mb-8">
+                    <h3 class="text-xl font-semibold mb-6">GRPO目标函数</h3>
+                    <div class="math-formula">
+                        ℒ<sub>GRPO</sub>(θ) = E<sub>s,a ~ π<sub>θ</sub></sub> [ π<sub>θ</sub>(a|s) / π<sub>ref</sub>(a|s) · (r(s,a) - r̄<sub>group</sub>) ] - β · D<sub>KL</sub>(π<sub>θ</sub> || π<sub>ref</sub>)
+                    </div>
+                    <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">
+                        <p><strong>关键改进：</strong></p>
+                        <ul class="list-disc list-inside space-y-1 mt-2">
+                            <li>使用组内相对奖励代替优势函数</li>
+                            <li>减少奖励方差，提高训练稳定性</li>
+                            <li>添加KL散度惩罚，防止策略偏离</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Training Process -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-cogs text-purple-500 mr-2"></i>
+                        GRPO训练过程
+                    </h3>
+                    <div class="space-y-6">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">
+                                1
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">采样阶段</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    对于每个问题，使用当前策略生成多个答案(num_generations个)
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">
+                                2
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">奖励计算</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    对每个生成的答案计算奖励，可以是准确率、长度惩罚、步骤奖励或组合
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-purple-500 text-white rounded-full flex items-center justify-center font-bold">
+                                3
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">相对奖励</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    计算组内平均奖励和相对奖励，减少奖励方差
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold">
+                                4
+                            </div>
+                            <div>
+                                <h4 class="font-semibold mb-1">策略更新</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    使用相对奖励更新策略，同时添加KL散度惩罚
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRPO Example -->
+                <div class="bg-gray-50 dark:bg-gray-700 p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-code text-purple-500 mr-2"></i>
+                        GRPO训练示例
+                    </h3>
+                    <div class="code-block">
+                        <pre>from hello_agents.tools import RLTrainingTool
+
+# 创建训练工具
+rl_tool = RLTrainingTool()
+
+# GRPO训练
+result = rl_tool.run({
+    "action": "train",
+    "algorithm": "grpo",
+    "model_name": "./models/sft_full",
+    "output_dir": "./models/grpo_model",
+    "num_epochs": 3,
+    "batch_size": 4,
+    "learning_rate": 1e-5,
+    "num_generations": 4,
+    "max_new_tokens": 512,
+    "temperature": 0.8,
+    "kl_coef": 0.05,
+    "reward_type": "combined",
+    "use_lora": True,
+})</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Evaluation Section -->
+    <section id="evaluation" class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-chart-bar text-accent-500 mr-3"></i>
+                    模型评估与分析
+                </h2>
+
+                <!-- Evaluation Metrics -->
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-bullseye text-blue-600 dark:text-blue-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-3">准确性指标</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>准确率</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>Top-K准确率</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>数值误差</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-tachometer-alt text-green-600 dark:text-green-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-3">效率指标</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>平均长度</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>推理步骤数</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>推理时间</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                        <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mb-4">
+                            <i class="fas fa-star text-purple-600 dark:text-purple-300"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold mb-3">质量指标</h3>
+                        <ul class="space-y-2 text-sm">
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>格式正确率</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>推理连贯性</li>
+                            <li><i class="fas fa-check text-green-500 mr-2"></i>可解释性</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Error Analysis -->
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg mb-8">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-bug text-red-500 mr-2"></i>
+                        错误分析
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h4 class="font-semibold mb-4">错误类型分布</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">计算错误</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-red-500 h-2 rounded-full" style="width: 42%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">42.1%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">理解错误</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 28.9%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">28.9%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">推理错误</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-orange-500 h-2 rounded-full" style="width: 23.7%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">23.7%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">格式错误</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: 5.3%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">5.3%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-4">不同难度准确率</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">简单(1-2步)</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-green-500 h-2 rounded-full" style="width: 78.5%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">78.5%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">中等(3-4步)</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-yellow-500 h-2 rounded-full" style="width: 58.3%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">58.3%</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">困难(5+步)</span>
+                                    <div class="flex items-center">
+                                        <div class="w-32 bg-gray-200 dark:bg-gray-700 rounded-full h-2 mr-2">
+                                            <div class="bg-red-500 h-2 rounded-full" style="width: 31.6%"></div>
+                                        </div>
+                                        <span class="text-sm font-semibold">31.6%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Improvement Direction -->
+                <div class="bg-gradient-to-r from-blue-50 to-green-50 dark:from-gray-700 dark:to-gray-700 p-8 rounded-xl">
+                    <h3 class="text-xl font-semibold mb-6">
+                        <i class="fas fa-route text-green-500 mr-2"></i>
+                        改进迭代流程
+                    </h3>
+                    <div class="flex flex-wrap justify-center items-center gap-4">
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-brain mr-2"></i>训练模型
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-chart-bar mr-2"></i>评估性能
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-bug mr-2"></i>分析错误
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-bullseye mr-2"></i>确定问题
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-tools mr-2"></i>选择改进方向
+                        </div>
+                        <i class="fas fa-arrow-right"></i>
+                        <div class="glass-effect px-4 py-2 rounded-full">
+                            <i class="fas fa-redo mr-2"></i>重新训练
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete Pipeline -->
+    <section class="py-16 bg-white dark:bg-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-project-diagram text-accent-500 mr-3"></i>
+                    完整训练流程
+                </h2>
+
+                <!-- Pipeline Steps -->
+                <div class="relative">
+                    <div class="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300 dark:bg-gray-600"></div>
+
+                    <div class="space-y-12">
+                        <div class="flex items-start space-x-6 relative">
+                            <div class="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center z-10">
+                                <i class="fas fa-database text-xl"></i>
+                            </div>
+                            <div class="flex-1 bg-blue-50 dark:bg-gray-700 p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold mb-2">阶段1: 数据准备</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    加载并检查GSM8K数据集，转换为SFT和RL格式
+                                </p>
+                                <div class="text-sm">
+                                    <span class="px-3 py-1 bg-blue-200 dark:bg-blue-900 rounded-full">
+                                        训练样本: 7,473
+                                    </span>
+                                    <span class="px-3 py-1 bg-blue-200 dark:bg-blue-900 rounded-full ml-2">
+                                        测试样本: 1,319
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-6 relative">
+                            <div class="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center z-10">
+                                <i class="fas fa-graduation-cap text-xl"></i>
+                            </div>
+                            <div class="flex-1 bg-green-50 dark:bg-gray-700 p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold mb-2">阶段2: SFT训练</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    学习任务格式和基础推理能力，使用LoRA技术
+                                </p>
+                                <div class="code-block text-sm">
+                                    num_epochs: 3 | batch_size: 8 | learning_rate: 5e-5 | use_lora: True
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-6 relative">
+                            <div class="w-16 h-16 bg-purple-500 text-white rounded-full flex items-center justify-center z-10">
+                                <i class="fas fa-search text-xl"></i>
+                            </div>
+                            <div class="flex-1 bg-purple-50 dark:bg-gray-700 p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold mb-2">阶段3: SFT评估</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    评估SFT模型效果，确保达到基线要求
+                                </p>
+                                <div class="text-sm">
+                                    <span class="px-3 py-1 bg-purple-200 dark:bg-purple-900 rounded-full">
+                                        目标准确率: >40%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-6 relative">
+                            <div class="w-16 h-16 bg-orange-500 text-white rounded-full flex items-center justify-center z-10">
+                                <i class="fas fa-chart-line text-xl"></i>
+                            </div>
+                            <div class="flex-1 bg-orange-50 dark:bg-gray-700 p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold mb-2">阶段4: GRPO训练</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    通过强化学习优化推理策略，超越训练数据质量
+                                </p>
+                                <div class="code-block text-sm">
+                                    num_generations: 4 | kl_coef: 0.05 | temperature: 0.8
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-6 relative">
+                            <div class="w-16 h-16 bg-red-500 text-white rounded-full flex items-center justify-center z-10">
+                                <i class="fas fa-trophy text-xl"></i>
+                            </div>
+                            <div class="flex-1 bg-red-50 dark:bg-gray-700 p-6 rounded-xl">
+                                <h3 class="text-xl font-semibold mb-2">阶段5: 最终评估</h3>
+                                <p class="text-gray-600 dark:text-gray-300 mb-4">
+                                    全面评估GRPO模型效果，对比分析提升
+                                </p>
+                                <div class="text-sm">
+                                    <span class="px-3 py-1 bg-red-200 dark:bg-red-900 rounded-full">
+                                        预期准确率: 60-70%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Start -->
+    <section class="py-16 bg-gray-100 dark:bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8 text-center">
+                    <i class="fas fa-rocket text-accent-500 mr-3"></i>
+                    快速上手示例
+                </h2>
+
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4">1. 安装HelloAgents框架</h3>
+                        <div class="code-block">
+                            <pre># 安装HelloAgents框架(第11章版本)
+pip install hello-agents[rl]==0.2.5
+
+# 或者从源码安装
+cd HelloAgents
+pip install -e ".[rl]"</pre>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-4">2. 运行快速训练</h3>
+                        <div class="code-block">
+                            <pre>from hello_agents.tools import RLTrainingTool
+
+# 创建RL训练工具
+rl_tool = RLTrainingTool()
+
+# SFT训练
+sft_result = rl_tool.run({
+    "action": "train",
+    "algorithm": "sft",
+    "model_name": "Qwen/Qwen3-0.6B",
+    "max_samples": 10,
+    "num_epochs": 1,
+    "use_lora": True
+})
+
+# GRPO训练
+grpo_result = rl_tool.run({
+    "action": "train",
+    "algorithm": "grpo",
+    "model_name": "Qwen/Qwen3-0.6B",
+    "max_samples": 5,
+    "num_epochs": 1,
+    "use_lora": True
+})</pre>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold mb-4">3. 评估模型</h3>
+                        <div class="code-block">
+                            <pre># 评估模型
+eval_result = rl_tool.run({
+    "action": "evaluate",
+    "model_path": "./models/grpo_model",
+    "max_samples": 10,
+    "use_lora": True
+})
+
+print(f"准确率: {eval_result['accuracy']}")
+print(f"平均奖励: {eval_result['average_reward']}")</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Summary -->
+    <section class="py-16 linear-gradient text-white">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-8">
+                    <i class="fas fa-book-open mr-3"></i>
+                    本章小结
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-8 mb-12">
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <i class="fas fa-brain mr-2"></i>
+                            Agentic RL的本质
+                        </h3>
+                        <ul class="text-left space-y-2">
+                            <li>多步序贯决策优化</li>
+                            <li>动态环境状态演化</li>
+                            <li>长期累积回报最大化</li>
+                            <li>智能体核心能力提升</li>
+                        </ul>
+                    </div>
+
+                    <div class="glass-effect p-6 rounded-xl">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <i class="fas fa-graduation-cap mr-2"></i>
+                            学习路径建议
+                        </h3>
+                        <ul class="text-left space-y-2">
+                            <li>基础：RL基础 + LLM微调</li>
+                            <li>进阶：TRL库 + 自定义数据集</li>
+                            <li>高级：多步推理 + 工具学习</li>
+                            <li>前沿：多智能体协作研究</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="text-xl opacity-90 mb-8">
+                    "通过强化学习，让智能体真正学会思考"
+                </div>
+
+                <div class="flex justify-center space-x-6">
+                    <a href="#overview" class="glass-effect px-6 py-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                        <i class="fas fa-arrow-up mr-2"></i>
+                        回到顶部
+                    </a>
+                    <a href="#" class="glass-effect px-6 py-3 rounded-full hover:bg-white hover:bg-opacity-20 transition-all">
+                        <i class="fas fa-home mr-2"></i>
+                        返回首页
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="mb-2">
+                <i class="fas fa-brain mr-2"></i>
+                Hello-Agents-aicookbook
+            </p>
+            <p class="text-sm opacity-75">
+                © 2024 Agentic-RL Chapter. 让智能体学会思考。
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            html.classList.toggle('dark', savedTheme === 'dark');
+        } else {
+            // Default to system preference
+            html.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+        }
+
+        darkModeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.hover\\:scale-105').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Add active navigation highlighting
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('nav a[href^="#"]');
+
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('text-primary-600');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('text-primary-600');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

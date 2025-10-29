@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第二章 智能体发展史 - Hello Agents</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'linear-blue': '#4F46E5',
+                        'linear-gray': '#6B7280',
+                        'linear-light': '#F9FAFB',
+                        'linear-dark': '#111827',
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.6s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        .dark ::-webkit-scrollbar-track {
+            background: #374151;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #6B7280;
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Code block styling */
+        .code-block {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2px;
+            border-radius: 8px;
+        }
+
+        .code-content {
+            background: #1e1e1e;
+            border-radius: 6px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
+        .code-content pre {
+            margin: 0;
+            color: #f8f8f2;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Timeline styling */
+        .timeline-line {
+            background: linear-gradient(180deg, #4F46E5 0%, #7C3AED 100%);
+        }
+
+        /* Card hover effects */
+        .hover-card {
+            transition: all 0.3s ease;
+        }
+
+        .hover-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Lazy loading animation */
+        .lazy-load {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .lazy-load.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Reading progress bar */
+        .reading-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #4F46E5, #7C3AED);
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation highlight */
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #4F46E5;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Reading Progress Bar -->
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg bg-opacity-90 dark:bg-opacity-90">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        第二章 智能体发展史
+                    </h1>
+                    <div class="hidden md:flex space-x-6">
+                        <a href="#overview" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">概述</a>
+                        <a href="#symbolic" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">符号主义</a>
+                        <a href="#eliza" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">ELIZA实践</a>
+                        <a href="#society" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">心智社会</a>
+                        <a href="#learning" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">学习范式</a>
+                        <a href="#modern" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">现代智能体</a>
+                    </div>
+                </div>
+
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                    <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                    <i class="fas fa-moon text-blue-300 hidden dark:block"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Introduction Section -->
+        <section id="overview" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-history text-blue-500 mr-3"></i>
+                    发展史概述
+                </h2>
+                <p class="text-lg text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                    为了深刻理解现代智能体为何呈现出如今的形态，以及其核心设计思想的由来，本章将回溯历史：从人工智能领域的古典时代出发，探寻最早的"智能"如何在逻辑与符号的规则体系中被定义；继而见证从单一、集中的智能模型到分布式、协作式智能思想的重大转折；最终理解"学习"范式如何彻底改变了智能体获取能力的方式，并催生出我们今天所见的现代智能体。
+                </p>
+
+                <!-- Evolution Image -->
+                <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-stairs text-6xl text-blue-500 mb-4"></i>
+                            <p class="text-gray-600 dark:text-gray-300 font-medium">图 2.1 AI智能体的演进阶梯</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                                每一个新范式的出现，都是为了解决上一代范式的核心"痛点"或根本局限
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Insight -->
+                <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                    <p class="text-gray-700 dark:text-gray-200 font-medium">
+                        <i class="fas fa-lightbulb text-blue-500 mr-2"></i>
+                        理解这一"问题驱动"的迭代历程，能帮助我们更深刻地把握现代智能体技术选型背后的深层原因与历史必然性。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-100 text-center">
+                    <i class="fas fa-timeline text-purple-500 mr-3"></i>
+                    智能体发展时间线
+                </h2>
+
+                <div class="relative">
+                    <!-- Timeline Line -->
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full timeline-line rounded-full"></div>
+
+                    <!-- Timeline Items -->
+                    <div class="space-y-12">
+                        <!-- 1950s-1970s: 符号主义 -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-5/12 text-right pr-8">
+                                <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg">
+                                    <h3 class="font-bold text-lg mb-2">1950s-1970s</h3>
+                                    <p class="font-medium">符号主义时代</p>
+                                    <p class="text-sm mt-2">物理符号系统假说、专家系统、SHRDLU</p>
+                                </div>
+                            </div>
+                            <div class="w-2/12 flex justify-center">
+                                <div class="w-4 h-4 bg-blue-500 rounded-full border-4 border-white dark:border-gray-800 z-10"></div>
+                            </div>
+                            <div class="w-5/12 pl-8"></div>
+                        </div>
+
+                        <!-- 1970s-1980s: 联结主义 -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-5/12 pr-8"></div>
+                            <div class="w-2/12 flex justify-center">
+                                <div class="w-4 h-4 bg-green-500 rounded-full border-4 border-white dark:border-gray-800 z-10"></div>
+                            </div>
+                            <div class="w-5/12 pl-8">
+                                <div class="bg-gradient-to-r from-green-500 to-green-600 text-white p-4 rounded-lg shadow-lg">
+                                    <h3 class="font-bold text-lg mb-2">1970s-1980s</h3>
+                                    <p class="font-medium">联结主义复兴</p>
+                                    <p class="text-sm mt-2">神经网络、反向传播算法</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 1980s-2000s: 分布式智能 -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-5/12 text-right pr-8">
+                                <div class="bg-gradient-to-r from-purple-500 to-purple-600 text-white p-4 rounded-lg shadow-lg">
+                                    <h3 class="font-bold text-lg mb-2">1980s-2000s</h3>
+                                    <p class="font-medium">分布式智能</p>
+                                    <p class="text-sm mt-2">心智社会理论、多智能体系统</p>
+                                </div>
+                            </div>
+                            <div class="w-2/12 flex justify-center">
+                                <div class="w-4 h-4 bg-purple-500 rounded-full border-4 border-white dark:border-gray-800 z-10"></div>
+                            </div>
+                            <div class="w-5/12 pl-8"></div>
+                        </div>
+
+                        <!-- 2010s-至今: 深度学习时代 -->
+                        <div class="flex items-center justify-between">
+                            <div class="w-5/12 pr-8"></div>
+                            <div class="w-2/12 flex justify-center">
+                                <div class="w-4 h-4 bg-red-500 rounded-full border-4 border-white dark:border-gray-800 z-10"></div>
+                            </div>
+                            <div class="w-5/12 pl-8">
+                                <div class="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-lg shadow-lg">
+                                    <h3 class="font-bold text-lg mb-2">2010s-至今</h3>
+                                    <p class="font-medium">深度学习时代</p>
+                                    <p class="text-sm mt-2">强化学习、大型语言模型、现代智能体</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Symbolic AI Section -->
+        <section id="symbolic" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-brain text-blue-500 mr-3"></i>
+                    2.1 基于符号与逻辑的早期智能体
+                </h2>
+
+                <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        人工智能领域的早期探索，深受数理逻辑和计算机科学基本原理的影响。在那个时代，研究者们普遍持有一种信念：人类的智能，尤其是逻辑推理能力，可以被形式化的符号体系所捕捉和复现。这一核心思想催生了人工智能的第一个重要范式——符号主义（Symbolicism），也被称为"逻辑AI"或"传统AI"。
+                    </p>
+                </div>
+
+                <!-- Physical Symbol System -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-atom text-purple-500 mr-2"></i>
+                        2.1.1 物理符号系统假说
+                    </h3>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-0.png"
+                                 alt="物理符号系统" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 2.2 物理符号系统的构成元素
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-3">
+                                <i class="fas fa-check-circle mr-2"></i>充分性论断
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200">
+                                任何一个物理符号系统，都具备产生通用智能行为的充分手段。
+                            </p>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">
+                                <i class="fas fa-exclamation-circle mr-2"></i>必要性论断
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200">
+                                任何一个能够展现通用智能行为的系统，其本质必然是一个物理符号系统。
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 rounded-r-lg">
+                        <p class="text-gray-700 dark:text-gray-200 font-medium">
+                            <i class="fas fa-quote-left text-yellow-500 mr-2"></i>
+                            智能的本质，就是符号的计算与处理。
+                            <i class="fas fa-quote-right text-yellow-500 ml-2"></i>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Expert Systems -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-user-md text-green-500 mr-2"></i>
+                        2.1.2 专家系统
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-1.png"
+                             alt="专家系统架构" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.3 专家系统的通用架构
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6 shadow-sm">
+                            <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">
+                                <i class="fas fa-database text-blue-500 mr-2"></i>知识库
+                            </h4>
+                            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-blue-400 mt-1 mr-2 text-sm"></i>
+                                    <span>存储领域专家的知识和经验</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-blue-400 mt-1 mr-2 text-sm"></i>
+                                    <span>使用产生式规则（IF-THEN）表示知识</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-blue-400 mt-1 mr-2 text-sm"></i>
+                                    <span>构建庞大的知识网络</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl p-6 shadow-sm">
+                            <h4 class="font-semibold text-lg mb-3 text-gray-800 dark:text-gray-100">
+                                <i class="fas fa-cogs text-green-500 mr-2"></i>推理机
+                            </h4>
+                            <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-green-400 mt-1 mr-2 text-sm"></i>
+                                    <span><strong>正向链</strong>：数据驱动的推理方式</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-green-400 mt-1 mr-2 text-sm"></i>
+                                    <span><strong>反向链</strong>：目标驱动的推理方式</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-chevron-right text-green-400 mt-1 mr-2 text-sm"></i>
+                                    <span>通用程序，不依赖特定领域</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- MYCIN Case Study -->
+                    <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6">
+                        <h4 class="font-semibold text-xl mb-4 text-gray-800 dark:text-gray-100">
+                            <i class="fas fa-microscope text-indigo-500 mr-2"></i>
+                            案例分析：MYCIN系统
+                        </h4>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 class="font-medium text-indigo-600 dark:text-indigo-400 mb-2">开发背景</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    斯坦福大学，20世纪70年代
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 class="font-medium text-indigo-600 dark:text-indigo-400 mb-2">应用领域</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    诊断细菌性血液感染，推荐抗生素
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 class="font-medium text-indigo-600 dark:text-indigo-400 mb-2">技术特点</h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    约600条规则，反向链推理，置信因子
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-2.png"
+                                 alt="MYCIN推理流程" class="w-full max-w-lg rounded-lg shadow-md mx-auto mb-4">
+                            <p class="text-center text-gray-600 dark:text-gray-300 font-medium mb-4">
+                                图 2.4 MYCIN反向链推理流程示意图
+                            </p>
+                        </div>
+
+                        <div class="bg-indigo-100 dark:bg-indigo-900/30 p-4 rounded-lg">
+                            <p class="text-gray-700 dark:text-gray-200">
+                                <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+                                <strong>成就与意义</strong>：在一项评估中，MYCIN在血液感染诊断方面的表现超过了非专业医生，甚至达到了人类专家的水平。它的成功雄辩地证明了物理符号系统假说的有效性。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SHRDLU -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-cube text-purple-500 mr-2"></i>
+                        2.1.3 SHRDLU
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-3.png"
+                             alt="SHRDLU积木世界" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.5 SHRDLU的"积木世界"交互界面
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-3">
+                                <i class="fas fa-comments mr-2"></i>自然语言理解
+                            </h4>
+                            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                                <li>• 指代消解能力</li>
+                                <li>• 上下文记忆</li>
+                                <li>• 复杂指令解析</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-3">
+                                <i class="fas fa-tasks mr-2"></i>规划与行动
+                            </h4>
+                            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                                <li>• 自主规划动作序列</li>
+                                <li>• 处理复杂情况</li>
+                                <li>• 动态调整策略</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">
+                                <i class="fas fa-memory mr-2"></i>记忆与问答
+                            </h4>
+                            <ul class="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                                <li>• 环境状态记忆</li>
+                                <li>• 行为历史记录</li>
+                                <li>• 行为动机解释</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Symbolism Challenges -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                        2.1.4 符号主义面临的根本性挑战
+                    </h3>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800">
+                            <h4 class="font-semibold text-red-800 dark:text-red-300 mb-3">
+                                <i class="fas fa-ban mr-2"></i>常识知识与知识获取瓶颈
+                            </h4>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-200">
+                                <li class="flex items-start">
+                                    <i class="fas fa-angle-right text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <strong>知识获取瓶颈</strong>
+                                        <p class="text-sm mt-1">成本高昂、耗时漫长的知识工程过程，难以规模化</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-angle-right text-red-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <strong>常识问题</strong>
+                                        <p class="text-sm mt-1">人类依赖庞大常识背景，符号系统无法自动获取</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800">
+                            <h4 class="font-semibold text-orange-800 dark:text-orange-300 mb-3">
+                                <i class="fas fa-broken-chain mr-2"></i>框架问题与系统脆弱性
+                            </h4>
+                            <ul class="space-y-3 text-gray-700 dark:text-gray-200">
+                                <li class="flex items-start">
+                                    <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <strong>框架问题</strong>
+                                        <p class="text-sm mt-1">动态世界中高效判断未变化状态的逻辑难题</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-angle-right text-orange-500 mt-1 mr-2"></i>
+                                    <div>
+                                        <strong>系统脆弱性</strong>
+                                        <p class="text-sm mt-1">完全依赖预设规则，遇到新情况容易失灵</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ELIZA Section -->
+        <section id="eliza" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-robot text-green-500 mr-3"></i>
+                    2.2 构建基于规则的聊天机器人
+                </h2>
+
+                <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        在探讨了符号主义的理论挑战后，本节我们将通过一个具体的编程实践，来直观地感受基于规则的系统是如何工作的。我们将尝试复现人工智能历史上一个极具影响力的早期聊天机器人——ELIZA。
+                    </p>
+                </div>
+
+                <!-- ELIZA Design -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                        2.2.1 ELIZA 的设计思想
+                    </h3>
+
+                    <div class="bg-gradient-to-r from-yellow-50 to-green-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3">基本信息</h4>
+                                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                                    <li><strong>开发者</strong>：约瑟夫·魏泽鲍姆（Joseph Weizenbaum）</li>
+                                    <li><strong>时间</strong>：1966年</li>
+                                    <li><strong>机构</strong>：麻省理工学院</li>
+                                    <li><strong>脚本</strong>：DOCTOR（罗杰斯学派心理治疗师）</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-3">工作原理</h4>
+                                <ul class="space-y-2 text-gray-600 dark:text-gray-300">
+                                    <li>• 识别用户输入中的关键词</li>
+                                    <li>• 应用预设的转换规则</li>
+                                    <li>• 将陈述转化为开放式提问</li>
+                                    <li>• 营造"智能"和"共情"的假象</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 p-4 bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 rounded-r-lg">
+                            <p class="text-gray-700 dark:text-gray-200 font-medium">
+                                <i class="fas fa-quote-left text-yellow-500 mr-2"></i>
+                                魏泽鲍姆的设计思想并非要创造一个真正能够"理解"人类情感的智能体，恰恰相反，他想证明的是，通过一些简单的句式转换技巧，机器可以在完全不理解对话内容的情况下，营造出一种"智能"和"共情"的假象。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pattern Matching -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-search text-blue-500 mr-2"></i>
+                        2.2.2 模式匹配与文本替换
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                        <div class="grid md:grid-cols-4 gap-4">
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg text-center">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-key text-blue-600 dark:text-blue-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-sm mb-2">1. 关键词识别</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">按优先级选择关键词</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg text-center">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-cut text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-sm mb-2">2. 分解规则</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">使用通配符捕获句子</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg text-center">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-random text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-sm mb-2">3. 重组规则</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">随机选择响应模板</p>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg text-center">
+                                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-exchange-alt text-orange-600 dark:text-orange-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-sm mb-2">4. 代词转换</h4>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">I→you, my→your等</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Core Logic Implementation -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-code text-purple-500 mr-2"></i>
+                        2.2.3 核心逻辑的实现
+                    </h3>
+
+                    <div class="code-block">
+                        <div class="code-content">
+                            <pre><code>import re
+import random
+
+# 定义规则库：模式(正则表达式) -> 响应模板列表
+rules = {
+    r'I need (.*)': [
+        "Why do you need {0}?",
+        "Would it really help you to get {0}?",
+        "Are you sure you need {0}?"
+    ],
+    r'Why don\'t you (.*)\?': [
+        "Do you really think I don't {0}?",
+        "Perhaps eventually I will {0}.",
+        "Do you really want me to {0}?"
+    ],
+    r'Why can\'t I (.*)\?': [
+        "Do you think you should be able to {0}?",
+        "If you could {0}, what would you do?",
+        "I don't know -- why can't you {0}?"
+    ],
+    r'I am (.*)': [
+        "Did you come to me because you are {0}?",
+        "How long have you been {0}?",
+        "How do you feel about being {0}?"
+    ],
+    r'.* mother .*': [
+        "Tell me more about your mother.",
+        "What was your relationship with your mother like?",
+        "How do you feel about your mother?"
+    ],
+    r'.* father .*': [
+        "Tell me more about your father.",
+        "How did your father make you feel?",
+        "What has your father taught you?"
+    ],
+    r'.*': [
+        "Please tell me more.",
+        "Let's change focus a bit... Tell me about your family.",
+        "Can you elaborate on that?"
+    ]
+}
+
+# 定义代词转换规则
+pronoun_swap = {
+    "i": "you", "you": "i", "me": "you", "my": "your",
+    "am": "are", "are": "am", "was": "were", "i'd": "you would",
+    "i've": "you have", "i'll": "you will", "yours": "mine",
+    "mine": "yours"
+}
+
+def swap_pronouns(phrase):
+    """
+    对输入短语中的代词进行第一/第二人称转换
+    """
+    words = phrase.lower().split()
+    swapped_words = [pronoun_swap.get(word, word) for word in words]
+    return " ".join(swapped_words)
+
+def respond(user_input):
+    """
+    根据规则库生成响应
+    """
+    for pattern, responses in rules.items():
+        match = re.search(pattern, user_input, re.IGNORECASE)
+        if match:
+            # 捕获匹配到的部分
+            captured_group = match.group(1) if match.groups() else ''
+            # 进行代词转换
+            swapped_group = swap_pronouns(captured_group)
+            # 从模板中随机选择一个并格式化
+            response = random.choice(responses).format(swapped_group)
+            return response
+    # 如果没有匹配任何特定规则，使用最后的通配符规则
+    return random.choice(rules[r'.*'])
+
+# 主聊天循环
+if __name__ == '__main__':
+    print("Therapist: Hello! How can I help you today?")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() in ["quit", "exit", "bye"]:
+            print("Therapist: Goodbye. It was nice talking to you.")
+            break
+        response = respond(user_input)
+        print(f"Therapist: {response}")
+</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Demo Conversation -->
+                    <div class="mt-6 bg-gray-100 dark:bg-gray-700 rounded-xl p-6">
+                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">对话示例</h4>
+                        <div class="space-y-3">
+                            <div class="flex justify-start">
+                                <div class="bg-blue-500 text-white p-3 rounded-lg rounded-tl-none max-w-md">
+                                    <p class="font-medium">Therapist:</p>
+                                    <p>Hello! How can I help you today?</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <div class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 p-3 rounded-lg rounded-tr-none max-w-md">
+                                    <p class="font-medium">You:</p>
+                                    <p>I am feeling sad today.</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="bg-blue-500 text-white p-3 rounded-lg rounded-tl-none max-w-md">
+                                    <p class="font-medium">Therapist:</p>
+                                    <p>How long have you been feeling sad today?</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-end">
+                                <div class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 p-3 rounded-lg rounded-tr-none max-w-md">
+                                    <p class="font-medium">You:</p>
+                                    <p>I need some help with my project.</p>
+                                </div>
+                            </div>
+                            <div class="flex justify-start">
+                                <div class="bg-blue-500 text-white p-3 rounded-lg rounded-tl-none max-w-md">
+                                    <p class="font-medium">Therapist:</p>
+                                    <p>Are you sure you need some help with your project?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Limitations -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        根本局限性分析
+                    </h3>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-red-50 dark:bg-red-900/20 p-6 rounded-xl border border-red-200 dark:border-red-800">
+                            <h4 class="font-semibold text-red-800 dark:text-red-300 mb-3">
+                                <i class="fas fa-brain-slash mr-2"></i>缺乏语义理解
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                系统不理解词义，无法处理否定词等语义信息，容易产生语义不通的回应
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800">
+                            <h4 class="font-semibold text-orange-800 dark:text-orange-300 mb-3">
+                                <i class="fas fa-memory-slash mr-2"></i>无上下文记忆
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                系统是无状态的，每次回应仅基于当前单句输入，无法进行连贯的多轮对话
+                            </p>
+                        </div>
+
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 p-6 rounded-xl border border-yellow-200 dark:border-yellow-800">
+                            <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-3">
+                                <i class="fas fa-expand-arrows-alt mr-2"></i>扩展性问题
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                增加更多规则导致规则库规模爆炸，规则间冲突管理变得极其复杂
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-lg">
+                        <p class="text-gray-700 dark:text-gray-200 font-medium">
+                            <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                            <strong>ELIZA效应</strong>：尽管存在这些局限性，许多用户仍相信ELIZA能理解自己，这种智能的幻觉主要源于其巧妙的对话策略以及人类天生的情感投射心理。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Society of Mind Section -->
+        <section id="society" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-users text-purple-500 mr-3"></i>
+                    2.3 马文·明斯基的心智社会
+                </h2>
+
+                <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        符号主义的探索和ELIZA的实践，共同指向了一个问题：通过预设规则构建的、单一的、集中的推理引擎，似乎难以通向真正的智能。马文·明斯基（Marvin Minsky）在他的《心智社会》（The Society of Mind）一书中提出了一个革命性的观点。
+                    </p>
+                </div>
+
+                <!-- Famous Quote -->
+                <div class="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-8 mb-8 text-white">
+                    <i class="fas fa-quote-left text-3xl mb-4 opacity-50"></i>
+                    <p class="text-xl font-medium leading-relaxed mb-4">
+                        What magical trick makes us intelligent? The trick is that there is no trick. The power of intelligence stems from our vast diversity, not from any single, perfect principle.
+                    </p>
+                    <p class="text-right font-medium">— Marvin Minsky</p>
+                </div>
+
+                <!-- Reflection on Single Intelligence -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-question-circle text-blue-500 mr-2"></i>
+                        2.3.1 对单一整体智能模型的反思
+                    </h3>
+
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-start">
+                                <i class="fas fa-lightbulb text-blue-500 mt-1 mr-3"></i>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2">核心问题</h4>
+                                    <p class="text-gray-700 dark:text-gray-200">
+                                        20世纪70至80年代，符号主义的局限性日益明显。专家系统缺乏儿童般的常识；SHRDLU无法理解积木世界之外的任何事情；ELIZA对对话内容本身一无所知。
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-3 gap-4 mt-6">
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                                        <i class="fas fa-brain mr-2"></i>"理解"是什么？
+                                    </h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        是单一能力还是多种心智过程的协同工作？
+                                    </p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                                        <i class="fas fa-book mr-2"></i>"常识"是什么？
+                                    </h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        是逻辑规则库还是分布式经验网络？
+                                    </p>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                    <h5 class="font-semibold text-blue-600 dark:text-blue-400 mb-2">
+                                        <i class="fas fa-cogs mr-2"></i>如何构建智能体？
+                                    </h5>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        统一逻辑系统还是多样化的组件协作？
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collaborative Intelligence -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-network-wired text-green-500 mr-2"></i>
+                        2.3.2 作为协作体的智能
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-4.png"
+                             alt="心智社会涌现机制" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.6 "心智社会"中搭建积木塔行为的涌现机制示意图
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">
+                                <i class="fas fa-microchip mr-2"></i>简单智能体
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 mb-3">
+                                极其简单的、专门化的心智过程，自身是"无心"的：
+                            </p>
+                            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <li>• LINE-FINDER：识别线条的智能体</li>
+                                <li>• GRASP：负责抓握的智能体</li>
+                                <li>• SEE：视觉处理的智能体</li>
+                                <li>• PUT：放置操作的智能体</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-3">
+                                <i class="fas fa-sitemap mr-2"></i>机构（Agency）
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 mb-3">
+                                一组协同工作的智能体，形成更复杂的系统：
+                            </p>
+                            <ul class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+                                <li>• BUILD-TOWER：搭建塔的高层机构</li>
+                                <li>• BUILDER：循环执行的机构</li>
+                                <li>• ADD-BLOCK：添加积木的机构</li>
+                                <li>• FIND-BLOCK：寻找积木的机构</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-gradient-to-r from-green-100 to-purple-100 dark:from-gray-700 dark:to-gray-800 rounded-lg">
+                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                            <i class="fas fa-magic text-purple-500 mr-2"></i>涌现（Emergence）
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-200">
+                            复杂的、有目的性的智能行为，并非由某个高级智能体预先规划，而是从大量简单的底层智能体之间的局部交互中自发产生的。没有一个智能体拥有全局规划，但整体行为却表现出高度智能。
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Theoretical Inspiration -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-graduation-cap text-indigo-500 mr-2"></i>
+                        2.3.3 对多智能体系统的理论启发
+                    </h3>
+
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 rounded-xl p-6">
+                        <p class="text-gray-700 dark:text-gray-200 mb-6 font-medium">
+                            心智社会理论为分布式人工智能（DAI）和多智能体系统（MAS）提供了重要的概念基础。如果一个心智内部的智能可以通过大量简单智能体的协作而涌现，那么在多个独立的计算实体之间，是否也能通过协作涌现出更强大的"群体智能"？
+                        </p>
+
+                        <div class="grid md:grid-cols-3 gap-6">
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-network-wired text-indigo-600 dark:text-indigo-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-center">
+                                    去中心化控制
+                                </h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 text-center">
+                                    不存在中央控制器，设计无中心节点的协调机制和任务分配策略
+                                </p>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-chart-line text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-center">
+                                    涌现式计算
+                                </h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 text-center">
+                                    复杂问题解决方案从简单的局部交互规则中自发产生
+                                </p>
+                            </div>
+
+                            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-users text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2 text-center">
+                                    智能体的社会性
+                                </h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300 text-center">
+                                    研究智能体间的通信语言、交互协议、协商策略等
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Paradigm Section -->
+        <section id="learning" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-chart-line text-green-500 mr-3"></i>
+                    2.4 学习范式的演进与现代智能体
+                </h2>
+
+                <div class="prose prose-lg dark:prose-invert max-w-none mb-8">
+                    <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                        前文探讨的"心智社会"理论，在哲学层面为群体智能和去中心化协作指明了方向，但实现路径尚不明确。与此同时，符号主义在应对真实世界复杂性时暴露的根本性挑战也表明仅靠预先编码的规则无法构建真正鲁棒的智能。这一设问开启了人工智能的"学习"时代。
+                    </p>
+                </div>
+
+                <!-- From Symbol to Connection -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-link text-blue-500 mr-2"></i>
+                        2.4.1 从符号到联结
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-5.png"
+                             alt="符号主义与联结主义对比" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.7 符号主义与联结主义范式对比
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-3">
+                                <i class="fas fa-database mr-2"></i>分布式表示
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                知识以连接权重形式存储在大量简单处理单元的连接之间，整个网络的连接模式构成知识
+                            </p>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">
+                                <i class="fas fa-microchip mr-2"></i>简单处理单元
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                每个神经元只执行简单计算，接收加权输入，通过激活函数处理，输出给下一个神经元
+                            </p>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800">
+                            <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-3">
+                                <i class="fas fa-graduation-cap mr-2"></i>权重学习调整
+                            </h4>
+                            <p class="text-gray-700 dark:text-gray-200 text-sm">
+                                系统通过接触大量样本，根据学习算法自动调整连接权重，使输出逐渐接近期望目标
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reinforcement Learning -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-gamepad text-purple-500 mr-2"></i>
+                        2.4.2 基于强化学习的智能体
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-6.png"
+                             alt="强化学习循环" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.8 强化学习的核心交互循环
+                        </p>
+                    </div>
+
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 mb-6">
+                        <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-3">
+                            <i class="fas fa-chess mr-2"></i>AlphaGo案例
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-200 mb-4">
+                            AlphaGo通过自我对弈学习围棋，观察棋盘状态（环境状态），决定落子位置（行动），根据胜负结果获得奖励信号，通过数百万次自我对弈不断调整内部策略。
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">核心要素</h4>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <i class="fas fa-robot text-blue-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <strong>智能体（Agent）</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">学习者和决策者</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-globe text-green-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <strong>环境（Environment）</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">智能体外部的一切</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-eye text-purple-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <strong>状态（State, S）</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">环境的特定描述</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-hand-pointer text-orange-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <strong>行动（Action, A）</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">智能体能采取的操作</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-gift text-red-500 mt-1 mr-3"></i>
+                                    <div>
+                                        <strong>奖励（Reward, R）</strong>
+                                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">评价行动好坏的信号</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm">
+                            <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">工作模式</h4>
+                            <ol class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
+                                    <p class="text-gray-700 dark:text-gray-200">智能体观察到环境当前状态 $S_t$</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
+                                    <p class="text-gray-700 dark:text-gray-200">基于策略 $\pi$ 选择行动 $A_t$ 并执行</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
+                                    <p class="text-gray-700 dark:text-gray-200">环境转移到新状态 $S_{t+1}$</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
+                                    <p class="text-gray-700 dark:text-gray-200">环境反馈即时奖励 $R_{t+1}$</p>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm mr-3">5</span>
+                                    <p class="text-gray-700 dark:text-gray-200">智能体利用反馈优化策略</p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Large-scale Pretraining -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-server text-orange-500 mr-2"></i>
+                        2.4.3 基于大规模数据的预训练
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-7.png"
+                             alt="预训练-微调范式" class="w-full max-w-2xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.9 "预训练-微调"范式示意图
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800">
+                            <h4 class="font-semibold text-orange-800 dark:text-orange-300 mb-3">
+                                <i class="fas fa-download mr-2"></i>预训练阶段
+                            </h4>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-200 text-sm">
+                                <li>• 使用互联网级别海量文本数据</li>
+                                <li>• 自监督学习方式训练</li>
+                                <li>• 学习语言内在规律和语法结构</li>
+                                <li>• 获取事实知识和上下文逻辑</li>
+                                <li>• 常见目标：预测下一个词</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">
+                                <i class="fas fa-sliders-h mr-2"></i>微调阶段
+                            </h4>
+                            <ul class="space-y-2 text-gray-700 dark:text-gray-200 text-sm">
+                                <li>• 使用特定任务的标注数据</li>
+                                <li>• 少量数据即可完成适应</li>
+                                <li>• 保持预训练获得的知识</li>
+                                <li>• 针对特定任务进行优化</li>
+                                <li>• 实现知识迁移和泛化</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Emergent Abilities -->
+                    <div class="mt-6 bg-gradient-to-r from-orange-100 to-red-100 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6">
+                        <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-4">
+                            <i class="fas fa-magic text-purple-500 mr-2"></i>
+                            涌现能力（Emergent Abilities）
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 class="font-medium text-purple-600 dark:text-purple-400 mb-2">
+                                    <i class="fas fa-lightbulb mr-2"></i>上下文学习
+                                </h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    无需调整权重，仅通过输入中提供少量示例即可理解新任务
+                                </p>
+                            </div>
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg">
+                                <h5 class="font-medium text-purple-600 dark:text-purple-400 mb-2">
+                                    <i class="fas fa-link mr-2"></i>思维链推理
+                                </h5>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">
+                                    通过输出一步步推理过程，显著提升逻辑推理准确性
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modern Agents Section -->
+        <section id="modern" class="mb-16 lazy-load">
+            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 hover-card">
+                <h2 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+                    <i class="fas fa-rocket text-indigo-500 mr-3"></i>
+                    2.4.4 基于大语言模型的智能体
+                </h2>
+
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-8">
+                    <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-8.png"
+                         alt="LLM驱动的智能体架构" class="w-full max-w-3xl rounded-lg shadow-md mx-auto">
+                    <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                        图 2.10 LLM驱动的智能体核心组件架构
+                    </p>
+                </div>
+
+                <!-- Agent Workflow -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-sync-alt text-blue-500 mr-2"></i>
+                        智能体工作流程
+                    </h3>
+
+                    <div class="grid md:grid-cols-4 gap-4">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800 text-center">
+                            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-eye text-blue-600 dark:text-blue-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">感知</h4>
+                            <p class="text-sm text-gray-700 dark:text-gray-200">
+                                通过传感器接收环境输入，形成观察信息
+                            </p>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800 text-center">
+                            <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-brain text-purple-600 dark:text-purple-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-2">思考</h4>
+                            <p class="text-sm text-gray-700 dark:text-gray-200">
+                                规划与分解、推理与决策、生成工具调用
+                            </p>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 p-6 rounded-xl border border-green-200 dark:border-green-800 text-center">
+                            <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-cogs text-green-600 dark:text-green-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">行动</h4>
+                            <p class="text-sm text-gray-700 dark:text-gray-200">
+                                解析指令，调用工具，与环境交互执行任务
+                            </p>
+                        </div>
+
+                        <div class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800 text-center">
+                            <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-sync text-orange-600 dark:text-orange-400 text-2xl"></i>
+                            </div>
+                            <h4 class="font-semibold text-orange-800 dark:text-orange-300 mb-2">观察与循环</h4>
+                            <p class="text-sm text-gray-700 dark:text-gray-200">
+                                获取工具结果，更新记忆，启动下一轮循环
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Development Overview -->
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                        <i class="fas fa-history text-purple-500 mr-2"></i>
+                        2.4.5 智能体发展关键节点概览
+                    </h3>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6 mb-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-9.png"
+                             alt="智能体发展时间线" class="w-full max-w-4xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.11 智能体发展演进时间线（未完全版）
+                        </p>
+                    </div>
+
+                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                        <div class="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-3">符号主义</h4>
+                            <p class="font-medium mb-2">司马贺、明斯基等</p>
+                            <ul class="space-y-1 text-sm">
+                                <li>• SHRDLU自然语言理解</li>
+                                <li>• 专家系统知识驱动</li>
+                                <li>• "深蓝"计算机象棋</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-500 to-green-600 text-white p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-3">联结主义</h4>
+                            <p class="font-medium mb-2">辛顿等</p>
+                            <ul class="space-y-1 text-sm">
+                                <li>• 神经网络模拟大脑</li>
+                                <li>• 反向传播算法</li>
+                                <li>• CNN、Transformer模型</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-6 rounded-xl">
+                            <h4 class="font-bold text-lg mb-3">行为主义</h4>
+                            <p class="font-medium mb-2">强化学习</p>
+                            <ul class="space-y-1 text-sm">
+                                <li>• TD-Gammon早期系统</li>
+                                <li>• AlphaGo击败人类</li>
+                                <li>• 交互试错学习策略</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                        <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-10.png"
+                             alt="AI Agent技术栈" class="w-full max-w-4xl rounded-lg shadow-md mx-auto">
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium mt-4">
+                            图 2.12 AI Agent 技术栈概览（Letta公司，2024年11月发布）
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter Summary -->
+        <section class="mb-16 lazy-load">
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl p-8 text-white">
+                <h2 class="text-3xl font-bold mb-6 text-center">
+                    <i class="fas fa-book-open mr-3"></i>
+                    本章小结
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+                        <h3 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-history mr-2"></i>
+                            历史回顾
+                        </h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• 符号主义的探索与局限</li>
+                            <li>• 分布式智能思想的萌芽</li>
+                            <li>• 学习范式的演进</li>
+                            <li>• 现代智能体的诞生</li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+                        <h3 class="font-semibold text-lg mb-3">
+                            <i class="fas fa-key mr-2"></i>
+                            核心洞察
+                        </h3>
+                        <ul class="space-y-2 text-sm">
+                            <li>• 智能体的发展是思想变革的过程</li>
+                            <li>• 技术融合推动智能体进步</li>
+                            <li>• 问题驱动是发展的根本动力</li>
+                            <li>• 现代智能体集成了多种技术思想</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <p class="text-lg font-medium">
+                        通过本章的学习，我们理解了现代智能体从何而来，建立了智能体技术演进的宏观认知框架。
+                    </p>
+                    <p class="mt-2 text-sm opacity-90">
+                        下一章将聚焦于大语言模型本身，探讨其基本概念，为后续在多智能体系统中的高级应用打下坚实基础。
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-600 dark:text-gray-400">
+                <i class="fas fa-code mr-2"></i>
+                Hello Agents - 第二章 智能体发展史
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-500 mt-2">
+                基于 Datawhale Hello-Agents 教程
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or default to light mode
+        const currentTheme = localStorage.getItem('theme') ||
+                           (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        if (currentTheme === 'dark') {
+            html.classList.add('dark');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            const theme = html.classList.contains('dark') ? 'dark' : 'light';
+            localStorage.setItem('theme', theme);
+        });
+
+        // Reading Progress Bar
+        const readingProgress = document.getElementById('readingProgress');
+
+        function updateReadingProgress() {
+            const scrollTop = window.scrollY;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (scrollTop / docHeight) * 100;
+            readingProgress.style.width = `${progress}%`;
+        }
+
+        window.addEventListener('scroll', updateReadingProgress);
+
+        // Lazy Loading
+        const lazyElements = document.querySelectorAll('.lazy-load');
+
+        const lazyLoadObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('loaded');
+                    lazyLoadObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: null,
+            rootMargin: '50px'
+        });
+
+        lazyElements.forEach(el => lazyLoadObserver.observe(el));
+
+        // Navigation Highlight
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function updateNavHighlight() {
+            const scrollY = window.scrollY;
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+
+                if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+
+        window.addEventListener('scroll', updateNavHighlight);
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('backToTop');
+
+        function toggleBackToTop() {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.add('opacity-0', 'invisible');
+                backToTopButton.classList.remove('opacity-100', 'visible');
+            }
+        }
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        window.addEventListener('scroll', toggleBackToTop);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize
+        updateReadingProgress();
+        updateNavHighlight();
+        toggleBackToTop();
+    </script>
+</body>
+</html>
