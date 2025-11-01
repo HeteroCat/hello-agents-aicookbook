@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -189,10 +189,7 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <button id="toc-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                        <i class="fas fa-bars text-gray-600 dark:text-gray-400"></i>
-                    </button>
-                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                         <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
                         <i class="fas fa-moon text-blue-400 hidden dark:block"></i>
                     </button>
@@ -201,39 +198,7 @@
         </nav>
     </header>
 
-    <!-- Table of Contents Sidebar -->
-    <div id="toc-sidebar" class="fixed left-0 top-16 bottom-0 w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 transform -translate-x-full transition-transform duration-300 z-40 overflow-y-auto">
-        <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">目录导航</h3>
-            <nav class="space-y-2">
-                <a href="#introduction" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-book-open mr-2 text-xs"></i>概述
-                </a>
-                <a href="#what-is-context-engineering" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-cogs mr-2 text-xs"></i>什么是上下文工程
-                </a>
-                <a href="#why-important" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-chart-line mr-2 text-xs"></i>为什么上下文工程重要
-                </a>
-                <a href="#contextbuilder" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-cube mr-2 text-xs"></i>ContextBuilder实践
-                </a>
-                <a href="#notetool" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-sticky-note mr-2 text-xs"></i>NoteTool结构化笔记
-                </a>
-                <a href="#terminaltool" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-terminal mr-2 text-xs"></i>TerminalTool即时访问
-                </a>
-                <a href="#case-study" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-code mr-2 text-xs"></i>实战案例
-                </a>
-                <a href="#summary" class="toc-item block py-2 px-3 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white rounded-lg">
-                    <i class="fas fa-check-circle mr-2 text-xs"></i>本章总结
-                </a>
-            </nav>
-        </div>
-    </div>
-
+    
     <!-- Main Content -->
     <main class="pt-16 min-h-screen">
         <!-- Hero Section -->
@@ -1341,39 +1306,7 @@ created_at: 2025-01-19T15:30:00
             localStorage.setItem('theme', theme);
         });
 
-        // TOC Toggle
-        const tocToggle = document.getElementById('toc-toggle');
-        const tocSidebar = document.getElementById('toc-sidebar');
-
-        tocToggle.addEventListener('click', () => {
-            tocSidebar.classList.toggle('-translate-x-full');
-        });
-
-        // Close TOC when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!tocSidebar.contains(e.target) && !tocToggle.contains(e.target)) {
-                tocSidebar.classList.add('-translate-x-full');
-            }
-        });
-
-        // Smooth Scrolling for TOC links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                    // Close TOC on mobile after clicking
-                    if (window.innerWidth < 768) {
-                        tocSidebar.classList.add('-translate-x-full');
-                    }
-                }
-            });
-        });
-
+        
         // Scroll animations
         const observerOptions = {
             threshold: 0.1,
@@ -1393,32 +1326,7 @@ created_at: 2025-01-19T15:30:00
             observer.observe(section);
         });
 
-        // Active TOC highlighting
-        const sections = document.querySelectorAll('section[id]');
-        const tocLinks = document.querySelectorAll('#toc-sidebar a[href^="#"]');
-
-        function updateActiveTOC() {
-            const scrollY = window.pageYOffset;
-
-            sections.forEach(section => {
-                const sectionHeight = section.offsetHeight;
-                const sectionTop = section.offsetTop - 100;
-                const sectionId = section.getAttribute('id');
-
-                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                    tocLinks.forEach(link => {
-                        link.classList.remove('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
-                        if (link.getAttribute('href') === `#${sectionId}`) {
-                            link.classList.add('bg-blue-100', 'dark:bg-blue-900', 'text-blue-600', 'dark:text-blue-400');
-                        }
-                    });
-                }
-            });
-        }
-
-        window.addEventListener('scroll', updateActiveTOC);
-        updateActiveTOC(); // Initial call
-
+        
         // Copy code blocks functionality
         document.querySelectorAll('.code-block').forEach(block => {
             block.addEventListener('click', function() {

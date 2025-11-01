@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,14 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
 
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -146,83 +154,13 @@
                         <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
                         <i class="fas fa-moon text-blue-400 hidden dark:block"></i>
                     </button>
-
-                    <!-- 目录按钮 -->
-                    <button id="toc-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-list"></i>
-                    </button>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- 主内容区 -->
-    <div class="flex pt-16">
-        <!-- 侧边目录 -->
-        <aside id="toc-sidebar" class="hidden md:block w-64 h-screen sticky top-16 border-r border-gray-200 dark:border-gray-700 overflow-y-auto">
-            <div class="p-6">
-                <h3 class="font-bold text-lg mb-4 gradient-text">目录</h3>
-                <nav class="space-y-2">
-                    <a href="#section-5-1" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
-                        <i class="fas fa-lightbulb mr-2"></i>5.1 平台化构建的兴起
-                    </a>
-                    <a href="#section-5-1-1" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.1.1 为何需要低代码平台
-                    </a>
-                    <a href="#section-5-1-2" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.1.2 低代码平台的选择
-                    </a>
-                    <a href="#section-5-2" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
-                        <i class="fas fa-robot mr-2"></i>5.2 平台一：Coze
-                    </a>
-                    <a href="#section-5-2-1" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.2.1 Coze的功能模块
-                    </a>
-                    <a href="#section-5-2-2" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.2.2 构建"每日AI简报"助手
-                    </a>
-                    <a href="#section-5-2-3" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.2.3 Coze的优势与局限性
-                    </a>
-                    <a href="#section-5-3" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
-                        <i class="fas fa-cube mr-2"></i>5.3 平台二：Dify
-                    </a>
-                    <a href="#section-5-3-1" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.3.1 Dify的介绍与生态
-                    </a>
-                    <a href="#section-5-3-2" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.3.2 构建超级智能体个人助手
-                    </a>
-                    <a href="#section-5-3-3" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.3.3 Dify的优势与局限性
-                    </a>
-                    <a href="#section-5-4" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
-                        <i class="fas fa-project-diagram mr-2"></i>5.4 平台三：n8n
-                    </a>
-                    <a href="#section-5-4-1" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.4.1 n8n的节点与工作流
-                    </a>
-                    <a href="#section-5-4-2" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.4.2 搭建智能邮件助手
-                    </a>
-                    <a href="#section-5-4-3" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.4.3 构建Agent的私有知识库
-                    </a>
-                    <a href="#section-5-4-4" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.4.4 创建Agent主工作流
-                    </a>
-                    <a href="#section-5-4-5" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm ml-6">
-                        5.4.5 n8n的优势与局限性
-                    </a>
-                    <a href="#section-5-5" class="toc-item block py-2 px-3 rounded hover:bg-gray-200 dark:hover:bg-gray-700 text-sm">
-                        <i class="fas fa-book mr-2"></i>5.5 本章小结
-                    </a>
-                </nav>
-            </div>
-        </aside>
-
-        <!-- 主内容 -->
-        <main class="flex-1 max-w-5xl mx-auto px-6 py-8">
+    <main class="pt-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
             <!-- 章节标题 -->
             <header class="mb-12 fade-in-up">
@@ -423,11 +361,14 @@
                         <h4 class="text-lg font-bold mb-3">平台界面初览</h4>
                         <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
                             <div class="aspect-video bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
-                                <div class="text-center">
+                                <img src="../.figma/image/coze-platform-overview.png" alt="扣子智能体平台整体示意图" class="w-full h-full object-cover rounded-lg"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="text-center" style="display: none;">
                                     <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
                                     <p class="text-gray-500">图 5.1 扣子智能体平台整体示意图</p>
                                 </div>
                             </div>
+                            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">图 5.1 扣子智能体平台整体示意图</p>
                         </div>
                     </div>
 
@@ -1256,9 +1197,7 @@
                     <p class="text-sm">© 2024 Datawhale. 本文档采用开源协议发布。</p>
                 </div>
             </footer>
-
-        </main>
-    </div>
+    </main>
 
     <!-- 返回顶部按钮 -->
     <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible">
@@ -1282,21 +1221,7 @@
             localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
         });
 
-        // 移动端目录切换
-        const tocToggle = document.getElementById('toc-toggle');
-        const tocSidebar = document.getElementById('toc-sidebar');
-
-        if (tocToggle && tocSidebar) {
-            tocToggle.addEventListener('click', () => {
-                tocSidebar.classList.toggle('hidden');
-                tocSidebar.classList.toggle('fixed');
-                tocSidebar.classList.toggle('inset-0');
-                tocSidebar.classList.toggle('z-40');
-                tocSidebar.classList.toggle('bg-white');
-                tocSidebar.classList.toggle('dark:bg-gray-900');
-            });
-        }
-
+  
         // 返回顶部按钮
         const backToTop = document.getElementById('back-to-top');
 

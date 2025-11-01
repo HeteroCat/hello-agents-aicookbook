@@ -177,14 +177,7 @@
                     <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                         第二章 智能体发展史
                     </h1>
-                    <div class="hidden md:flex space-x-6">
-                        <a href="#overview" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">概述</a>
-                        <a href="#symbolic" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">符号主义</a>
-                        <a href="#eliza" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">ELIZA实践</a>
-                        <a href="#society" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">心智社会</a>
-                        <a href="#learning" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">学习范式</a>
-                        <a href="#modern" class="nav-link text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">现代智能体</a>
-                    </div>
+                    
                 </div>
 
                 <!-- Theme Toggle -->
@@ -213,7 +206,8 @@
                 <div class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
                     <div class="flex items-center justify-center">
                         <div class="text-center">
-                            <i class="fas fa-stairs text-6xl text-blue-500 mb-4"></i>
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-00.png"
+                                 alt="物理符号系统" class="w-full max-w-md rounded-lg shadow-md mx-auto">
                             <p class="text-gray-600 dark:text-gray-300 font-medium">图 2.1 AI智能体的演进阶梯</p>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
                                 每一个新范式的出现，都是为了解决上一代范式的核心"痛点"或根本局限
@@ -1130,14 +1124,14 @@ if __name__ == '__main__':
                                 <li class="flex items-start">
                                     <i class="fas fa-robot text-blue-500 mt-1 mr-3"></i>
                                     <div>
-                                        <strong>智能体（Agent）</strong>
+                                        <strong>智能体（Agent, A）</strong>
                                         <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">学习者和决策者</p>
                                     </div>
                                 </li>
                                 <li class="flex items-start">
                                     <i class="fas fa-globe text-green-500 mt-1 mr-3"></i>
                                     <div>
-                                        <strong>环境（Environment）</strong>
+                                        <strong>环境（Environment, E）</strong>
                                         <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">智能体外部的一切</p>
                                     </div>
                                 </li>
@@ -1170,19 +1164,19 @@ if __name__ == '__main__':
                             <ol class="space-y-3">
                                 <li class="flex items-start">
                                     <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm mr-3">1</span>
-                                    <p class="text-gray-700 dark:text-gray-200">智能体观察到环境当前状态 $S_t$</p>
+                                    <p class="text-gray-700 dark:text-gray-200">智能体观察到环境当前状态</p>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm mr-3">2</span>
-                                    <p class="text-gray-700 dark:text-gray-200">基于策略 $\pi$ 选择行动 $A_t$ 并执行</p>
+                                    <p class="text-gray-700 dark:text-gray-200">基于策略选择行动并执行</p>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm mr-3">3</span>
-                                    <p class="text-gray-700 dark:text-gray-200">环境转移到新状态 $S_{t+1}$</p>
+                                    <p class="text-gray-700 dark:text-gray-200">环境转移到新状态</p>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="w-6 h-6 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm mr-3">4</span>
-                                    <p class="text-gray-700 dark:text-gray-200">环境反馈即时奖励 $R_{t+1}$</p>
+                                    <p class="text-gray-700 dark:text-gray-200">环境反馈即时奖励</p>
                                 </li>
                                 <li class="flex items-start">
                                     <span class="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm mr-3">5</span>

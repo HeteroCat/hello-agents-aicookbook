@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -100,6 +100,12 @@
             border-radius: 1rem;
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .content-section.animate-in {
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -199,25 +205,7 @@
             border-color: var(--accent);
         }
 
-        .toc-item {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-        }
-
-        .toc-item:hover {
-            background-color: var(--bg-secondary);
-            border-left-color: var(--accent);
-        }
-
-        .toc-item.active {
-            background-color: var(--bg-secondary);
-            border-left-color: var(--accent);
-            color: var(--accent);
-        }
-
+    
         .progress-bar {
             position: fixed;
             top: 0;
@@ -246,21 +234,7 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        .side-nav {
-            position: fixed;
-            left: 2rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 1rem;
-            padding: 1rem;
-            max-height: 60vh;
-            overflow-y: auto;
-            z-index: 100;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
-
+  
         .back-to-top {
             position: fixed;
             bottom: 2rem;
@@ -286,31 +260,7 @@
             transform: translateY(-4px);
         }
 
-        @media (max-width: 768px) {
-            .side-nav {
-                position: static;
-                transform: none;
-                margin-bottom: 2rem;
-                max-height: none;
-            }
 
-            .theme-toggle {
-                top: 1rem;
-                right: 1rem;
-            }
-
-            .content-section {
-                padding: 1rem;
-            }
-
-            .heading-1 {
-                font-size: 2rem;
-            }
-
-            .heading-2 {
-                font-size: 1.5rem;
-            }
-        }
 
         /* Prism.js Dark Theme Override */
         [data-theme="dark"] pre[class*="language-"] {
@@ -360,18 +310,8 @@
         <i class="fas fa-moon" id="themeIcon"></i>
     </button>
 
-    <!-- Side Navigation -->
-    <nav class="side-nav">
-        <h3 class="text-lg font-semibold mb-4">
-            <i class="fas fa-list-ul mr-2"></i>目录导航
-        </h3>
-        <div class="space-y-2" id="tocList">
-            <!-- TOC items will be dynamically generated -->
-        </div>
-    </nav>
-
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-8 max-w-6xl">
+    <main class="container mx-auto px-4 py-8 max-w-4xl">
         <!-- Chapter Header -->
         <header class="text-center mb-12">
             <h1 class="heading-1">第三章 大语言模型基础</h1>
@@ -409,6 +349,15 @@
                 <p class="mb-4">
                     为了解决这个问题，研究者引入了<strong>马尔可夫假设 (Markov Assumption)</strong> 。其核心思想是：我们不必回溯一个词的全部历史，可以近似地认为，一个词的出现概率只与它前面有限的 $n-1$ 个词有关。
                 </p>
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-0.png"
+                                 alt="马尔可夫假设示意图" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 3.1 马尔可夫假设示意图
+                        </p>
+                </div>
 
                 <div class="feature-card mt-4">
                     <h5 class="font-semibold mb-3">Bigram (当 N=2 时)</h5>
@@ -490,6 +439,16 @@ print(f"P('datawhale agent learns') ≈ {p_sentence:.3f}")</code></pre>
                     </ol>
                 </div>
 
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-1.png"
+                                 alt="神经网络语言模型架构示意图" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 3.2 神经网络语言模型架构示意图
+                        </p>
+                </div>
+
                 <div class="formula-box mt-4">
                     <h5 class="font-semibold mb-2">余弦相似度 (Cosine Similarity)</h5>
                     $$\text{similarity}(\vec{a}, \vec{b}) = \cos(\theta) = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| |\vec{b}|}$$
@@ -536,6 +495,16 @@ print(f"该结果与 'queen' 的相似度: {sim:.4f}")</code></pre>
                     </p>
                 </div>
 
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-2.png"
+                                 alt="RNN 结构示意图" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 3.3 RNN 结构示意图
+                        </p>
+                </div>
+
                 <div class="feature-card mt-4">
                     <h5 class="font-semibold mb-3 text-yellow-600">长期依赖问题</h5>
                     <p class="text-secondary">
@@ -568,6 +537,16 @@ print(f"该结果与 'queen' 的相似度: {sim:.4f}")</code></pre>
                 <p class="mb-4">
                     最初的 Transformer 模型遵循<strong>编码器-解码器 (Encoder-Decoder)</strong> 架构：
                 </p>
+
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-3.png"
+                                 alt="Transformer 整体架构图" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 3.4 Transformer 整体架构图
+                        </p>
+                </div>
 
                 <div class="grid md:grid-cols-2 gap-4 mt-4">
                     <div class="feature-card">
@@ -649,6 +628,16 @@ class EncoderLayer(nn.Module):
                 <div class="formula-box">
                     <h5 class="font-semibold mb-2">注意力计算公式</h5>
                     $$\text{Attention}(Q,K,V)=\text{softmax}\left(\frac{QK^{T}}{\sqrt{d_{k}}}\right)V$$
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-4.png"
+                                 alt="多头注意力机制" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            图 3.5 多头注意力机制
+                        </p>
                 </div>
 
                 <div class="feature-card mt-4">
@@ -1081,6 +1070,16 @@ How are you?</code></pre>
                         <li><strong>迭代合并</strong>：统计所有相邻词元对的出现频率，找到频率最高的一对进行合并</li>
                         <li><strong>重复</strong>：重复第2步，直到词表大小达到预设的阈值</li>
                     </ol>
+                </div>
+
+                <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-gray-700 dark:to-gray-800 rounded-xl p-6 mb-6">
+                        <div class="flex items-center mb-4">
+                            <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-5.png"
+                                 alt="BPE 算法合并过程示例" class="w-full max-w-md rounded-lg shadow-md mx-auto">
+                        </div>
+                        <p class="text-center text-gray-600 dark:text-gray-300 font-medium">
+                            表 3.1 BPE 算法合并过程示例
+                        </p>
                 </div>
 
                 <div class="code-block mt-4">
@@ -1555,6 +1554,8 @@ print(response)</code></pre>
     </button>
 
     <script>
+        // Wrap everything in try-catch to prevent page crashes
+        try {
         // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
@@ -1582,6 +1583,13 @@ print(response)</code></pre>
                 themeIcon.classList.remove('fa-sun');
                 themeIcon.classList.add('fa-moon');
             }
+
+            // Re-render MathJax when theme changes
+            setTimeout(() => {
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise();
+                }
+            }, 300);
         });
 
         // Progress Bar
@@ -1594,66 +1602,7 @@ print(response)</code></pre>
             progressBar.style.width = scrollPercent + '%';
         });
 
-        // Table of Contents
-        const tocList = document.getElementById('tocList');
-        const sections = document.querySelectorAll('section[id]');
-
-        // Generate TOC
-        const tocItems = [
-            { id: 'section-3-1', title: '3.1 语言模型与 Transformer 架构', icon: 'fa-brain' },
-            { id: 'section-3-1-1', title: '3.1.1 从 N-gram 到 RNN', icon: 'fa-history' },
-            { id: 'section-3-1-2', title: '3.1.2 Transformer 架构解析', icon: 'fa-project-diagram' },
-            { id: 'section-3-1-3', title: '3.1.3 Decoder-Only 架构', icon: 'fa-code' },
-            { id: 'section-3-2', title: '3.2 与大语言模型交互', icon: 'fa-comments' },
-            { id: 'section-3-2-1', title: '3.2.1 提示工程', icon: 'fa-lightbulb' },
-            { id: 'section-3-2-2', title: '3.2.2 文本分词', icon: 'fa-cut' },
-            { id: 'section-3-2-3', title: '3.2.3 调用开源大语言模型', icon: 'fa-download' },
-            { id: 'section-3-2-4', title: '3.2.4 模型的选择', icon: 'fa-balance-scale' },
-            { id: 'section-3-3', title: '3.3 大语言模型的缩放法则与局限性', icon: 'fa-chart-line' },
-            { id: 'section-3-3-1', title: '3.3.1 缩放法则', icon: 'fa-superscript' },
-            { id: 'section-3-3-2', title: '3.3.2 模型幻觉', icon: 'fa-exclamation-triangle' },
-            { id: 'section-3-4', title: '3.4 本章小结', icon: 'fa-book-open' },
-            { id: 'references', title: '参考文献', icon: 'fa-book' }
-        ];
-
-        tocItems.forEach(item => {
-            const tocItem = document.createElement('div');
-            tocItem.className = 'toc-item';
-            tocItem.innerHTML = `
-                <i class="fas ${item.icon} mr-2"></i>
-                <span class="text-sm">${item.title}</span>
-            `;
-            tocItem.addEventListener('click', () => {
-                const element = document.getElementById(item.id);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-            tocList.appendChild(tocItem);
-        });
-
-        // Highlight active TOC item on scroll
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (scrollY >= (sectionTop - 200)) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            document.querySelectorAll('.toc-item').forEach(item => {
-                item.classList.remove('active');
-                const targetId = tocItems.find(tocItem =>
-                    item.textContent.includes(tocItem.title)
-                )?.id;
-                if (targetId === current) {
-                    item.classList.add('active');
-                }
-            });
-        });
-
+    
         // Back to Top Button
         const backToTop = document.getElementById('backToTop');
 
@@ -1702,9 +1651,7 @@ print(response)</code></pre>
         }, observerOptions);
 
         document.querySelectorAll('.content-section').forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            section.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            section.classList.add('animate-in');
             observer.observe(section);
         });
 
@@ -1721,17 +1668,18 @@ print(response)</code></pre>
             }
         };
 
-        // Re-render MathJax when theme changes
-        themeToggle.addEventListener('click', () => {
-            setTimeout(() => {
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise();
-                }
-            }, 300);
-        });
-
+        
         // Prism.js initialization
         Prism.highlightAll();
+
+        } catch (error) {
+            console.error('JavaScript error in chapter3:', error);
+            // Ensure content is visible even if JavaScript fails
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.style.opacity = '1';
+                section.style.transform = 'translateY(0)';
+            });
+        }
     </script>
 </body>
 </html>

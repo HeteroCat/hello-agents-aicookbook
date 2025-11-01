@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -157,34 +157,7 @@
             margin: 16px 0;
         }
 
-        .floating-nav {
-            position: fixed;
-            right: 24px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
-            z-index: 1000;
-        }
-
-        .floating-nav-item {
-            display: block;
-            padding: 8px 12px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            border-radius: 6px;
-            margin-bottom: 4px;
-            transition: all 0.2s ease;
-        }
-
-        .floating-nav-item:hover,
-        .floating-nav-item.active {
-            background: var(--accent);
-            color: white;
-        }
-
+        
         .theme-toggle {
             position: fixed;
             top: 24px;
@@ -294,16 +267,7 @@
         <i class="fas fa-moon" id="theme-icon"></i>
     </button>
 
-    <!-- Floating Navigation -->
-    <nav class="floating-nav hidden lg:block">
-        <a href="#overview" class="floating-nav-item active">概述</a>
-        <a href="#protocols" class="floating-nav-item">协议对比</a>
-        <a href="#mcp" class="floating-nav-item">MCP</a>
-        <a href="#a2a" class="floating-nav-item">A2A</a>
-        <a href="#anp" class="floating-nav-item">ANP</a>
-        <a href="#implementation" class="floating-nav-item">实现</a>
-    </nav>
-
+  
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-20 relative">
         <div class="container mx-auto px-6 relative z-10">
@@ -1117,39 +1081,7 @@ response = agent.run("北京今天天气怎么样？")</code></pre>
             section.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Floating navigation active state
-        window.addEventListener('scroll', function() {
-            const sections = ['overview', 'protocols', 'mcp', 'a2a', 'anp', 'implementation'];
-            const navItems = document.querySelectorAll('.floating-nav-item');
-
-            let current = '';
-            sections.forEach(sectionId => {
-                const section = document.getElementById(sectionId);
-                if (section) {
-                    const rect = section.getBoundingClientRect();
-                    if (rect.top <= 100 && rect.bottom >= 100) {
-                        current = sectionId;
-                    }
-                }
-            });
-
-            navItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('href') === '#' + current) {
-                    item.classList.add('active');
-                }
-            });
-        });
-
-        // Navigation click handlers
-        document.querySelectorAll('.floating-nav-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                scrollToSection(targetId);
-            });
-        });
-
+      
         // Placeholder functions for demo
         function showNextChapter() {
             alert('下一章即将推出！敬请期待。');
