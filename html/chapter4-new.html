@@ -9,6 +9,28 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <!-- MathJax 配置和加载 -->
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -21,19 +43,10 @@
         }
 
         .glass-effect {
-            background: rgba(255, 255, 255, 1);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 明亮模式下的导航栏文字颜色 */
-        .glass-effect .text-white {
-            color: #1f2937 !important;
-        }
-
-        .glass-effect .hover\\:text-gray-200:hover {
-            color: #4b5563 !important;
         }
 
         .card-hover {
@@ -73,244 +86,159 @@
             background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
         }
 
-        .timeline-item {
-            position: relative;
-            padding-left: 2rem;
-            border-left: 2px solid #e5e7eb;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -6px;
-            top: 0;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: #6366f1;
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-        }
-
-        .scroll-indicator {
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .dark-mode {
+        /* 暗色模式样式 */
+        .dark {
             background: #1a1a1a;
             color: #ffffff;
         }
 
-        .dark-mode .glass-effect {
-            background: rgba(17, 24, 39, 1);
+        .dark .glass-effect {
+            background: rgba(17, 24, 39, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* 暗色模式下保持白色文字 */
-        .dark-mode .glass-effect .text-white {
-            color: #ffffff !important;
-        }
-
-        .dark-mode .glass-effect .hover\\:text-gray-200:hover {
-            color: #e5e7eb !important;
-        }
-
-        /* 暗色模式下的背景和文本 */
-        .dark-mode .bg-gray-50 {
-            background-color: #1a1a1a !important;
-        }
-
-        .dark-mode .bg-white {
+        .dark .bg-white {
             background-color: #2d2d2d !important;
         }
 
-        .dark-mode .bg-gray-50 {
-            background-color: #374151 !important;
+        .dark .bg-gray-50 {
+            background-color: #1a1a1a !important;
         }
 
-        .dark-mode .text-gray-700 {
+        .dark .text-gray-700 {
             color: #d1d5db !important;
         }
 
-        .dark-mode .text-gray-600 {
+        .dark .text-gray-600 {
             color: #9ca3af !important;
         }
 
-        .dark-mode .text-gray-500 {
+        .dark .text-gray-500 {
             color: #6b7280 !important;
         }
 
-        .dark-mode .text-gray-900 {
+        .dark .text-gray-900 {
             color: #f9fafb !important;
         }
 
-        .dark-mode .text-gray-800 {
+        .dark .text-gray-800 {
             color: #e5e7eb !important;
         }
 
-        /* 暗色模式下的卡片和容器 */
-        .dark-mode .rounded-xl.shadow-lg {
+        .dark .rounded-xl.shadow-lg {
             background-color: #374151 !important;
             border: 1px solid #4b5563;
         }
 
-        .dark-mode .rounded-lg.shadow-md {
+        .dark .rounded-lg.shadow-md {
             background-color: #374151 !important;
             border: 1px solid #4b5563;
         }
 
-        .dark-mode .bg-blue-50 {
+        .dark .bg-blue-50 {
             background-color: #1e3a8a !important;
         }
 
-        .dark-mode .bg-green-50 {
+        .dark .bg-green-50 {
             background-color: #14532d !important;
         }
 
-        .dark-mode .bg-purple-50 {
+        .dark .bg-purple-50 {
             background-color: #581c87 !important;
         }
 
-        .dark-mode .bg-yellow-50 {
+        .dark .bg-yellow-50 {
             background-color: #92400e !important;
         }
 
-        .dark-mode .bg-gray-100 {
-            background-color: #4b5563 !important;
+        .dark .bg-gray-100 {
+            background-color: #374151 !important;
         }
 
-        /* 暗色模式下的公式背景 */
-        .dark-mode .formula {
-            background: #374151 !important;
-            color: #e5e7eb !important;
-            border: 1px solid #4b5563;
-        }
-
-        /* 暗色模式下的表格 */
-        .dark-mode .comparison-table tr:nth-child(even) {
-            background: #374151 !important;
-        }
-
-        .dark-mode .comparison-table td {
-            border-bottom: 1px solid #4b5563 !important;
-            color: #d1d5db !important;
-        }
-
-        /* 暗色模式下的页脚 */
-        .dark-mode .bg-gray-900 {
-            background-color: #111827 !important;
-        }
-
+        /* 数学公式样式 */
         .formula {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 8px;
-            margin: 1rem 0;
-            font-family: 'Courier New', monospace;
             text-align: center;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-        }
-
-        .comparison-table th {
-            background: #6366f1;
-            color: white;
+            margin: 1.5rem 0;
             padding: 1rem;
-            text-align: left;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #6366f1;
         }
 
-        .comparison-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e5e7eb;
+        .dark .formula {
+            background: #2d3748;
+            border-left-color: #9f7aea;
         }
 
-        .comparison-table tr:nth-child(even) {
-            background: #f9fafb;
-        }
-
-        .nav-item {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-item::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #6366f1;
-            transition: width 0.3s ease;
-        }
-
-        .nav-item:hover::after {
-            width: 100%;
-        }
-
+        /* 进度条样式 */
         .progress-bar {
-            height: 4px;
             background: #e5e7eb;
-            border-radius: 2px;
+            border-radius: 10px;
+            height: 4px;
             overflow: hidden;
         }
 
         .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
             height: 100%;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
-            border-radius: 2px;
             transition: width 0.3s ease;
+        }
+
+        /* 动画效果 */
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+            
+            .paradigm-card {
+                padding: 1.5rem;
+            }
+            
+            .code-block {
+                padding: 1rem;
+                font-size: 0.875rem;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-50" x-data="chapterApp()">
+
+<body x-data="chapterApp()" x-init="init()" :class="{ 'dark': darkMode }">
     <!-- 导航栏 -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass-effect" :class="darkMode ? 'dark-mode' : ''">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-effect">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
                 <div class="flex items-center space-x-4">
-                    <div class="text-white font-bold text-xl">智能体构建指南</div>
-                    <div class="hidden md:flex space-x-6">
-                        <a href="#overview" class="nav-item text-white hover:text-gray-200">概述</a>
-                        <a href="#react" class="nav-item text-white hover:text-gray-200">ReAct</a>
-                        <a href="#plan-solve" class="nav-item text-white hover:text-gray-200">Plan-and-Solve</a>
-                        <a href="#reflection" class="nav-item text-white hover:text-gray-200">Reflection</a>
-                        <a href="#summary" class="nav-item text-white hover:text-gray-200">总结</a>
-                    </div>
+                    <div class="text-xl font-bold text-gray-800 dark:text-white">Hello Agents</div>
+                    <div class="text-sm text-gray-600 dark:text-gray-300">第四章</div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button @click="toggleDarkMode()" class="text-white hover:text-gray-200">
-                        <svg x-show="!darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center space-x-6">
+                    <a href="#overview" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">概述</a>
+                    <a href="#environment" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">环境准备</a>
+                    <a href="#react" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">ReAct</a>
+                    <a href="#plan-solve" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">Plan-and-Solve</a>
+                    <a href="#reflection" class="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition">Reflection</a>
+                    <button @click="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
                         </svg>
-                        <svg x-show="darkMode" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </button>
@@ -322,24 +250,29 @@
     <!-- 主要内容 -->
     <main class="pt-20">
         <!-- 章节标题 -->
-        <div class="gradient-bg text-white py-12">
+        <div class="gradient-bg text-white py-16">
             <div class="container mx-auto px-6">
-                <h1 class="text-4xl font-bold text-center mb-4">第四章 智能体经典范式构建</h1>
+                <div class="text-center fade-in-up">
+                    <h1 class="text-5xl font-bold mb-6">第四章 智能体经典范式构建</h1>
+                    <p class="text-xl opacity-90 max-w-3xl mx-auto">
+                        从理论到实践，亲手构建 ReAct、Plan-and-Solve 和 Reflection 三种经典智能体范式
+                    </p>
+                </div>
             </div>
         </div>
 
         <!-- 引言 -->
-        <section id="overview" class="py-16 bg-white">
+        <section id="overview" class="py-16 bg-white dark:bg-gray-900">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <div class="prose prose-lg">
-                        <p class="text-gray-700 mb-6">
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg leading-relaxed">
                             在上一章中，我们深入探讨了作为现代智能体"大脑"的大语言模型。我们了解了其内部的Transformer架构、与之交互的方法，以及它的能力边界。现在，是时候将这些理论知识转化为实践，亲手构建智能体了。
                         </p>
-                        <p class="text-gray-700 mb-6">
-                            一个现代的智能体，其核心能力在于能将大语言模型的推理能力与外部世界联通。它能够自主地理解用户意图、拆解复杂任务，并通过调用代码解释器、搜索引擎、API等一系列"工具"，来获取信息、执行操作，最终达成目标。 然而，智能体并非万能，它同样面临着来自大模型本身的"幻觉"问题、在复杂任务中可能陷入推理循环、以及对工具的错误使用等挑战，这些也构成了智能体的能力边界。
+                        <p class="text-gray-700 dark:text-gray-300 mb-6 text-lg leading-relaxed">
+                            一个现代的智能体，其核心能力在于能将大语言模型的推理能力与外部世界联通。它能够自主地理解用户意图、拆解复杂任务，并通过调用代码解释器、搜索引擎、API等一系列"工具"，来获取信息、执行操作，最终达成目标。
                         </p>
-                        <p class="text-gray-700 mb-8">
+                        <p class="text-gray-700 dark:text-gray-300 mb-8 text-lg leading-relaxed">
                             为了更好地组织智能体的"思考"与"行动"过程，业界涌现出了多种经典的架构范式。在本章中，我们将聚焦于其中最具代表性的三种，并一步步从零实现它们：
                         </p>
                     </div>
@@ -347,116 +280,291 @@
                     <!-- 三大范式概览卡片 -->
                     <div class="grid md:grid-cols-3 gap-8 mb-12">
                         <div class="paradigm-card react card-hover">
-                            <div class="text-2xl font-bold mb-4">ReAct</div>
-                            <div class="text-lg mb-4">Reasoning and Acting</div>
-                            <p class="text-white/90">
-                                将"思考"和"行动"紧密结合的范式，让智能体边想边做，动态调整。
-                            </p>
+                            <div class="text-center">
+                                <i class="fas fa-sync-alt text-4xl mb-4"></i>
+                                <div class="text-2xl font-bold mb-2">ReAct</div>
+                                <div class="text-lg mb-4 opacity-90">Reasoning and Acting</div>
+                                <p class="text-white/90">
+                                    将"思考"和"行动"紧密结合的范式，让智能体边想边做，动态调整。
+                                </p>
+                            </div>
                         </div>
-
                         <div class="paradigm-card plan card-hover">
-                            <div class="text-2xl font-bold mb-4">Plan-and-Solve</div>
-                            <div class="text-lg mb-4">三思而后行</div>
-                            <p class="text-white/90">
-                                智能体首先生成一个完整的行动计划，然后严格执行。
-                            </p>
+                            <div class="text-center">
+                                <i class="fas fa-list-ol text-4xl mb-4"></i>
+                                <div class="text-2xl font-bold mb-2">Plan-and-Solve</div>
+                                <div class="text-lg mb-4 opacity-90">Planning and Execution</div>
+                                <p class="text-white/90">
+                                    一种"三思而后行"的范式，智能体首先生成完整计划，然后严格执行。
+                                </p>
+                            </div>
                         </div>
-
                         <div class="paradigm-card reflection card-hover">
-                            <div class="text-2xl font-bold mb-4">Reflection</div>
-                            <div class="text-lg mb-4">自我批判与修正</div>
-                            <p class="text-white/90">
-                                通过自我批判和修正来优化结果，提升答案质量。
-                            </p>
+                            <div class="text-center">
+                                <i class="fas fa-redo text-4xl mb-4"></i>
+                                <div class="text-2xl font-bold mb-2">Reflection</div>
+                                <div class="text-lg mb-4 opacity-90">Self-Reflection</div>
+                                <p class="text-white/90">
+                                    赋予智能体"反思"能力的范式，通过自我批判和修正来优化结果。
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 为什么重复造轮子 -->
-                    <div class="bg-gray-50 rounded-xl p-8">
-                        <h3 class="text-2xl font-bold mb-4">为什么重复造轮子？</h3>
-                        <div class="space-y-4 text-gray-700">
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">1</div>
-                                <div>
-                                    <p class="font-semibold mb-1">理解设计机制</p>
-                                    <p class="text-sm">直接使用高度抽象的工具，不利于了解背后的设计机制。</p>
-                                </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-8">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-blue-600 text-white rounded-full p-2">
+                                <i class="fas fa-lightbulb"></i>
                             </div>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">2</div>
-                                <div>
-                                    <p class="font-semibold mb-1">暴露工程挑战</p>
-                                    <p class="text-sm">框架处理了许多问题，亲手处理这些问题是培养系统设计能力的最直接方式。</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">3</div>
-                                <div>
-                                    <p class="font-semibold mb-1">从使用者到创造者</p>
-                                    <p class="text-sm">掌握了设计原理，你将拥有深度定制乃至从零构建全新智能体的能力。</p>
-                                </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-blue-800 dark:text-blue-200 mb-3">为什么要"重复造轮子"？</h3>
+                                <p class="text-blue-700 dark:text-blue-300">
+                                    市面上已有LangChain、LlamaIndex等众多优秀框架，但直接使用高度抽象的工具，并不利于我们了解背后的设计机制。通过"亲手造轮子"，我们能够深入理解每种范式的核心思想、适用场景和实现细节，为后续选择和使用框架打下坚实基础。
+                                </p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+    </main>
 
-        <!-- 环境准备 -->
-        <section id="environment" class="py-16 bg-gray-50">
+    
+
+    <!-- 返回顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 opacity-0 invisible">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- 进度条 -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-300 z-50"></div>
+
+    <script>
+        // 深色模式切换
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const isDark = html.classList.contains('dark');
+            
+            if (isDark) {
+                html.classList.remove('dark');
+                localStorage.setItem('darkMode', 'false');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('darkMode', 'true');
+            }
+        }
+
+        // 初始化深色模式
+        function initDarkMode() {
+            const savedMode = localStorage.getItem('darkMode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedMode === 'true' || (savedMode === null && prefersDark)) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        // 滚动进度条
+        function updateProgressBar() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.body.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progress-bar').style.width = scrollPercent + '%';
+        }
+
+        // 返回顶部按钮
+        function toggleBackToTop() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.pageYOffset > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        }
+
+        // 平滑滚动到顶部
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // 淡入动画观察器
+        function initFadeInAnimation() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('.fade-in-up').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // 代码复制功能
+        function initCodeCopy() {
+            document.querySelectorAll('pre code').forEach(block => {
+                const button = document.createElement('button');
+                button.className = 'absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white px-2 py-1 rounded text-xs transition-colors';
+                button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+                
+                const pre = block.parentElement;
+                pre.style.position = 'relative';
+                pre.appendChild(button);
+                
+                button.addEventListener('click', () => {
+                    navigator.clipboard.writeText(block.textContent).then(() => {
+                        button.innerHTML = '<i class="fas fa-check mr-1"></i>已复制';
+                        setTimeout(() => {
+                            button.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+                        }, 2000);
+                    });
+                });
+            });
+        }
+
+        // 平滑滚动导航
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+        }
+
+        // 初始化所有功能
+        document.addEventListener('DOMContentLoaded', function() {
+            initDarkMode();
+            initFadeInAnimation();
+            initCodeCopy();
+            initSmoothScroll();
+            
+            // 绑定事件监听器
+            window.addEventListener('scroll', () => {
+                updateProgressBar();
+                toggleBackToTop();
+            });
+            
+            document.getElementById('backToTop').addEventListener('click', scrollToTop);
+            
+            // 监听系统深色模式变化
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                if (localStorage.getItem('darkMode') === null) {
+                    if (e.matches) {
+                        document.documentElement.classList.add('dark');
+                    } else {
+                        document.documentElement.classList.remove('dark');
+                    }
+                }
+            });
+        });
+
+        // MathJax 配置完成后的回调
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            startup: {
+                ready() {
+                    MathJax.startup.defaultReady();
+                    console.log('MathJax 已加载完成');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
+        <section id="environment" class="py-16 bg-gray-50 dark:bg-gray-800">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-8 text-center">4.1 环境准备与基础工具定义</h2>
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-cog mr-3 text-blue-600"></i>
+                        4.1 环境准备与基础工具定义
+                    </h2>
 
-                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-                        <h3 class="text-2xl font-bold mb-6">安装依赖库</h3>
-                        <p class="text-gray-700 mb-6">
-                            本书的实战部分将主要使用 Python 语言，建议使用 Python 3.10 或更高版本。首先，请确保你已经安装了 <code>openai</code> 库用于与大语言模型交互，以及 <code>python-dotenv</code> 库用于安全地管理我们的 API 密钥。
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-download mr-2 text-green-600"></i>
+                            4.1.1 安装依赖库
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            本书的实战部分将主要使用 Python 语言，建议使用 Python 3.10 或更高版本。首先，请确保你已经安装了 <code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">openai</code> 库用于与大语言模型交互，以及 <code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">python-dotenv</code> 库用于安全地管理我们的 API 密钥。
                         </p>
-                        <p class="text-gray-700 mb-4">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
                             在你的终端中运行以下命令：
                         </p>
                         <div class="code-block">
-                            <pre><code class="language-bash">pip install openai python-dotenv</code></pre>
+                            <pre><code class="language-bash">pip install openai python-dotenv google-search-results</code></pre>
                         </div>
 
-                        <h3 class="text-2xl font-bold mb-6 mt-8">配置 API 密钥</h3>
-                        <p class="text-gray-700 mb-6">
+                        <h4 class="text-xl font-bold mb-4 mt-8 text-gray-900 dark:text-white">
+                            <i class="fas fa-key mr-2 text-yellow-600"></i>
+                            配置 API 密钥
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
                             为了让我们的代码更通用，我们将模型服务的相关信息（模型ID、API密钥、服务地址）统一配置在环境变量中。
                         </p>
                         <div class="space-y-4 mb-6">
                             <div class="flex items-start space-x-3">
-                                <div class="text-purple-600 mt-1">1.</div>
+                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">1</div>
                                 <div>
-                                    <p class="text-gray-700">在你的项目根目录下，创建一个名为 <code>.env</code> 的文件。</p>
+                                    <p class="text-gray-700 dark:text-gray-300">在你的项目根目录下，创建一个名为 <code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">.env</code> 的文件。</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
-                                <div class="text-purple-600 mt-1">2.</div>
+                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">2</div>
                                 <div>
-                                    <p class="text-gray-700">在该文件中，添加以下内容。你可以根据自己的需要，将其指向 OpenAI 官方服务，或任何兼容 OpenAI 接口的本地/第三方服务。</p>
+                                    <p class="text-gray-700 dark:text-gray-300">在该文件中，添加以下内容。你可以根据自己的需要，将其指向 OpenAI 官方服务，或任何兼容 OpenAI 接口的本地/第三方服务。</p>
                                 </div>
                             </div>
                             <div class="flex items-start space-x-3">
-                                <div class="text-purple-600 mt-1">3.</div>
+                                <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">3</div>
                                 <div>
-                                    <p class="text-gray-700">如果实在不知道如何获取，可以参考Datawhale另一本教程的<a href="https://datawhalechina.github.io/handy-multi-agent/#/chapter1/1.2.api-setup" class="text-purple-600 hover:underline">1.2 API设置</a></p>
+                                    <p class="text-gray-700 dark:text-gray-300">如果实在不知道如何获取，可以参考Datawhale另一本教程的<a href="https://datawhalechina.github.io/handy-multi-agent/#/chapter1/1.2.api-setup" class="text-purple-600 hover:underline">1.2 API设置</a></p>
                                 </div>
                             </div>
                         </div>
                         <div class="code-block">
                             <pre><code class="language-bash"># .env file
-LLM_MODEL_ID="YOUR-API-KEY"
-LLM_API_KEY="YOUR-URL"
-LLM_BASE_URL="YOUR-MODEL"</code></pre>
+LLM_MODEL_ID="YOUR-MODEL"
+LLM_API_KEY="YOUR-API-KEY"
+LLM_BASE_URL="YOUR-URL"
+SERPAPI_API_KEY="YOUR-SERPAPI-KEY"</code></pre>
                         </div>
-                        <p class="text-gray-700">我们的代码将从此文件自动加载这些配置。</p>
+                        <p class="text-gray-700 dark:text-gray-300">我们的代码将从此文件自动加载这些配置。</p>
                     </div>
 
                     <!-- LLM客户端代码 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8">
-                        <h3 class="text-2xl font-bold mb-6">封装基础 LLM 调用函数</h3>
-                        <p class="text-gray-700 mb-6">
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-brain mr-2 text-blue-600"></i>
+                            4.1.2 封装基础 LLM 调用函数
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
                             为了让代码结构更清晰、更易于复用，我们来定义一个专属的LLM客户端类。这个类将封装所有与模型服务交互的细节，让我们的主逻辑可以更专注于智能体的构建。
                         </p>
                         <div class="code-block">
@@ -512,26 +620,7 @@ class HelloAgentsLLM:
 
         except Exception as e:
             print(f"❌ 调用LLM API时发生错误: {e}")
-            return None
-
-# --- 客户端使用示例 ---
-if __name__ == '__main__':
-    try:
-        llmClient = HelloAgentsLLM()
-
-        exampleMessages = [
-            {"role": "system", "content": "You are a helpful assistant that writes Python code."},
-            {"role": "user", "content": "写一个快速排序算法"}
-        ]
-
-        print("--- 调用LLM ---")
-        responseText = llmClient.think(exampleMessages)
-        if responseText:
-            print("\n\n--- 完整模型响应 ---")
-            print(responseText)
-
-    except ValueError as e:
-        print(e)</code></pre>
+            return None</code></pre>
                         </div>
                     </div>
                 </div>
@@ -539,136 +628,119 @@ if __name__ == '__main__':
         </section>
 
         <!-- ReAct 范式 -->
-        <section id="react" class="py-16 bg-white">
+        <section id="react" class="py-16 bg-white dark:bg-gray-900">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-8 text-center">4.2 ReAct</h2>
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-sync-alt mr-3 text-blue-600"></i>
+                        4.2 ReAct (Reasoning and Acting)
+                    </h2>
 
                     <div class="mb-12">
-                        <p class="text-lg text-gray-700 mb-6">
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
                             在准备好LLM客户端后，我们将构建第一个，也是最经典的一个智能体范式<strong>ReAct (Reason + Act)</strong>。ReAct由Shunyu Yao于2022年提出<sup>[1]</sup>，其核心思想是模仿人类解决问题的方式，将<strong>推理 (Reasoning)</strong> 与<strong>行动 (Acting)</strong> 显式地结合起来，形成一个"思考-行动-观察"的循环。
                         </p>
                     </div>
 
                     <!-- ReAct 工作原理 -->
-                    <div class="bg-blue-50 rounded-xl p-8 mb-8">
-                        <h3 class="text-2xl font-bold mb-6">4.2.1 ReAct 的工作流程</h3>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-blue-800 dark:text-blue-200">
+                            <i class="fas fa-cogs mr-2"></i>
+                            4.2.1 ReAct 的工作流程
+                        </h3>
                         <div class="space-y-6">
                             <div>
-                                <p class="text-gray-700 mb-4">
+                                <p class="text-gray-700 dark:text-gray-300 mb-4">
                                     在ReAct诞生之前，主流的方法可以分为两类：一类是"纯思考"型，如<strong>思维链 (Chain-of-Thought)</strong>，它能引导模型进行复杂的逻辑推理，但无法与外部世界交互，容易产生事实幻觉；另一类是"纯行动"型，模型直接输出要执行的动作，但缺乏规划和纠错能力。
                                 </p>
-                                <p class="text-gray-700 mb-4">
+                                <p class="text-gray-700 dark:text-gray-300 mb-4">
                                     ReAct的巧妙之处在于，它认识到<strong>思考与行动是相辅相成的</strong>。思考指导行动，而行动的结果又反过来修正思考。为此，ReAct范式通过一种特殊的提示工程来引导模型，使其每一步的输出都遵循一个固定的轨迹：
                                 </p>
                             </div>
 
                             <div class="grid md:grid-cols-3 gap-6 mb-6">
-                                <div class="bg-white rounded-lg shadow-md p-6">
-                                    <div class="text-blue-600 text-2xl mb-4 text-center">🧠</div>
-                                    <h4 class="font-bold mb-2 text-center">Thought (思考)</h4>
-                                    <p class="text-gray-600 text-sm text-center">
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-blue-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-brain"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Thought (思考)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
                                         智能体的"内心独白"，分析当前情况、分解任务、制定下一步计划，或反思上一步的结果
                                     </p>
                                 </div>
-                                <div class="bg-white rounded-lg shadow-md p-6">
-                                    <div class="text-green-600 text-2xl mb-4 text-center">⚡</div>
-                                    <h4 class="font-bold mb-2 text-center">Action (行动)</h4>
-                                    <p class="text-gray-600 text-sm text-center">
-                                        智能体决定采取的具体动作，通常是调用一个外部工具，例如 <code>Search['华为最新款手机']</code>
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-green-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Action (行动)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                                        智能体决定采取的具体动作，通常是调用一个外部工具，例如 <code class="bg-gray-100 dark:bg-gray-600 px-1 rounded">Search['华为最新款手机']</code>
                                     </p>
                                 </div>
-                                <div class="bg-white rounded-lg shadow-md p-6">
-                                    <div class="text-purple-600 text-2xl mb-4 text-center">👁️</div>
-                                    <h4 class="font-bold mb-2 text-center">Observation (观察)</h4>
-                                    <p class="text-gray-600 text-sm text-center">
-                                        执行<code>Action</code>后从外部工具返回的结果，例如搜索结果的摘要或API的返回值
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-purple-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-eye"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Observation (观察)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                                        执行<code class="bg-gray-100 dark:bg-gray-600 px-1 rounded">Action</code>后从外部工具返回的结果，例如搜索结果的摘要或API的返回值
                                     </p>
                                 </div>
                             </div>
 
-                            <p class="text-gray-700 mb-6">
-                                智能体将不断重复这个 <strong>Thought -> Action -> Observation</strong> 的循环，将新的观察结果追加到历史记录中，形成一个不断增长的上下文，直到它在<code>Thought</code>中认为已经找到了最终答案，然后输出结果。这个过程形成了一个强大的协同效应：<strong>推理使得行动更具目的性，而行动则为推理提供了事实依据。</strong>
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                                智能体将不断重复这个 <strong>Thought → Action → Observation</strong> 的循环，将新的观察结果追加到历史记录中，形成一个不断增长的上下文，直到它在<code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">Thought</code>中认为已经找到了最终答案，然后输出结果。这个过程形成了一个强大的协同效应：<strong>推理使得行动更具目的性，而行动则为推理提供了事实依据。</strong>
                             </p>
                         </div>
                     </div>
 
                     <!-- 数学公式 -->
-                    <div class="bg-gray-50 rounded-xl p-8 mb-8">
-                        <h4 class="text-xl font-bold mb-4">形式化表达</h4>
-                        <p class="text-gray-700 mb-4">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8">
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-calculator mr-2 text-purple-600"></i>
+                            形式化表达
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
                             我们可以将这个过程形式化地表达出来。具体来说，在每个时间步 $t$，智能体的策略（即大语言模型 $\pi$）会根据初始问题 $q$ 和之前所有步骤的"行动-观察"历史轨迹 $((a_1,o_1),\dots,(a_{t-1},o_{t-1}))$，来生成当前的思考 $th_t$ 和行动 $a_t$：
                         </p>
                         <div class="formula">
                             $$\left(th_t,a_t\right)=\pi\left(q,(a_1,o_1),\ldots,(a_{t-1},o_{t-1})\right)$$
                         </div>
-                        <p class="text-gray-700 mb-4 mt-4">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
                             随后，环境中的工具 $T$ 会执行行动 $a_t$，并返回一个新的观察结果 $o_t$：
                         </p>
                         <div class="formula">
                             $$o_t = T(a_t)$$
                         </div>
-                        <p class="text-gray-700 mb-4 mt-4">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
                             这个循环不断进行，将新的 $(a_t,o_t)$ 对追加到历史中，直到模型在思考 $th_t$ 中判断任务已完成。
                         </p>
                     </div>
 
-                    <!-- ReAct 图片 -->
-                    <div class="text-center mb-12">
-                        <img src="../docs/images/4-figures/01.png" alt="ReAct范式中的"思考-行动-观察"协同循环" class="mx-auto rounded-lg shadow-lg max-w-full">
-                        <p class="text-gray-600 mt-4">图 4.1 ReAct 范式中的"思考-行动-观察"协同循环</p>
-                    </div>
-
-                    <!-- 适用场景 -->
-                    <div class="bg-gray-50 rounded-xl p-8 mb-8">
-                        <h4 class="text-xl font-bold mb-4">适用场景</h4>
-                        <p class="text-gray-700 mb-6">这种机制特别适用于以下场景：</p>
-                        <div class="grid md:grid-cols-3 gap-6">
-                            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
-                                <div class="text-blue-600 text-2xl mb-4 text-center">🌐</div>
-                                <h4 class="font-bold mb-2 text-center">需要外部知识的任务</h4>
-                                <p class="text-gray-600 text-sm text-center">
-                                    如查询实时信息（天气、新闻、股价）、搜索专业领域的知识等
-                                </p>
-                            </div>
-                            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
-                                <div class="text-green-600 text-2xl mb-4 text-center">🧮</div>
-                                <h4 class="font-bold mb-2 text-center">需要精确计算的任务</h4>
-                                <p class="text-gray-600 text-sm text-center">
-                                    将数学问题交给计算器工具，避免LLM的计算错误
-                                </p>
-                            </div>
-                            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
-                                <div class="text-purple-600 text-2xl mb-4 text-center">🔌</div>
-                                <h4 class="font-bold mb-2 text-center">需要与API交互的任务</h4>
-                                <p class="text-gray-600 text-sm text-center">
-                                    如操作数据库、调用某个服务的API来完成特定功能
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- 工具的定义与实现 -->
-                    <div class="bg-gray-50 rounded-xl p-8">
-                        <h3 class="text-2xl font-bold mb-6">4.2.2 工具的定义与实现</h3>
-                        <p class="text-gray-700 mb-6">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-tools mr-2 text-orange-600"></i>
+                            4.2.2 工具的定义与实现
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
                             如果说大语言模型是智能体的大脑，那么<strong>工具 (Tools)</strong> 就是其与外部世界交互的"手和脚"。为了让ReAct范式能够真正解决我们设定的问题，智能体需要具备调用外部工具的能力。
                         </p>
 
                         <div class="mb-8">
-                            <p class="text-gray-700 mb-4">
+                            <p class="text-gray-700 dark:text-gray-300 mb-4">
                                 针对本节设定的目标——回答关于"华为最新手机"的问题，我们需要为智能体提供一个网页搜索工具。在这里我们选用 <strong>SerpApi</strong>，它通过API提供结构化的Google搜索结果，能直接返回"答案摘要框"或精确的知识图谱信息。
                             </p>
-                            <p class="text-gray-700 mb-4">首先，需要安装该库：</p>
-                            <div class="code-block">
-                                <pre><code class="language-bash">pip install google-search-results</code></pre>
-                            </div>
                         </div>
 
                         <div class="mb-8">
-                            <h4 class="text-xl font-bold mb-4">工具实现</h4>
+                            <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                                <i class="fas fa-search mr-2 text-blue-600"></i>
+                                搜索工具实现
+                            </h4>
                             <div class="code-block">
                                 <pre><code class="language-python">from serpapi import SerpApiClient
+import os
 
 def search(query: str) -> str:
     """
@@ -715,7 +787,10 @@ def search(query: str) -> str:
                         </div>
 
                         <div class="mb-8">
-                            <h4 class="text-xl font-bold mb-4">工具执行器</h4>
+                            <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                                <i class="fas fa-cog mr-2 text-green-600"></i>
+                                工具执行器
+                            </h4>
                             <div class="code-block">
                                 <pre><code class="language-python">from typing import Dict, Any
 
@@ -751,35 +826,215 @@ class ToolExecutor:
         ])</code></pre>
                             </div>
                         </div>
+                    </div>
 
-                        <div>
-                            <h4 class="text-xl font-bold mb-4">测试</h4>
+                    <!-- ReAct 智能体实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-robot mr-2 text-blue-600"></i>
+                            4.2.3 ReAct 智能体的编码实现
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            现在，我们将所有独立的组件，LLM客户端和工具执行器组装起来，构建一个完整的 ReAct 智能体。我们将通过一个 <code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">ReActAgent</code> 类来封装其核心逻辑。
+                        </p>
+
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-comment-dots mr-2 text-purple-600"></i>
+                            系统提示词设计
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
+                            提示词是整个 ReAct 机制的基石，它为大语言模型提供了行动的操作指令。我们需要精心设计一个模板，它将动态地插入可用工具、用户问题以及中间步骤的交互历史。
+                        </p>
+                        <div class="code-block">
+                            <pre><code class="language-python"># ReAct 提示词模板
+REACT_PROMPT_TEMPLATE = """
+请注意，你是一个有能力调用外部工具的智能助手。
+
+可用工具如下：
+{tools}
+
+请严格按照以下格式进行回应：
+
+Thought: 你的思考过程，用于分析问题、拆解任务和规划下一步行动。
+Action: 你决定采取的行动，必须是以下格式之一：
+- `{tool_name}[{tool_input}]`：调用一个可用工具。
+- `Finish[最终答案]`：当你认为已经获得最终答案时。
+
+现在，请开始解决以下问题：
+Question: {question}
+History: {history}
+"""</code></pre>
+                        </div>
+
+                        <h4 class="text-xl font-bold mb-4 mt-8 text-gray-900 dark:text-white">
+                            <i class="fas fa-code mr-2 text-green-600"></i>
+                            ReAct 智能体类实现
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">import re
+from typing import List, Dict
+
+class ReActAgent:
+    def __init__(self, llm_client, tool_executor, max_iterations=5):
+        self.llm_client = llm_client
+        self.tool_executor = tool_executor
+        self.max_iterations = max_iterations
+
+    def run(self, question: str) -> str:
+        """
+        运行 ReAct 智能体来解决给定问题。
+        """
+        print(f"\n--- 开始处理问题 ---\n问题: {question}")
+        
+        history = []
+        
+        for i in range(self.max_iterations):
+            print(f"\n--- 第 {i+1}/{self.max_iterations} 轮迭代 ---")
+            
+            # 构建提示词
+            tools_description = self.tool_executor.getAvailableTools()
+            history_text = "\n".join(history) if history else "无"
+            
+            prompt = REACT_PROMPT_TEMPLATE.format(
+                tools=tools_description,
+                question=question,
+                history=history_text
+            )
+            
+            # 调用LLM
+            messages = [{"role": "user", "content": prompt}]
+            response = self.llm_client.think(messages)
+            
+            if not response:
+                return "❌ LLM调用失败"
+            
+            # 解析响应
+            thought, action = self._parse_response(response)
+            
+            if not thought or not action:
+                print("❌ 无法解析LLM响应")
+                continue
+            
+            print(f"\n💭 Thought: {thought}")
+            print(f"⚡ Action: {action}")
+            
+            # 检查是否完成
+            if action.startswith("Finish[") and action.endswith("]"):
+                final_answer = action[7:-1]  # 提取Finish[]中的内容
+                print(f"\n✅ 任务完成！最终答案: {final_answer}")
+                return final_answer
+            
+            # 执行工具
+            observation = self._execute_action(action)
+            print(f"👁️ Observation: {observation}")
+            
+            # 更新历史
+            history.append(f"Thought: {thought}")
+            history.append(f"Action: {action}")
+            history.append(f"Observation: {observation}")
+        
+        return "❌ 达到最大迭代次数，未能完成任务"
+    
+    def _parse_response(self, response: str) -> tuple:
+        """
+        解析LLM响应，提取Thought和Action。
+        """
+        thought_match = re.search(r"Thought:\s*(.*?)(?=Action:|$)", response, re.DOTALL)
+        action_match = re.search(r"Action:\s*(.*?)(?=Thought:|$)", response, re.DOTALL)
+        
+        thought = thought_match.group(1).strip() if thought_match else ""
+        action = action_match.group(1).strip() if action_match else ""
+        
+        return thought, action
+    
+    def _execute_action(self, action: str) -> str:
+        """
+        执行指定的动作。
+        """
+        # 解析工具调用格式：tool_name[tool_input]
+        match = re.match(r"(\w+)\[(.*?)\]", action)
+        if not match:
+            return f"❌ 无法解析动作格式: {action}"
+        
+        tool_name, tool_input = match.groups()
+        tool_func = self.tool_executor.getTool(tool_name)
+        
+        if not tool_func:
+            available_tools = list(self.tool_executor.tools.keys())
+            return f"❌ 工具 '{tool_name}' 不存在。可用工具: {available_tools}"
+        
+        try:
+            return tool_func(tool_input)
+        except Exception as e:
+            return f"❌ 执行工具 '{tool_name}' 时发生错误: {e}"</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- ReAct 运行示例 -->
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-green-800 dark:text-green-200">
+                            <i class="fas fa-play mr-2"></i>
+                            4.2.4 运行实例与分析
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            让我们通过一个完整的示例来看看 ReAct 智能体是如何工作的。完整的代码可以参考本书配套的代码仓库 <code class="bg-gray-100 dark:bg-gray-600 px-2 py-1 rounded">code</code> 文件夹。
+                        </p>
+
+                        <div class="bg-white dark:bg-gray-700 rounded-lg p-6 mb-6">
+                            <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                <i class="fas fa-terminal mr-2 text-blue-600"></i>
+                                运行示例
+                            </h4>
                             <div class="code-block">
-                                <pre><code class="language-python"># --- 工具初始化与使用示例 ---
-if __name__ == '__main__':
-    # 1. 初始化工具执行器
-    toolExecutor = ToolExecutor()
+                                <pre><code class="language-python"># 使用示例
+if __name__ == "__main__":
+    # 初始化组件
+    llm_client = HelloAgentsLLM()
+    tool_executor = ToolExecutor()
+    
+    # 注册搜索工具
+    tool_executor.registerTool(
+        name="search",
+        description="搜索互联网获取最新信息",
+        func=search
+    )
+    
+    # 创建ReAct智能体
+    agent = ReActAgent(llm_client, tool_executor)
+    
+    # 运行智能体
+    question = "华为最新发布的手机是什么？有什么特色功能？"
+    result = agent.run(question)</code></pre>
+                            </div>
+                        </div>
 
-    # 2. 注册我们的实战搜索工具
-    search_description = "一个网页搜索引擎。当你需要回答关于时事、事实以及在你的知识库中找不到的信息时，应使用此工具。"
-    toolExecutor.registerTool("Search", search_description, search)
-
-    # 3. 打印可用的工具
-    print("\n--- 可用的工具 ---")
-    print(toolExecutor.getAvailableTools())
-
-    # 4. 智能体的Action调用
-    print("\n--- 执行 Action: Search['英伟达最新的GPU型号是什么'] ---")
-    tool_name = "Search"
-    tool_input = "英伟达最新的GPU型号是什么"
-
-    tool_function = toolExecutor.getTool(tool_name)
-    if tool_function:
-        observation = tool_function(tool_input)
-        print("--- 观察 (Observation) ---")
-        print(observation)
-    else:
-        print(f"错误：未找到名为 '{tool_name}' 的工具。")</code></pre>
+                        <div class="bg-gray-100 dark:bg-gray-600 rounded-lg p-6">
+                            <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                <i class="fas fa-chart-line mr-2 text-purple-600"></i>
+                                ReAct 的特点分析
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">✓</div>
+                                    <div>
+                                        <strong class="text-gray-800 dark:text-gray-200">动态适应性</strong>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">能够根据每一步的观察结果动态调整策略</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">✓</div>
+                                    <div>
+                                        <strong class="text-gray-800 dark:text-gray-200">透明性</strong>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">每一步的思考过程都是可见的，便于调试和理解</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-yellow-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">!</div>
+                                    <div>
+                                        <strong class="text-gray-800 dark:text-gray-200">局限性</strong>
+                                        <p class="text-gray-600 dark:text-gray-400 text-sm">可能会陷入循环，需要设置最大迭代次数</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -788,521 +1043,1200 @@ if __name__ == '__main__':
         </section>
 
         <!-- Plan-and-Solve 范式 -->
-        <section id="plan-solve" class="py-16 bg-gray-50">
+        <section id="plan-solve" class="py-16 bg-gray-50 dark:bg-gray-800">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-8 text-center">4.3 Plan-and-Solve</h2>
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-list-ol mr-3 text-green-600"></i>
+                        4.3 Plan-and-Solve
+                    </h2>
 
                     <div class="mb-12">
-                        <p class="text-lg text-gray-700 mb-6">
-                            在我们掌握了 ReAct 这种反应式的、步进决策的智能体范式后，接下来将探讨一种风格迥异但同样强大的方法，<strong>Plan-and-Solve</strong>。顾名思义，这种范式将任务处理明确地分为两个阶段：<strong>先规划 (Plan)，后执行 (Solve)</strong>。
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            虽然 ReAct 在处理需要外部工具的任务时表现出色，但它的"边想边做"特性有时也会带来问题。当面对复杂的多步推理任务时，缺乏整体规划可能导致智能体在执行过程中偏离最优路径，甚至陷入无效的循环。
                         </p>
-                        <p class="text-lg text-gray-700 mb-6">
-                            如果说 ReAct 像一个经验丰富的侦探，根据现场的蛛丝马迹（Observation）一步步推理，随时调整自己的调查方向；那么 Plan-and-Solve 则更像一位建筑师，在动工之前必须先绘制出完整的蓝图（Plan），然后严格按照蓝图来施工（Solve）。事实上我们现在用的很多大模型工具的Agent模式都融入了这种设计模式。
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            为了解决这个问题，Wang等人在2023年提出了<strong>Plan-and-Solve</strong>范式<sup>[2]</sup>。这种方法采用了"三思而后行"的策略：智能体首先对整个任务进行全局分析，制定一个完整的行动计划，然后严格按照计划逐步执行。
                         </p>
                     </div>
 
                     <!-- Plan-and-Solve 工作原理 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-                        <h3 class="text-2xl font-bold mb-6">4.3.1 Plan-and-Solve 的工作原理</h3>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-green-800 dark:text-green-200">
+                            <i class="fas fa-sitemap mr-2"></i>
+                            4.3.1 Plan-and-Solve 的工作流程
+                        </h3>
                         <div class="space-y-6">
-                            <div>
-                                <p class="text-gray-700 mb-4">
-                                    Plan-and-Solve Prompting 由 Lei Wang 在2023年提出<sup>[2]</sup>。其核心动机是为了解决思维链在处理多步骤、复杂问题时容易"偏离轨道"的问题。
-                                </p>
-                                <p class="text-gray-700 mb-6">
-                                    与 ReAct 将思考和行动融合在每一步不同，Plan-and-Solve 将整个流程解耦为两个核心阶段：
-                                </p>
-                            </div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                                Plan-and-Solve 将问题解决过程明确分为两个阶段：
+                            </p>
 
                             <div class="grid md:grid-cols-2 gap-8">
-                                <div class="bg-green-50 rounded-lg p-6">
-                                    <div class="text-green-600 text-3xl mb-4 text-center">📋</div>
-                                    <h4 class="font-bold mb-4 text-center">规划阶段 (Planning Phase)</h4>
-                                    <p class="text-gray-700 text-center">
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-blue-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-clipboard-list"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-4 text-center text-gray-900 dark:text-white">规划阶段 (Planning Phase)</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-center">
                                         首先，智能体会接收用户的完整问题。它的第一个任务不是直接去解决问题或调用工具，而是<strong>将问题分解，并制定出一个清晰、分步骤的行动计划</strong>。这个计划本身就是一次大语言模型的调用产物。
                                     </p>
                                 </div>
-                                <div class="bg-blue-50 rounded-lg p-6">
-                                    <div class="text-blue-600 text-3xl mb-4 text-center">🚀</div>
-                                    <h4 class="font-bold mb-4 text-center">执行阶段 (Solving Phase)</h4>
-                                    <p class="text-gray-700 text-center">
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-green-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-rocket"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-4 text-center text-gray-900 dark:text-white">执行阶段 (Solving Phase)</h4>
+                                    <p class="text-gray-700 dark:text-gray-300 text-center">
                                         在获得完整的计划后，智能体进入执行阶段。它会<strong>严格按照计划中的步骤，逐一执行</strong>。每一步的执行都可能是一次独立的 LLM 调用，或者是对上一步结果的加工处理，直到计划中的所有步骤都完成，最终得出答案。
                                     </p>
                                 </div>
                             </div>
 
-                            <p class="text-gray-700 mb-6">
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
                                 这种"先谋后动"的策略，使得智能体在处理需要长远规划的复杂任务时，能够保持更高的目标一致性，避免在中间步骤中迷失方向。
                             </p>
                         </div>
                     </div>
 
                     <!-- 数学公式 -->
-                    <div class="bg-gray-50 rounded-xl p-8 mb-8">
-                        <h4 class="text-xl font-bold mb-4">形式化表达</h4>
-                        <p class="text-gray-700 mb-4">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8">
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-calculator mr-2 text-purple-600"></i>
+                            形式化表达
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
                             我们可以将这个两阶段过程进行形式化表达。首先，规划模型 $\pi_{\text{plan}}$ 根据原始问题 $q$ 生成一个包含 $n$ 个步骤的计划 $P = (p_1, p_2, \dots, p_n)$：
                         </p>
                         <div class="formula">
                             $$P = \pi_{\text{plan}}(q)$$
                         </div>
-                        <p class="text-gray-700 mb-4 mt-4">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
                             随后，在执行阶段，执行模型 $\pi_{\text{solve}}$ 会逐一完成计划中的步骤。对于第 $i$ 个步骤，其解决方案 $s_i$ 的生成会同时依赖于原始问题 $q$、完整计划 $P$ 以及之前所有步骤的执行结果 $(s_1, \dots, s_{i-1})$：
                         </p>
                         <div class="formula">
                             $$s_i = \pi_{\text{solve}}(q, P, (s_1, \dots, s_{i-1}))$$
                         </div>
-                        <p class="text-gray-700 mb-4 mt-4">
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
                             最终的答案就是最后一个步骤的执行结果 $s_n$。
                         </p>
                     </div>
 
-                    <!-- Plan-and-Solve 图片 -->
-                    <div class="text-center mb-12">
-                        <img src="../docs/images/4-figures/02.png" alt="Plan-and-Solve范式的两阶段工作流" class="mx-auto rounded-lg shadow-lg max-w-full">
-                        <p class="text-gray-600 mt-4">图 4.2 Plan-and-Solve 范式的两阶段工作流</p>
-                    </div>
-
-                    <!-- 适用场景 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
-                        <h4 class="text-xl font-bold mb-4">适用场景</h4>
-                        <p class="text-gray-700 mb-6">Plan-and-Solve 尤其适用于那些结构性强、可以被清晰分解的复杂任务，例如：</p>
-                        <div class="grid md:grid-cols-3 gap-6">
-                            <div class="bg-gray-50 rounded-lg p-6 text-center">
-                                <div class="text-3xl mb-4">📊</div>
-                                <h4 class="font-bold mb-2">多步数学应用题</h4>
-                                <p class="text-gray-600 text-sm">
-                                    需要先列出计算步骤，再逐一求解
-                                </p>
-                            </div>
-                            <div class="bg-gray-50 rounded-lg p-6 text-center">
-                                <div class="text-3xl mb-4">📝</div>
-                                <h4 class="font-bold mb-2">报告撰写</h4>
-                                <p class="text-gray-600 text-sm">
-                                    需要先规划好报告结构，再逐一填充内容
-                                </p>
-                            </div>
-                            <div class="bg-gray-50 rounded-lg p-6 text-center">
-                                <div class="text-3xl mb-4">💻</div>
-                                <h4 class="font-bold mb-2">代码生成</h4>
-                                <p class="text-gray-600 text-sm">
-                                    需要先构思好结构，再逐一实现
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 规划阶段 -->
-                    <div class="bg-white rounded-xl shadow-lg p-8">
-                        <h3 class="text-2xl font-bold mb-6">4.3.2 规划阶段</h3>
-                        <p class="text-gray-700 mb-6">
+                    <!-- 规划阶段实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-clipboard-list mr-2 text-blue-600"></i>
+                            4.3.2 规划阶段实现
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
                             为了凸显 Plan-and-Solve 范式在结构化推理任务上的优势，我们将不使用工具的方式，而是通过提示词的设计，完成一个推理任务。
                         </p>
-                        <p class="text-gray-700 mb-6">
-                            这类任务的特点是，答案无法通过单次查询或计算得出，必须先将问题分解为一系列逻辑连贯的子步骤，然后按顺序求解。这恰好能发挥 Plan-and-Solve "先规划，后执行"的核心能力。
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            这类任务的特点是，答案无法通过单次查询或计算得出，必须先将问题分解为一系列逻辑连贯的子步骤，然后逐步求解。
                         </p>
 
-                        <div class="bg-yellow-50 rounded-lg p-6 mb-8">
-                            <h4 class="font-bold mb-2 text-yellow-800">目标问题</h4>
-                            <p class="text-gray-700">
-                                "一个水果店周一卖出了15个苹果。周二卖出的苹果数量是周一的两倍。周三卖出的数量比周二少了5个。请问这三天总共卖出了多少个苹果？"
-                            </p>
-                        </div>
-
-                        <p class="text-gray-700 mb-6">
-                            这个问题对于大语言模型来说并不算特别困难，但它包含了一个清晰的逻辑链条可供参考。在某些实际的逻辑难题上，如果大模型不能高质量的推理出准确的答案，可以参考这个设计模式来设计自己的Agent完成任务。智能体需要：
-                        </p>
-
-                        <div class="space-y-4 mb-8">
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">1</div>
-                                <div>
-                                    <p class="font-semibold"><strong>规划阶段</strong></p>
-                                    <p class="text-gray-600 text-sm">首先，将问题分解为三个独立的计算步骤（计算周二销量、计算周三销量、计算总销量）。</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">2</div>
-                                <div>
-                                    <p class="font-semibold"><strong>执行阶段</strong></p>
-                                    <p class="text-gray-600 text-sm">然后，严格按照计划，一步步执行计算，并将每一步的结果作为下一步的输入，最终得出总和。</p>
-                                </div>
-                            </div>
-                        </div>
-
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-comment-dots mr-2 text-purple-600"></i>
+                            规划器提示词模板
+                        </h4>
                         <div class="code-block">
-                            <pre><code class="language-python">PLANNER_PROMPT_TEMPLATE = """
-你是一个顶级的AI规划专家。你的任务是将用户提出的复杂问题分解成一个由多个简单步骤组成的行动计划。
-请确保计划中的每个步骤都是一个独立的、可执行的子任务，并且严格按照逻辑顺序排列。
-你的输出必须是一个Python列表，其中每个元素都是一个描述子任务的字符串。
+                            <pre><code class="language-python"># Plan-and-Solve 规划阶段提示词模板
+PLANNER_PROMPT_TEMPLATE = """
+你是一个专业的问题分析师。你的任务是将复杂问题分解为清晰、可执行的步骤。
 
-问题: {question}
+请仔细分析以下问题，并制定一个详细的解决计划：
 
-请严格按照以下格式输出你的计划,```python与```作为前后缀是必要的:
-```python
-["步骤1", "步骤2", "步骤3", ...]
-```
+问题：{question}
+
+请按照以下格式输出你的计划：
+
+计划：
+1. [第一步的具体描述]
+2. [第二步的具体描述]
+3. [第三步的具体描述]
+...
+
+要求：
+- 每个步骤都应该是具体、可执行的
+- 步骤之间应该有逻辑关联
+- 计划应该能够完整解决原问题
+- 尽量将复杂问题分解为简单的子问题
 """</code></pre>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- Reflection 范式 -->
-        <section id="reflection" class="py-16 bg-white">
+                        <h4 class="text-xl font-bold mb-4 mt-8 text-gray-900 dark:text-white">
+                            <i class="fas fa-code mr-2 text-green-600"></i>
+                            规划器类实现
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">import re
+from typing import List
+
+class Planner:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+
+    def create_plan(self, question: str) -> List[str]:
+        """
+        为给定问题创建解决计划。
+        """
+        print(f"📋 正在为问题制定计划...")
+        
+        prompt = PLANNER_PROMPT_TEMPLATE.format(question=question)
+        messages = [{"role": "user", "content": prompt}]
+        
+        response = self.llm_client.think(messages)
+        if not response:
+            print("❌ 规划阶段失败")
+            return []
+        
+        # 解析计划步骤
+        steps = self._parse_plan(response)
+        
+        if steps:
+            print(f"✅ 计划制定完成，共 {len(steps)} 个步骤：")
+            for i, step in enumerate(steps, 1):
+                print(f"   {i}. {step}")
+        else:
+            print("❌ 无法解析计划")
+        
+        return steps
+    
+    def _parse_plan(self, response: str) -> List[str]:
+        """
+        从LLM响应中解析出计划步骤。
+        """
+        steps = []
+        lines = response.split('\n')
+        
+        for line in lines:
+            line = line.strip()
+            # 匹配数字开头的步骤
+            match = re.match(r'^\d+\.\s*(.+)', line)
+            if match:
+                steps.append(match.group(1))
+        
+        return steps</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- 执行阶段实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-rocket mr-2 text-green-600"></i>
+                            4.3.3 执行阶段实现
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            在规划阶段完成后，我们需要一个执行器来逐步完成计划中的每个步骤。执行器会维护一个执行上下文，确保每一步都能够访问到之前步骤的结果。
+                        </p>
+
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-comment-dots mr-2 text-purple-600"></i>
+                            执行器提示词模板
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python"># Plan-and-Solve 执行阶段提示词模板
+EXECUTOR_PROMPT_TEMPLATE = """
+你是一个专业的问题解决执行者。你需要严格按照既定计划来解决问题。
+
+原始问题：{question}
+
+完整计划：
+{plan}
+
+当前需要执行的步骤：{current_step}
+
+之前步骤的执行结果：
+{previous_results}
+
+请专注于当前步骤，基于之前的结果，给出这一步的详细解答。
+
+要求：
+- 只关注当前步骤，不要跳跃到其他步骤
+- 如果需要用到之前步骤的结果，请明确引用
+- 给出具体、详细的解答
+- 如果当前步骤是最后一步，请给出最终答案
+"""</code></pre>
+                        </div>
+
+                        <h4 class="text-xl font-bold mb-4 mt-8 text-gray-900 dark:text-white">
+                            <i class="fas fa-code mr-2 text-green-600"></i>
+                            执行器类实现
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">class Executor:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+
+    def execute_plan(self, question: str, plan: List[str]) -> str:
+        """
+        执行给定的计划来解决问题。
+        """
+        if not plan:
+            return "❌ 没有可执行的计划"
+        
+        print(f"\n🚀 开始执行计划，共 {len(plan)} 个步骤")
+        
+        previous_results = []
+        
+        for i, step in enumerate(plan, 1):
+            print(f"\n--- 执行第 {i}/{len(plan)} 步 ---")
+            print(f"📝 当前步骤: {step}")
+            
+            # 构建执行提示词
+            plan_text = "\n".join([f"{j+1}. {s}" for j, s in enumerate(plan)])
+            previous_text = "\n".join([
+                f"步骤{j+1}结果: {result}" 
+                for j, result in enumerate(previous_results)
+            ]) if previous_results else "无"
+            
+            prompt = EXECUTOR_PROMPT_TEMPLATE.format(
+                question=question,
+                plan=plan_text,
+                current_step=step,
+                previous_results=previous_text
+            )
+            
+            messages = [{"role": "user", "content": prompt}]
+            result = self.llm_client.think(messages)
+            
+            if not result:
+                return f"❌ 第 {i} 步执行失败"
+            
+            print(f"✅ 第 {i} 步完成")
+            previous_results.append(result)
+        
+        # 返回最后一步的结果作为最终答案
+        final_answer = previous_results[-1] if previous_results else "无结果"
+        print(f"\n🎯 所有步骤执行完成！")
+        return final_answer</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Plan-and-Solve 智能体实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-robot mr-2 text-blue-600"></i>
+                            4.3.4 Plan-and-Solve 智能体整合
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            现在我们将规划器和执行器整合到一个完整的 Plan-and-Solve 智能体中。
+                        </p>
+
+                        <div class="code-block">
+                            <pre><code class="language-python">class PlanAndSolveAgent:
+    def __init__(self, llm_client):
+        self.llm_client = llm_client
+        self.planner = Planner(llm_client)
+        self.executor = Executor(llm_client)
+
+    def solve(self, question: str) -> str:
+        """
+        使用 Plan-and-Solve 方法解决问题。
+        """
+        print(f"\n=== Plan-and-Solve 智能体启动 ===")
+        print(f"问题: {question}")
+        
+        # 阶段1：制定计划
+        print(f"\n🎯 阶段1：制定解决计划")
+        plan = self.planner.create_plan(question)
+        
+        if not plan:
+            return "❌ 无法制定有效计划"
+        
+        # 阶段2：执行计划
+        print(f"\n⚡ 阶段2：执行计划")
+        result = self.executor.execute_plan(question, plan)
+        
+        print(f"\n✅ Plan-and-Solve 完成！")
+        return result
+
+# 使用示例
+if __name__ == "__main__":
+    # 初始化智能体
+    llm_client = HelloAgentsLLM()
+    agent = PlanAndSolveAgent(llm_client)
+    
+    # 测试问题
+    question = """
+    小明有100元，他先花了总钱数的30%买书，
+    然后又花了剩余钱数的40%买文具，
+    最后花了10元买零食。
+    请问小明还剩多少钱？
+    """
+    
+    result = agent.solve(question)
+    print(f"\n最终答案: {result}")</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- Plan-and-Solve 特点分析 -->
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-8">
+                        <h4 class="text-xl font-bold mb-4 text-green-800 dark:text-green-200">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Plan-and-Solve 的特点分析
+                        </h4>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h5 class="font-bold mb-3 text-green-700 dark:text-green-300">
+                                    <i class="fas fa-thumbs-up mr-2"></i>
+                                    优势
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">结构化思维，逻辑清晰</p>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">适合复杂的多步推理任务</p>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">避免中途偏离目标</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <h5 class="font-bold mb-3 text-yellow-700 dark:text-yellow-300">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    局限性
+                                </h5>
+                                <div class="space-y-2">
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-yellow-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">缺乏动态调整能力</p>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-yellow-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">初始计划错误会影响整体结果</p>
+                                    </div>
+                                    <div class="flex items-start space-x-2">
+                                        <div class="bg-yellow-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                        <p class="text-gray-700 dark:text-gray-300 text-sm">需要更多的LLM调用次数</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Reflection 范式 -->
+        <section id="reflection" class="py-16 bg-white dark:bg-gray-900">
             <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-8 text-center">4.4 Reflection</h2>
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-redo mr-3 text-purple-600"></i>
+                        4.4 Reflection (自我反思)
+                    </h2>
 
                     <div class="mb-12">
-                        <p class="text-lg text-gray-700 mb-6">
-                            在我们已经实现的 ReAct 和 Plan-and-Solve 范式中，智能体一旦完成了任务，其工作流程便告结束。然而，它们生成的初始答案，无论是行动轨迹还是最终结果，都可能存在谬误或有待改进之处。Reflection 机制的核心思想，正是为智能体引入一种<strong>事后（post-hoc）的自我校正循环</strong>，使其能够像人类一样，审视自己的工作，发现不足，并进行迭代优化。
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            无论是 ReAct 还是 Plan-and-Solve，它们都有一个共同的局限性：<strong>缺乏自我纠错能力</strong>。一旦智能体在某个步骤中出现错误，它往往会沿着错误的路径继续下去，最终得出不正确的结果。
+                        </p>
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            为了解决这个问题，研究者们提出了<strong>Reflection</strong>机制<sup>[3]</sup>。这种方法的核心思想是赋予智能体"反思"的能力，让它能够审视自己的输出，发现其中的问题，并进行自我修正。
                         </p>
                     </div>
 
                     <!-- Reflection 核心思想 -->
-                    <div class="bg-purple-50 rounded-xl p-8 mb-8">
-                        <h3 class="text-2xl font-bold mb-6">4.4.1 Reflection 机制的核心思想</h3>
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-800 dark:text-purple-200">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            4.4.1 Reflection 的核心思想
+                        </h3>
                         <div class="space-y-6">
-                            <div>
-                                <p class="text-gray-700 mb-4">
-                                    Reflection 机制的灵感来源于人类的学习过程：我们完成初稿后会进行校对，解出数学题后会进行验算。这一思想在多个研究中得到了体现，例如 Shinn, Noah 在2023年提出的 Reflexion 框架<sup>[3]</sup>。其核心工作流程可以概括为一个简洁的三步循环：<strong>执行 -> 反思 -> 优化</strong>。
-                                </p>
-                            </div>
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                                Reflection 机制的工作流程可以概括为一个<strong>"执行 → 反思 → 完善"</strong>的迭代循环：
+                            </p>
 
                             <div class="grid md:grid-cols-3 gap-6 mb-6">
-                                <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                                    <div class="text-orange-600 text-3xl mb-4">🎯</div>
-                                    <h4 class="font-bold mb-2">执行 (Execution)</h4>
-                                    <p class="text-gray-600 text-sm">
-                                        首先，智能体使用熟悉的方法尝试完成任务，生成一个初步的解决方案
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-blue-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Execute (执行)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                                        智能体首先尝试解决给定的任务，生成一个初始的输出结果
                                     </p>
                                 </div>
-                                <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                                    <div class="text-yellow-600 text-3xl mb-4">🤔</div>
-                                    <h4 class="font-bold mb-2">反思 (Reflection)</h4>
-                                    <p class="text-gray-600 text-sm">
-                                        接着，智能体进入反思阶段，扮演"评审员"角色，审视初稿并生成结构化反馈
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-purple-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Reflect (反思)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                                        智能体审视自己的输出，识别其中可能存在的错误、不足或改进空间
                                     </p>
                                 </div>
-                                <div class="bg-white rounded-lg shadow-md p-6 text-center">
-                                    <div class="text-green-600 text-3xl mb-4">⚡</div>
-                                    <h4 class="font-bold mb-2">优化 (Refinement)</h4>
-                                    <p class="text-gray-600 text-sm">
-                                        最后，智能体将"初稿"和"反馈"作为新上下文，生成更完善的"修订稿"
+                                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md p-6 card-hover">
+                                    <div class="text-green-600 text-3xl mb-4 text-center">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <h4 class="font-bold mb-2 text-center text-gray-900 dark:text-white">Refine (完善)</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm text-center">
+                                        基于反思的结果，智能体对输出进行修正和改进，生成更好的版本
                                     </p>
                                 </div>
                             </div>
 
-                            <p class="text-gray-700 mb-6">
-                                如图4.3所示，这个循环可以重复进行多次，直到反思阶段不再发现新的问题，或者达到预设的迭代次数上限。我们可以将这个迭代优化的过程形式化地表达出来。假设 $O_i$ 是第 $i$ 次迭代产生的输出（$O_0$ 为初始输出），反思模型 $\pi_{\text{reflect}}$ 会生成针对 $O_i$ 的反馈 $F_i$：
+                            <p class="text-gray-700 dark:text-gray-300 mb-6">
+                                这个过程可以重复多次，直到智能体认为输出已经足够好，或者达到预设的迭代次数上限。通过这种自我反思和迭代改进的机制，智能体能够逐步提升输出的质量。
                             </p>
                         </div>
                     </div>
 
                     <!-- 数学公式 -->
-                    <div class="bg-gray-50 rounded-xl p-8 mb-8">
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8">
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-calculator mr-2 text-purple-600"></i>
+                            形式化表达
+                        </h4>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4">
+                            我们可以将 Reflection 过程形式化地表达。设初始任务为 $\text{Task}$，在第 $i$ 次迭代中，智能体首先生成输出 $O_i$：
+                        </p>
+                        <div class="formula">
+                            $$O_i = \pi_{\text{execute}}(\text{Task}, O_{i-1}, F_{i-1})$$
+                        </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
+                            然后，反思模型会对当前输出进行评估，生成反馈 $F_i$：
+                        </p>
                         <div class="formula">
                             $$F_i = \pi_{\text{reflect}}(\text{Task}, O_i)$$
                         </div>
-                        <p class="text-gray-700 mb-4 mt-4">
-                            随后，优化模型 $\pi_{\text{refine}}$ 会结合原始任务、上一版输出以及反馈，生成新一版的输出 $O_{i+1}$：
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
+                            最后，基于反馈进行改进，生成下一轮的输出：
                         </p>
                         <div class="formula">
                             $$O_{i+1} = \pi_{\text{refine}}(\text{Task}, O_i, F_i)$$
                         </div>
+                        <p class="text-gray-700 dark:text-gray-300 mb-4 mt-4">
+                            这个过程持续进行，直到满足停止条件。
+                        </p>
                     </div>
 
-                    <!-- Reflection 图片 -->
-                    <div class="text-center mb-12">
-                        <img src="../docs/images/4-figures/03.png" alt="Reflection机制中的"执行-反思-优化"迭代循环" class="mx-auto rounded-lg shadow-lg max-w-full">
-                        <p class="text-gray-600 mt-4">图 4.3 Reflection 机制中的"执行-反思-优化"迭代循环</p>
-                    </div>
-
-                    <!-- 案例设定 -->
-                    <div class="bg-gray-50 rounded-xl p-8 mb-8">
-                        <h4 class="text-xl font-bold mb-4">4.4.2 案例设定与记忆模块设计</h4>
-                        <p class="text-gray-700 mb-6">
-                            为了在实战中体现 Reflection 机制，我们将引入记忆管理机制，因为reflection通常对应着信息的存储和提取，如果上下文足够长的情况，想让"评审员"直接获取所有的信息然后进行反思往往会传入很多冗余信息。这一步实践我们主要完成<strong>代码生成与迭代优化</strong>。
+                    <!-- 案例研究 -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-yellow-800 dark:text-yellow-200">
+                            <i class="fas fa-microscope mr-2"></i>
+                            4.4.2 案例研究：代码生成与迭代优化
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            为了更好地理解 Reflection 机制，我们通过一个具体的代码生成任务来演示其工作过程。假设我们要求智能体编写一个函数来找出给定范围内的所有质数。
                         </p>
 
-                        <div class="bg-yellow-50 rounded-lg p-6 mb-6">
-                            <h4 class="font-bold mb-2 text-yellow-800">目标任务</h4>
-                            <p class="text-gray-700">
-                                "编写一个Python函数，找出1到n之间所有的素数 (prime numbers)。"
-                            </p>
-                        </div>
+                        <div class="space-y-6">
+                            <div class="bg-white dark:bg-gray-700 rounded-lg p-6">
+                                <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                    <i class="fas fa-play mr-2 text-blue-600"></i>
+                                    第一次执行
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">智能体可能会生成一个基础的实现：</p>
+                                <div class="code-block">
+                                    <pre><code class="language-python">def find_primes(n):
+    primes = []
+    for i in range(2, n+1):
+        is_prime = True
+        for j in range(2, i):
+            if i % j == 0:
+                is_prime = False
+                break
+        if is_prime:
+            primes.append(i)
+    return primes</code></pre>
+                                </div>
+                            </div>
 
-                        <div class="space-y-4 mb-6">
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">1</div>
-                                <div>
-                                    <p class="font-semibold">存在明确的优化路径</p>
-                                    <p class="text-gray-600 text-sm">大语言模型初次生成的代码很可能是一个简单但效率低下的递归实现。</p>
-                                </div>
+                            <div class="bg-white dark:bg-gray-700 rounded-lg p-6">
+                                <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                    <i class="fas fa-search mr-2 text-purple-600"></i>
+                                    反思阶段
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">智能体审视代码，发现问题：</p>
+                                <ul class="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-1">
+                                    <li>时间复杂度较高，对于大数值效率低下</li>
+                                    <li>可以使用更高效的算法，如埃拉托斯特尼筛法</li>
+                                    <li>缺少输入验证和边界情况处理</li>
+                                </ul>
                             </div>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">2</div>
-                                <div>
-                                    <p class="font-semibold">反思点清晰</p>
-                                    <p class="text-gray-600 text-sm">可以通过反思发现其"时间复杂度过高"或"存在重复计算"的问题。</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start space-x-3">
-                                <div class="bg-orange-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">3</div>
-                                <div>
-                                    <p class="font-semibold">优化方向明确</p>
-                                    <p class="text-gray-600 text-sm">可以根据反馈，将其优化为更高效的迭代版本或使用备忘录模式的版本。</p>
+
+                            <div class="bg-white dark:bg-gray-700 rounded-lg p-6">
+                                <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                    <i class="fas fa-edit mr-2 text-green-600"></i>
+                                    改进后的代码
+                                </h4>
+                                <p class="text-gray-700 dark:text-gray-300 mb-3">基于反思，智能体生成改进版本：</p>
+                                <div class="code-block">
+                                    <pre><code class="language-python">def find_primes(n):
+    if n < 2:
+        return []
+    
+    # 使用埃拉托斯特尼筛法
+    sieve = [True] * (n + 1)
+    sieve[0] = sieve[1] = False
+    
+    for i in range(2, int(n**0.5) + 1):
+        if sieve[i]:
+            for j in range(i*i, n + 1, i):
+                sieve[j] = False
+    
+    return [i for i in range(2, n + 1) if sieve[i]]</code></pre>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <p class="text-gray-700 mb-6">
-                            Reflection 的核心在于迭代，而迭代的前提是能够记住之前的尝试和获得的反馈。因此，一个"短期记忆"模块是实现该范式的必需品。这个记忆模块将负责存储每一次"执行-反思"循环的完整轨迹。
+                    <!-- Memory 模块实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-database mr-2 text-blue-600"></i>
+                            4.4.3 Memory 模块设计
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            为了支持 Reflection 机制，我们需要一个 Memory 模块来存储执行历史和反思记录。这个模块将帮助智能体追踪其改进过程。
                         </p>
 
                         <div class="code-block">
-                            <pre><code class="language-python">from typing import List, Dict, Any, Optional
+                            <pre><code class="language-python">from typing import List, Dict, Any
+from dataclasses import dataclass
+import json
+
+@dataclass
+class ReflectionRecord:
+    """反思记录数据结构"""
+    iteration: int
+    task: str
+    output: str
+    reflection: str
+    refined_output: str = ""
+    timestamp: str = ""
 
 class Memory:
     """
-    一个简单的短期记忆模块，用于存储智能体的行动与反思轨迹。
+    用于存储 Reflection 过程中的执行历史和反思记录的内存模块。
     """
-
     def __init__(self):
-        """
-        初始化一个空列表来存储所有记录。
-        """
-        self.records: List[Dict[str, Any]] = []
+        self.records: List[ReflectionRecord] = []
+        self.current_iteration = 0
 
-    def add_record(self, record_type: str, content: str):
+    def add_record(self, task: str, output: str, reflection: str = "", refined_output: str = ""):
         """
-        向记忆中添加一条新记录。
+        添加一条反思记录。
         """
-        record = {"type": record_type, "content": content}
+        from datetime import datetime
+        
+        record = ReflectionRecord(
+            iteration=self.current_iteration,
+            task=task,
+            output=output,
+            reflection=reflection,
+            refined_output=refined_output,
+            timestamp=datetime.now().isoformat()
+        )
+        
         self.records.append(record)
-        print(f"📝 记忆已更新，新增一条 '{record_type}' 记录。")
+        self.current_iteration += 1
+        
+        print(f"📝 已记录第 {record.iteration} 次迭代")
 
-    def get_trajectory(self) -> str:
+    def get_latest_output(self) -> str:
         """
-        将所有记忆记录格式化为一个连贯的字符串文本，用于构建提示词。
+        获取最新的输出结果。
         """
-        trajectory_parts = []
+        if not self.records:
+            return ""
+        
+        latest_record = self.records[-1]
+        return latest_record.refined_output if latest_record.refined_output else latest_record.output
+
+    def get_history_summary(self) -> str:
+        """
+        获取历史记录的摘要，用于提供上下文。
+        """
+        if not self.records:
+            return "无历史记录"
+        
+        summary_parts = []
         for record in self.records:
-            if record['type'] == 'execution':
-                trajectory_parts.append(f"--- 上一轮尝试 (代码) ---\n{record['content']}")
-            elif record['type'] == 'reflection':
-                trajectory_parts.append(f"--- 评审员反馈 ---\n{record['content']}")
+            summary_parts.append(f"第{record.iteration}次迭代:")
+            summary_parts.append(f"  输出: {record.output[:100]}...")
+            if record.reflection:
+                summary_parts.append(f"  反思: {record.reflection[:100]}...")
+            if record.refined_output:
+                summary_parts.append(f"  改进: {record.refined_output[:100]}...")
+            summary_parts.append("")
+        
+        return "\n".join(summary_parts)
 
-        return "\n\n".join(trajectory_parts)
+    def clear(self):
+        """
+        清空所有记录。
+        """
+        self.records.clear()
+        self.current_iteration = 0
+        print("🗑️ 内存已清空")
 
-    def get_last_execution(self) -> Optional[str]:
+    def save_to_file(self, filename: str):
         """
-        获取最近一次的执行结果。
+        将记录保存到文件。
         """
-        for record in reversed(self.records):
-            if record['type'] == 'execution':
-                return record['content']
-        return None</code></pre>
+        data = [
+            {
+                "iteration": record.iteration,
+                "task": record.task,
+                "output": record.output,
+                "reflection": record.reflection,
+                "refined_output": record.refined_output,
+                "timestamp": record.timestamp
+            }
+            for record in self.records
+        ]
+        
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        
+        print(f"💾 记录已保存到 {filename}")</code></pre>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
 
-        <!-- 范式对比 -->
-        <section class="py-16 bg-gray-50">
-            <div class="container mx-auto px-6">
-                <div class="max-w-4xl mx-auto">
-                    <h2 class="text-3xl font-bold mb-8 text-center">4.5 本章小结</h2>
+                    <!-- Reflection 智能体实现 -->
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-robot mr-2 text-purple-600"></i>
+                            4.4.4 Reflection 智能体实现
+                        </h3>
+                        <p class="text-gray-700 dark:text-gray-300 mb-6">
+                            现在我们来实现完整的 Reflection 智能体，它将整合执行、反思和改进三个核心功能。
+                        </p>
 
-                    <div class="bg-white rounded-xl shadow-lg p-8">
-                        <div class="prose prose-lg max-w-none">
-                            <p class="text-gray-700 mb-6">
-                                在本章中，我们通过"亲手造轮子"的方式，从零开始编码实现了三种业界经典的智能体构建范式：ReAct、Plan-and-Solve 与 Reflection。我们不仅探索了它们的核心工作原理，还通过具体的实战案例，深入了解了各自的优势、局限与适用场景。
-                            </p>
+                        <h4 class="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                            <i class="fas fa-comment-dots mr-2 text-blue-600"></i>
+                            提示词模板设计
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python"># 初始执行提示词模板
+INITIAL_EXECUTION_PROMPT = """
+请解决以下任务：
 
-                            <h3 class="text-2xl font-bold mb-6">核心知识点回顾</h3>
+任务：{task}
 
-                            <div class="grid md:grid-cols-3 gap-8 mb-12">
-                                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6">
-                                    <h4 class="font-bold text-lg mb-4 text-blue-800">ReAct</h4>
-                                    <ul class="space-y-2 text-blue-700">
-                                        <li>• "思考-行动-观察"动态循环</li>
-                                        <li>• 环境适应性强</li>
-                                        <li>• 动态纠错能力</li>
-                                        <li>• 适合探索性任务</li>
-                                    </ul>
-                                </div>
+要求：
+- 提供完整、详细的解决方案
+- 确保答案的准确性和实用性
+- 如果是代码任务，请提供可运行的代码
+"""
 
-                                <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6">
-                                    <h4 class="font-bold text-lg mb-4 text-green-800">Plan-and-Solve</h4>
-                                    <ul class="space-y-2 text-green-700">
-                                        <li>• 先规划后执行</li>
-                                        <li>• 结构性强</li>
-                                        <li>• 稳定性高</li>
-                                        <li>• 适合逻辑确定任务</li>
-                                    </ul>
-                                </div>
+# 反思提示词模板
+REFLECTION_PROMPT = """
+请仔细审视以下任务和解决方案，并提供建设性的反思和改进建议。
 
-                                <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-6">
-                                    <h4 class="font-bold text-lg mb-4 text-purple-800">Reflection</h4>
-                                    <ul class="space-y-2 text-purple-700">
-                                        <li>• "执行-反思-优化"循环</li>
-                                        <li>• 质量提升显著</li>
-                                        <li>• 可靠性增强</li>
-                                        <li>• 适合高质量要求场景</li>
-                                    </ul>
-                                </div>
+原始任务：{task}
+
+当前解决方案：
+{current_output}
+
+请从以下角度进行反思：
+1. 正确性：解决方案是否正确解决了问题？
+2. 完整性：是否遗漏了重要的方面或边界情况？
+3. 效率性：是否有更高效的方法？
+4. 可读性：解决方案是否清晰易懂？
+5. 最佳实践：是否符合相关领域的最佳实践？
+
+请提供具体的改进建议：
+"""
+
+# 改进提示词模板
+REFINEMENT_PROMPT = """
+基于以下反思意见，请改进解决方案。
+
+原始任务：{task}
+
+当前解决方案：
+{current_output}
+
+反思意见：
+{reflection}
+
+请提供改进后的解决方案：
+- 解决反思中指出的问题
+- 保持解决方案的完整性
+- 确保改进确实提升了质量
+"""</code></pre>
+                        </div>
+
+                        <h4 class="text-xl font-bold mb-4 mt-8 text-gray-900 dark:text-white">
+                            <i class="fas fa-code mr-2 text-green-600"></i>
+                            ReflectionAgent 类实现
+                        </h4>
+                        <div class="code-block">
+                            <pre><code class="language-python">class ReflectionAgent:
+    def __init__(self, llm_client, max_iterations=3):
+        self.llm_client = llm_client
+        self.max_iterations = max_iterations
+        self.memory = Memory()
+
+    def solve_with_reflection(self, task: str) -> str:
+        """
+        使用反思机制解决任务。
+        """
+        print(f"\n=== Reflection 智能体启动 ===")
+        print(f"任务: {task}")
+        print(f"最大迭代次数: {self.max_iterations}")
+        
+        # 清空之前的记录
+        self.memory.clear()
+        
+        # 初始执行
+        current_output = self._initial_execution(task)
+        if not current_output:
+            return "❌ 初始执行失败"
+        
+        # 迭代改进
+        for i in range(self.max_iterations):
+            print(f"\n--- 第 {i+1}/{self.max_iterations} 轮反思 ---")
+            
+            # 反思阶段
+            reflection = self._reflect(task, current_output)
+            if not reflection:
+                print("❌ 反思阶段失败，停止迭代")
+                break
+            
+            # 改进阶段
+            refined_output = self._refine(task, current_output, reflection)
+            if not refined_output:
+                print("❌ 改进阶段失败，停止迭代")
+                break
+            
+            # 记录本轮结果
+            self.memory.add_record(task, current_output, reflection, refined_output)
+            
+            # 检查是否需要继续迭代
+            if self._should_stop_iteration(current_output, refined_output):
+                print("✅ 解决方案已收敛，停止迭代")
+                current_output = refined_output
+                break
+            
+            current_output = refined_output
+        
+        print(f"\n🎯 Reflection 完成！")
+        return current_output
+
+    def _initial_execution(self, task: str) -> str:
+        """
+        初始执行阶段。
+        """
+        print(f"\n🚀 初始执行阶段")
+        
+        prompt = INITIAL_EXECUTION_PROMPT.format(task=task)
+        messages = [{"role": "user", "content": prompt}]
+        
+        response = self.llm_client.think(messages)
+        if response:
+            print(f"✅ 初始解决方案生成完成")
+        
+        return response
+
+    def _reflect(self, task: str, current_output: str) -> str:
+        """
+        反思阶段。
+        """
+        print(f"🔍 反思阶段")
+        
+        prompt = REFLECTION_PROMPT.format(
+            task=task,
+            current_output=current_output
+        )
+        messages = [{"role": "user", "content": prompt}]
+        
+        response = self.llm_client.think(messages)
+        if response:
+            print(f"✅ 反思完成")
+        
+        return response
+
+    def _refine(self, task: str, current_output: str, reflection: str) -> str:
+        """
+        改进阶段。
+        """
+        print(f"🛠️ 改进阶段")
+        
+        prompt = REFINEMENT_PROMPT.format(
+            task=task,
+            current_output=current_output,
+            reflection=reflection
+        )
+        messages = [{"role": "user", "content": prompt}]
+        
+        response = self.llm_client.think(messages)
+        if response:
+            print(f"✅ 改进完成")
+        
+        return response
+
+    def _should_stop_iteration(self, old_output: str, new_output: str) -> bool:
+        """
+        判断是否应该停止迭代。
+        这里使用简单的长度和相似度判断，实际应用中可以使用更复杂的方法。
+        """
+        # 如果输出长度变化很小，可能已经收敛
+        length_change_ratio = abs(len(new_output) - len(old_output)) / max(len(old_output), 1)
+        
+        # 如果变化很小，认为已经收敛
+        return length_change_ratio < 0.1
+
+    def get_reflection_history(self) -> str:
+        """
+        获取完整的反思历史。
+        """
+        return self.memory.get_history_summary()
+
+    def save_session(self, filename: str):
+        """
+        保存当前会话。
+        """
+        self.memory.save_to_file(filename)</code></pre>
+                        </div>
+                    </div>
+
+                    <!-- 运行示例 -->
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-purple-800 dark:text-purple-200">
+                            <i class="fas fa-play mr-2"></i>
+                            4.4.5 运行示例与成本效益分析
+                        </h3>
+                        
+                        <div class="bg-white dark:bg-gray-700 rounded-lg p-6 mb-6">
+                            <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                <i class="fas fa-terminal mr-2 text-blue-600"></i>
+                                使用示例
+                            </h4>
+                            <div class="code-block">
+                                <pre><code class="language-python"># 使用示例
+if __name__ == "__main__":
+    # 初始化智能体
+    llm_client = HelloAgentsLLM()
+    agent = ReflectionAgent(llm_client, max_iterations=3)
+    
+    # 测试任务
+    task = """
+    编写一个Python函数，找出1到100之间的所有质数。
+    要求函数高效、可读性好，并包含适当的注释。
+    """
+    
+    # 执行任务
+    result = agent.solve_with_reflection(task)
+    
+    print(f"\n最终结果:\n{result}")
+    
+    # 查看反思历史
+    print(f"\n反思历史:\n{agent.get_reflection_history()}")
+    
+    # 保存会话
+    agent.save_session("reflection_session.json")</code></pre>
                             </div>
+                        </div>
 
-                            <h3 class="text-2xl font-bold mb-6">选择建议</h3>
-                            <p class="text-gray-700 mb-6">
-                                在实际应用中，选择哪一种范式，取决于任务的核心需求：
-                            </p>
-
-                            <div class="bg-gray-50 rounded-xl p-8">
-                                <div class="space-y-4">
-                                    <div class="flex items-start space-x-3">
-                                        <div class="bg-blue-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">✓</div>
-                                        <div>
-                                            <strong class="text-gray-800">需要与外部世界交互</strong>
-                                            <p class="text-gray-600">选择 ReAct，利用其动态规划和工具调用能力</p>
+                        <div class="bg-gray-100 dark:bg-gray-600 rounded-lg p-6">
+                            <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                <i class="fas fa-balance-scale mr-2 text-purple-600"></i>
+                                成本效益分析
+                            </h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-bold mb-3 text-green-700 dark:text-green-300">
+                                        <i class="fas fa-thumbs-up mr-2"></i>
+                                        优势
+                                    </h5>
+                                    <div class="space-y-2">
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">显著提升输出质量</p>
+                                        </div>
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">自我纠错能力强</p>
+                                        </div>
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">✓</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">适合高质量要求的任务</p>
                                         </div>
                                     </div>
-                                    <div class="flex items-start space-x-3">
-                                        <div class="bg-green-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">✓</div>
-                                        <div>
-                                            <strong class="text-gray-800">需要结构化推理</strong>
-                                            <p class="text-gray-600">选择 Plan-and-Solve，确保逻辑清晰和步骤明确</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-bold mb-3 text-red-700 dark:text-red-300">
+                                        <i class="fas fa-exclamation-triangle mr-2"></i>
+                                        成本考虑
+                                    </h5>
+                                    <div class="space-y-2">
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">需要多次LLM调用</p>
                                         </div>
-                                    </div>
-                                    <div class="flex items-start space-x-3">
-                                        <div class="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mt-1">✓</div>
-                                        <div>
-                                            <strong class="text-gray-800">追求最高质量</strong>
-                                            <p class="text-gray-600">选择 Reflection，通过迭代优化提升解决方案质量</p>
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">执行时间较长</p>
+                                        </div>
+                                        <div class="flex items-start space-x-2">
+                                            <div class="bg-red-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">!</div>
+                                            <p class="text-gray-700 dark:text-gray-300 text-sm">API成本相对较高</p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+        <!-- 章节总结 -->
+        <section id="summary" class="py-16 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-800 dark:to-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-chart-line mr-3 text-blue-600"></i>
+                        4.5 本章小结
+                    </h2>
+
+                    <div class="mb-12">
+                        <p class="text-lg text-gray-700 dark:text-gray-300 mb-6 leading-relaxed">
+                            在本章中，我们深入探讨了三种经典的智能体范式：<strong>ReAct</strong>、<strong>Plan-and-Solve</strong> 和 <strong>Reflection</strong>。每种范式都有其独特的优势和适用场景，理解它们的特点对于构建高效的智能体系统至关重要。
+                        </p>
                     </div>
 
                     <!-- 范式对比表格 -->
-                    <div class="text-center mb-8">
-                        <img src="../docs/images/4-figures/04.png" alt="不同 Agent Loop 的选择策略" class="mx-auto rounded-lg shadow-lg max-w-full">
-                        <p class="text-gray-600 mt-4">表 4.1 不同 Agent Loop 的选择策略</p>
+                    <div class="bg-white dark:bg-gray-700 rounded-xl shadow-lg p-8 mb-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                            <i class="fas fa-table mr-2 text-blue-600"></i>
+                            三种范式对比
+                        </h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full border-collapse">
+                                <thead>
+                                    <tr class="bg-gray-100 dark:bg-gray-600">
+                                        <th class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-left font-bold text-gray-900 dark:text-white">特征</th>
+                                        <th class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-center font-bold text-blue-700 dark:text-blue-300">ReAct</th>
+                                        <th class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-center font-bold text-green-700 dark:text-green-300">Plan-and-Solve</th>
+                                        <th class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-center font-bold text-purple-700 dark:text-purple-300">Reflection</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 font-semibold text-gray-900 dark:text-white">核心思想</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">思考-行动-观察循环</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">先规划后执行</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">执行-反思-完善循环</td>
+                                    </tr>
+                                    <tr class="bg-gray-50 dark:bg-gray-600">
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 font-semibold text-gray-900 dark:text-white">适用场景</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">需要工具调用的任务</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">复杂多步推理任务</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">高质量要求的任务</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 font-semibold text-gray-900 dark:text-white">主要优势</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">灵活性高，实时调整</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">结构化思维，逻辑清晰</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">自我纠错，质量高</td>
+                                    </tr>
+                                    <tr class="bg-gray-50 dark:bg-gray-600">
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 font-semibold text-gray-900 dark:text-white">主要局限</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">可能陷入循环</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">缺乏动态调整</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">成本较高</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 font-semibold text-gray-900 dark:text-white">LLM调用次数</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">中等</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">较多</td>
+                                        <td class="border border-gray-300 dark:border-gray-500 px-4 py-3 text-gray-700 dark:text-gray-300">最多</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 选择建议 -->
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 card-hover">
+                            <div class="text-blue-600 text-3xl mb-4 text-center">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <h4 class="font-bold mb-3 text-center text-blue-800 dark:text-blue-200">选择 ReAct</h4>
+                            <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>需要频繁调用外部工具</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>任务具有不确定性</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>需要实时响应环境变化</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 card-hover">
+                            <div class="text-green-600 text-3xl mb-4 text-center">
+                                <i class="fas fa-project-diagram"></i>
+                            </div>
+                            <h4 class="font-bold mb-3 text-center text-green-800 dark:text-green-200">选择 Plan-and-Solve</h4>
+                            <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>复杂的多步推理任务</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>需要结构化的解决方案</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>任务目标明确且稳定</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 card-hover">
+                            <div class="text-purple-600 text-3xl mb-4 text-center">
+                                <i class="fas fa-redo"></i>
+                            </div>
+                            <h4 class="font-bold mb-3 text-center text-purple-800 dark:text-purple-200">选择 Reflection</h4>
+                            <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-2">
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>对输出质量要求极高</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>可以承受较高的成本</span>
+                                </li>
+                                <li class="flex items-start space-x-2">
+                                    <i class="fas fa-check text-green-600 mt-1"></i>
+                                    <span>需要自我纠错能力</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 实践建议 -->
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-yellow-800 dark:text-yellow-200">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            实践建议
+                        </h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                    <i class="fas fa-rocket mr-2 text-blue-600"></i>
+                                    开发建议
+                                </h4>
+                                <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">1</div>
+                                        <span>从简单的 ReAct 开始，逐步增加复杂性</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">2</div>
+                                        <span>根据具体任务特点选择合适的范式</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-blue-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">3</div>
+                                        <span>可以组合多种范式以获得更好效果</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-3 text-gray-900 dark:text-white">
+                                    <i class="fas fa-chart-bar mr-2 text-green-600"></i>
+                                    优化建议
+                                </h4>
+                                <ul class="space-y-2 text-gray-700 dark:text-gray-300">
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">1</div>
+                                        <span>优化提示词模板以提高效果</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">2</div>
+                                        <span>设置合理的停止条件和迭代次数</span>
+                                    </li>
+                                    <li class="flex items-start space-x-2">
+                                        <div class="bg-green-600 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs font-bold mt-1">3</div>
+                                        <span>监控成本和性能，找到最佳平衡点</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 进度指示器 -->
-        <div class="fixed bottom-8 right-8 bg-white rounded-full shadow-lg p-4" x-show="showProgress">
-            <div class="text-center">
-                <div class="text-sm text-gray-600 mb-2">阅读进度</div>
-                <div class="progress-bar w-32">
-                    <div class="progress-fill" :style="`width: ${progress}%`"></div>
-                </div>
-                <div class="text-xs text-gray-500 mt-1">
-                    <span x-text="Math.round(progress)"></span>%
+        <!-- 参考文献 -->
+        <section id="references" class="py-16 bg-white dark:bg-gray-900">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto fade-in-up">
+                    <h2 class="text-4xl font-bold mb-12 text-center text-gray-900 dark:text-white">
+                        <i class="fas fa-book mr-3 text-blue-600"></i>
+                        参考文献
+                    </h2>
+
+                    <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-8">
+                        <div class="space-y-6">
+                            <div class="border-l-4 border-blue-600 pl-6">
+                                <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                    <strong>[1]</strong> Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2022). 
+                                    <em>ReAct: Synergizing Reasoning and Acting in Language Models</em>. 
+                                    arXiv preprint arXiv:2210.03629.
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-link mr-1"></i>
+                                    <a href="https://arxiv.org/abs/2210.03629" class="hover:text-blue-600 dark:hover:text-blue-400">
+                                        https://arxiv.org/abs/2210.03629
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-green-600 pl-6">
+                                <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                    <strong>[2]</strong> Wang, L., Xu, W., Lan, Y., Hu, Z., Lan, Y., Lee, R. K. W., & Lim, E. P. (2023). 
+                                    <em>Plan-and-Solve Prompting: Improving Zero-Shot Chain-of-Thought Reasoning by Large Language Models</em>. 
+                                    arXiv preprint arXiv:2305.04091.
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-link mr-1"></i>
+                                    <a href="https://arxiv.org/abs/2305.04091" class="hover:text-blue-600 dark:hover:text-blue-400">
+                                        https://arxiv.org/abs/2305.04091
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-purple-600 pl-6">
+                                <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                    <strong>[3]</strong> Shinn, N., Cassano, F., Gopinath, A., Narasimhan, K., & Yao, S. (2023). 
+                                    <em>Reflexion: Language Agents with Verbal Reinforcement Learning</em>. 
+                                    arXiv preprint arXiv:2303.11366.
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-link mr-1"></i>
+                                    <a href="https://arxiv.org/abs/2303.11366" class="hover:text-blue-600 dark:hover:text-blue-400">
+                                        https://arxiv.org/abs/2303.11366
+                                    </a>
+                                </p>
+                            </div>
+
+                            <div class="border-l-4 border-gray-600 pl-6">
+                                <p class="text-gray-700 dark:text-gray-300 mb-2">
+                                    <strong>[4]</strong> Wei, J., Wang, X., Schuurmans, D., Bosma, M., Chi, E., Le, Q., & Zhou, D. (2022). 
+                                    <em>Chain of Thought Prompting Elicits Reasoning in Large Language Models</em>. 
+                                    arXiv preprint arXiv:2201.11903.
+                                </p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    <i class="fas fa-link mr-1"></i>
+                                    <a href="https://arxiv.org/abs/2201.11903" class="hover:text-blue-600 dark:hover:text-blue-400">
+                                        https://arxiv.org/abs/2201.11903
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
-
-    <!-- 页脚 -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="container mx-auto px-6">
-            <div class="text-center">
-                <h3 class="text-2xl font-bold mb-4">Hello Agents</h3>
-                <p class="text-gray-400 mb-6">从理论到实践，构建智能体的完整指南</p>
-                <div class="flex justify-center space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition">GitHub</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">文档</a>
-                    <a href="#" class="text-gray-400 hover:text-white transition">社区</a>
-                </div>
-                <div class="mt-8 pt-8 border-t border-gray-800 text-gray-500 text-sm">
-                    © 2024 Hello Agents. 构建智能体的未来。
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        function chapterApp() {
-            return {
-                darkMode: false,
-                showProgress: false,
-                progress: 0,
-
-                toggleDarkMode() {
-                    this.darkMode = !this.darkMode;
-                    // 切换整个文档的暗色模式类
-                    document.documentElement.classList.toggle('dark-mode');
-                    document.body.classList.toggle('dark-mode');
-                    
-                    // 保存用户偏好到localStorage
-                    localStorage.setItem('darkMode', this.darkMode);
-                },
-
-                init() {
-                    // 从localStorage读取用户偏好
-                    const savedDarkMode = localStorage.getItem('darkMode');
-                    if (savedDarkMode !== null) {
-                        this.darkMode = savedDarkMode === 'true';
-                    } else {
-                        // 如果没有保存的偏好，检查系统偏好
-                        this.darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    }
-                    
-                    // 应用初始暗色模式状态
-                    if (this.darkMode) {
-                        document.documentElement.classList.add('dark-mode');
-                        document.body.classList.add('dark-mode');
-                    }
-
-                    this.updateProgress();
-                    this.handleScroll();
-
-                    // 监听滚动事件
-                    window.addEventListener('scroll', () => {
-                        this.handleScroll();
-                        this.updateProgress();
-                    });
-                },
-
-                handleScroll() {
-                    // 显示/隐藏进度指示器
-                    this.showProgress = window.scrollY > 500;
-                },
-
-                updateProgress() {
-                    // 计算阅读进度
-                    const scrollTop = window.scrollY;
-                    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-                    this.progress = Math.min(100, (scrollTop / docHeight) * 100);
-                }
-            }
-        }
-
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-
-        // 页面加载完成后初始化代码高亮
-        document.addEventListener('DOMContentLoaded', function() {
-            // 重新初始化代码高亮
-            if (typeof Prism !== 'undefined') {
-                Prism.highlightAll();
-            }
-        });
-    </script>
-</body>
-</html>
+        </section>

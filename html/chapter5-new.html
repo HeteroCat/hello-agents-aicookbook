@@ -1,42 +1,56 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第五章 基于低代码平台的智能体搭建 - Hello Agents</title>
-
-    <!-- Tailwind CSS -->
+    <title>第五章 基于低代码平台的智能体搭建 - Hello Agents AI Cookbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
-                extend: {}
-            }
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#1E40AF',
+                        accent: '#F59E0B',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'Consolas', 'monospace']
+                    }
+                }
+            },
+            darkMode: 'class'
         }
     </script>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Custom Styles -->
     <style>
         /* 自定义滚动条 */
         ::-webkit-scrollbar {
             width: 8px;
-            height: 8px;
         }
-
         ::-webkit-scrollbar-track {
-            @apply bg-gray-100 dark:bg-gray-800;
+            background: #f1f5f9;
         }
-
         ::-webkit-scrollbar-thumb {
-            @apply bg-gray-400 dark:bg-gray-600 rounded-full;
+            background: #cbd5e1;
+            border-radius: 4px;
         }
-
         ::-webkit-scrollbar-thumb:hover {
-            @apply bg-gray-500 dark:bg-gray-500;
+            background: #94a3b8;
+        }
+        
+        /* 深色模式滚动条 */
+        .dark ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
         }
 
         /* 平滑滚动 */
@@ -44,7 +58,7 @@
             scroll-behavior: smooth;
         }
 
-        /* 自定义动画 */
+        /* 动画效果 */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -65,94 +79,120 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
-        .gradient-text {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
         /* 卡片悬浮效果 */
-        .hover-card {
+        .card-hover {
             transition: all 0.3s ease;
         }
-
-        .hover-card:hover {
+        .card-hover:hover {
             transform: translateY(-5px);
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         /* 代码块样式 */
         .code-block {
-            @apply bg-gray-100 dark:bg-gray-800 rounded-lg p-4 overflow-x-auto;
-            font-family: 'Courier New', monospace;
+            background: #1e293b;
+            border-radius: 8px;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+        .code-block code {
+            color: #e2e8f0;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         /* 导航栏固定 */
         .navbar-fixed {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
             backdrop-filter: blur(10px);
-            background-color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.9);
         }
-
         .dark .navbar-fixed {
-            background-color: rgba(17, 24, 39, 0.9);
+            background: rgba(31, 41, 55, 0.9);
         }
 
         /* 侧边目录 */
-        .toc-item {
-            transition: all 0.2s ease;
-        }
-
-        .toc-item:hover {
-            @apply translate-x-1;
+        .toc-sidebar {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            max-height: 70vh;
+            overflow-y: auto;
+            z-index: 40;
         }
 
         /* 平台对比卡片 */
         .platform-card {
+            background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid #e2e8f0;
             transition: all 0.3s ease;
-            border: 2px solid transparent;
         }
-
         .platform-card:hover {
-            border-color: #667eea;
-            transform: scale(1.02);
+            border-color: #3b82f6;
+            box-shadow: 0 10px 25px -3px rgba(59, 130, 246, 0.1);
+        }
+        .dark .platform-card {
+            background: linear-gradient(145deg, #1f2937 0%, #111827 100%);
+            border-color: #374151;
+        }
+        .dark .platform-card:hover {
+            border-color: #60a5fa;
         }
 
         /* 步骤指示器 */
         .step-indicator {
-            @apply w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            position: relative;
+        }
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            width: 2px;
+            height: 2rem;
+            background: #e5e7eb;
+            transform: translateX(-50%);
+        }
+        .step-indicator:last-child::before {
+            display: none;
         }
 
         /* 懒加载占位符 */
         .lazy-placeholder {
-            @apply bg-gray-200 dark:bg-gray-700 animate-pulse rounded;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .toc-sidebar {
+                display: none;
+            }
         }
     </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
-
     <!-- 导航栏 -->
-    <nav class="navbar-fixed fixed top-0 left-0 right-0 z-50 border-b border-gray-200 dark:border-gray-700">
+    <nav class="navbar-fixed border-b border-gray-200 dark:border-gray-700">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center space-x-4">
-                    <a href="../index.html" class="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-                        <i class="fas fa-home text-xl"></i>
-                        <span class="font-bold text-lg">Hello Agents</span>
-                    </a>
-                    <div class="hidden md:flex items-center space-x-1 text-sm">
-                        <span class="text-gray-500">|</span>
-                        <span>第五章</span>
-                    </div>
+                    <i class="fas fa-robot text-2xl text-primary"></i>
+                    <span class="text-xl font-bold">Hello Agents</span>
                 </div>
-
                 <div class="flex items-center space-x-4">
-                    <!-- 主题切换 -->
-                    <button id="theme-toggle" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                        <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
-                        <i class="fas fa-moon text-blue-400 hidden dark:block"></i>
+                    <button id="theme-toggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+                        <i class="fas fa-moon dark:hidden"></i>
+                        <i class="fas fa-sun hidden dark:inline"></i>
                     </button>
                 </div>
             </div>
@@ -160,558 +200,371 @@
     </nav>
 
     <!-- 主内容区 -->
-    <main class="pt-20 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-
+    <main class="pt-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <!-- 章节标题 -->
-            <header class="mb-12 fade-in-up">
-                <div class="text-center mb-8">
-                    <h1 class="text-4xl md:text-5xl font-bold mb-4 gradient-text">第五章 基于低代码平台的智能体搭建</h1>
-                    <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                        从手写代码到平台化开发，探索智能体构建的新范式
-                    </p>
-                </div>
+            <div class="text-center mb-12 fade-in-up">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    第五章 基于低代码平台的智能体搭建
+                </h1>
+                <p class="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+                    探索Coze、Dify、n8n三大低代码平台，学习如何快速构建功能强大的智能体应用
+                </p>
+            </div>
 
-                <!-- 章节简介卡片 -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-card">
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        在前一章中，通过编写 Python 代码，从零开始实现了 ReAct、Plan-and-Solve 和 Reflection 多种经典的智能体工作流。这个过程为我们打下了坚实的技术基础，让我们深刻理解了智能体内部的运作机理。然而，对于一个快速发展的领域而言，纯代码的开发模式并非总是最高效的选择，尤其是在需要快速验证想法、或者非专业开发者希望参与构建的场景中。
-                    </p>
-                </div>
-            </header>
-
-            <!-- 5.1 平台化构建的兴起 -->
-            <section id="section-5-1" class="mb-16 fade-in-up">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-lightbulb text-yellow-500 mr-3"></i>
-                    5.1 平台化构建的兴起
-                </h2>
-
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        随着技术的成熟，我们看到越来越多的能力正在被"平台化"。正如网站的开发从手写 HTML/CSS/JS，演进到了可以使用 WordPress、Wix 等建站平台一样，智能体的构建也迎来了平台化的浪潮。本章将聚焦于如何利用图形化、模块化的低代码平台，来快速、直观地搭建、调试和部署智能体应用，将我们的重心从"实现细节"转向"业务逻辑"。
-                    </p>
-                </div>
-
-                <!-- 5.1.1 为何需要低代码平台 -->
-                <div id="section-5-1-1" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.1.1 为何需要低代码平台</h3>
-
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 mb-6">
-                        <p class="text-gray-700 dark:text-gray-300 mb-4">
-                            "重复造轮子"对于深入学习至关重要，但在追求工程效率和创新的实战中，我们往往需要站在巨人的肩膀上。低代码平台的出现，正是为了解决这些痛点。
+            <!-- 章节简介卡片 -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-12 card-hover">
+                <div class="flex items-start space-x-4">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-cubes text-white text-xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold mb-3">本章概述</h3>
+                        <p class="text-gray-600 dark:text-gray-400 leading-relaxed">
+                            本章将带您深入了解基于低代码平台的智能体搭建方法。我们将探索三个主流平台：Coze的零代码体验、Dify的企业级能力，以及n8n的工作流自动化。通过实际案例，您将学会如何选择合适的平台并快速构建功能丰富的智能体应用。
                         </p>
                     </div>
+                </div>
+            </div>
 
-                    <!-- 核心价值卡片 -->
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mr-4">
-                                    <i class="fas fa-arrow-down text-blue-600 dark:text-blue-400 text-xl"></i>
-                                </div>
-                                <h4 class="text-lg font-bold">降低技术门槛</h4>
+            <!-- 5.1 平台化构建的兴起 -->
+            <section id="section-5-1" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 flex items-center">
+                    <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg w-10 h-10 flex items-center justify-center text-lg font-bold mr-4">5.1</span>
+                    平台化构建的兴起
+                </h2>
+
+                <!-- 5.1.1 为何需要低代码平台 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">5.1.1 为何需要低代码平台</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>在前面的章节中，我们通过纯代码的方式构建了功能完整的智能体应用。虽然这种方法提供了最大的灵活性和控制力，但也带来了一些挑战：</p>
+                    </div>
+
+                    <!-- 低代码平台核心价值卡片 -->
+                    <div class="grid md:grid-cols-3 gap-6 mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-clock text-blue-600 dark:text-blue-400 text-xl"></i>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-400">
-                                将复杂的技术细节封装成易于理解的"节点"或"模块"，让非技术人员也能参与智能体设计。
-                            </p>
+                            <h4 class="text-lg font-semibold mb-3">开发效率</h4>
+                            <p class="text-gray-600 dark:text-gray-400">通过可视化界面和预置组件，大幅缩短从想法到原型的时间</p>
                         </div>
-
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mr-4">
-                                    <i class="fas fa-rocket text-green-600 dark:text-green-400 text-xl"></i>
-                                </div>
-                                <h4 class="text-lg font-bold">提升开发效率</h4>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                            <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-users text-green-600 dark:text-green-400 text-xl"></i>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-400">
-                                数小时甚至数分钟内完成原本需要数天编码的工作，快速验证想法和搭建原型。
-                            </p>
+                            <h4 class="text-lg font-semibold mb-3">技术门槛</h4>
+                            <p class="text-gray-600 dark:text-gray-400">降低编程要求，让更多非技术背景的用户也能参与智能体开发</p>
                         </div>
-
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mr-4">
-                                    <i class="fas fa-eye text-purple-600 dark:text-purple-400 text-xl"></i>
-                                </div>
-                                <h4 class="text-lg font-bold">可视化与可观测性</h4>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg card-hover">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-bug text-purple-600 dark:text-purple-400 text-xl"></i>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-400">
-                                图形化平台提供端到端可视化，清晰看到数据流动和处理轨迹，调试体验直观。
-                            </p>
-                        </div>
-
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover-card">
-                            <div class="flex items-center mb-4">
-                                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mr-4">
-                                    <i class="fas fa-award text-orange-600 dark:text-orange-400 text-xl"></i>
-                                </div>
-                                <h4 class="text-lg font-bold">标准化与最佳实践</h4>
-                            </div>
-                            <p class="text-gray-600 dark:text-gray-400">
-                                内置行业最佳实践和预设模板，避免"踩坑"，使团队协作更加顺畅。
-                            </p>
+                            <h4 class="text-lg font-semibold mb-3">调试体验</h4>
+                            <p class="text-gray-600 dark:text-gray-400">提供可视化的调试界面，让开发者更直观地理解数据流和执行过程</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 5.1.2 低代码平台的选择 -->
-                <div id="section-5-1-2" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.1.2 低代码平台的选择</h3>
-
-                    <p class="text-gray-700 dark:text-gray-300 mb-6">
-                        当前，智能体与 LLM 应用的低代码平台市场呈现出百花齐放的态势，每个平台都有其独特的定位和优势。在本章中，我们将重点介绍三个各具代表性的平台。
-                    </p>
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">5.1.2 低代码平台的选择</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>在智能体开发领域，有许多优秀的低代码平台可供选择。本章将重点介绍三个各具特色的代表性平台：</p>
+                    </div>
 
                     <!-- 平台对比卡片 -->
-                    <div class="space-y-6">
-                        <!-- Coze -->
-                        <div class="platform-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-robot text-white text-2xl"></i>
+                    <div class="grid lg:grid-cols-3 gap-8">
+                        <div class="platform-card rounded-xl p-6">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-magic text-white text-2xl"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="text-xl font-bold mb-2">Coze</h4>
-                                    <div class="mb-3">
-                                        <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded mr-2">零代码</span>
-                                        <span class="inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded mr-2">字节跳动</span>
-                                        <span class="inline-block bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 text-xs px-2 py-1 rounded">友好界面</span>
-                                    </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-3">
-                                        主打零代码/低代码的 Agent 构建体验，拥有极其友好的可视化界面和丰富的插件库，支持一键发布到多个主流平台。
-                                    </p>
-                                    <div class="text-sm text-gray-500 dark:text-gray-500">
-                                        <i class="fas fa-users mr-1"></i> 适用人群：AI应用入门用户、产品经理、运营人员
-                                    </div>
-                                </div>
+                                <h4 class="text-xl font-bold text-blue-600 dark:text-blue-400">Coze</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">零代码智能体平台</p>
                             </div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>零代码开发</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>丰富插件生态</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>多平台发布</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>可视化编排</li>
+                            </ul>
                         </div>
-
-                        <!-- Dify -->
-                        <div class="platform-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                                    <i class="fas fa-cube text-white text-2xl"></i>
+                        
+                        <div class="platform-card rounded-xl p-6">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-cogs text-white text-2xl"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="text-xl font-bold mb-2">Dify</h4>
-                                    <div class="mb-3">
-                                        <span class="inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 text-xs px-2 py-1 rounded mr-2">开源</span>
-                                        <span class="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded mr-2">企业级</span>
-                                        <span class="inline-block bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 text-xs px-2 py-1 rounded">全栈式</span>
-                                    </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-3">
-                                        开源的LLM应用开发与运营平台，提供从原型构建到生产部署的一站式解决方案，支持Agent工作流、RAG Pipeline等多种能力。
-                                    </p>
-                                    <div class="text-sm text-gray-500 dark:text-gray-500">
-                                        <i class="fas fa-users mr-1"></i> 适用人群：有技术背景的开发者、企业级应用团队
-                                    </div>
-                                </div>
+                                <h4 class="text-xl font-bold text-purple-600 dark:text-purple-400">Dify</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">开源LLM应用开发平台</p>
                             </div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>开源免费</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>企业级功能</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>模型中立</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>私有部署</li>
+                            </ul>
                         </div>
-
-                        <!-- n8n -->
-                        <div class="platform-card bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-start space-x-4">
-                                <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                        
+                        <div class="platform-card rounded-xl p-6">
+                            <div class="text-center mb-6">
+                                <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-4">
                                     <i class="fas fa-project-diagram text-white text-2xl"></i>
                                 </div>
-                                <div class="flex-1">
-                                    <h4 class="text-xl font-bold mb-2">n8n</h4>
-                                    <div class="mb-3">
-                                        <span class="inline-block bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 text-xs px-2 py-1 rounded mr-2">自动化</span>
-                                        <span class="inline-block bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 text-xs px-2 py-1 rounded mr-2">开源</span>
-                                        <span class="inline-block bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs px-2 py-1 rounded">连接器</span>
-                                    </div>
-                                    <p class="text-gray-600 dark:text-gray-400 mb-3">
-                                        开源工作流自动化工具，拥有数百个预置节点，可以将各类SaaS服务、数据库、API连接成复杂的自动化业务流程。
-                                    </p>
-                                    <div class="text-sm text-gray-500 dark:text-gray-500">
-                                        <i class="fas fa-users mr-1"></i> 适用人群：需要深度业务集成的开发者和企业
-                                    </div>
-                                </div>
+                                <h4 class="text-xl font-bold text-green-600 dark:text-green-400">n8n</h4>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">工作流自动化平台</p>
                             </div>
+                            <ul class="space-y-2 text-sm">
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>强大集成能力</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>自动化工作流</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>私有化部署</li>
+                                <li class="flex items-center"><i class="fas fa-check text-green-500 mr-2"></i>AI Agent节点</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- 5.2 平台一：Coze -->
-            <section id="section-5-2" class="mb-16 fade-in-up">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-robot text-blue-500 mr-3"></i>
-                    5.2 平台一：Coze
+            <section id="section-5-2" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 flex items-center">
+                    <span class="bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg w-10 h-10 flex items-center justify-center text-lg font-bold mr-4">5.2</span>
+                    平台一：Coze
                 </h2>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        扣子（Coze）是一个超级酷的AI智能体制作工具！也是目前市面上应用最广泛的智能体平台。该平台以其直观的可视化界面和丰富的功能模块，让用户能够轻松创建各种类型的智能体应用。
-                    </p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        它的一大亮点在于其强大的生态集成能力。开发完成的智能体可以一键发布到微信、飞书、豆包等主流平台，实现跨平台的无缝部署。
-                    </p>
-                </div>
+                <!-- 5.2.1 Coze 的功能模块 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">5.2.1 Coze 的功能模块</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>Coze 是字节跳动推出的新一代 AI 应用开发平台，致力于为用户提供无代码的智能体构建体验。作为一个综合性的 AI 开发平台，Coze 将复杂的技术实现抽象为直观的可视化操作，让每个人都能轻松创建属于自己的 AI 智能体。</p>
+                    </div>
 
-                <!-- 5.2.1 Coze的功能模块 -->
-                <div id="section-5-2-1" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.2.1 Coze的功能模块</h3>
-
-                    <!-- 平台界面展示 -->
-                    <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-6 mb-6">
-                        <h4 class="text-lg font-bold mb-3">平台界面初览</h4>
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4">
-                            <div class="aspect-video bg-gray-200 dark:bg-gray-600 rounded-lg flex items-center justify-center">
-                                <img src="../.figma/image/coze-platform-overview.png" alt="扣子智能体平台整体示意图" class="w-full h-full object-cover rounded-lg"
-                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                                <div class="text-center" style="display: none;">
-                                    <i class="fas fa-image text-4xl text-gray-400 mb-2"></i>
-                                    <p class="text-gray-500">图 5.1 扣子智能体平台整体示意图</p>
-                                </div>
-                            </div>
-                            <p class="text-center text-sm text-gray-600 dark:text-gray-400 mt-2">图 5.1 扣子智能体平台整体示意图</p>
+                    <!-- Coze官网截图 -->
+                    <div class="mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/coze-01.png" alt="Coze官网" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.1 Coze官网</p>
                         </div>
                     </div>
 
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>Coze 平台的核心功能模块包括：</p>
+                    </div>
+
                     <!-- 功能模块卡片 -->
-                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-plus-circle text-blue-600 dark:text-blue-400 mr-2"></i>
-                                <h5 class="font-bold">项目空间</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                智能体仓库，存放所有开发和复制的智能体/应用
-                            </p>
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-puzzle-piece text-blue-500 mr-3"></i>
+                                插件系统
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400">丰富的插件库，涵盖搜索、数据处理、API调用等各种功能，支持一键集成</p>
                         </div>
-
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-toolbox text-green-600 dark:text-green-400 mr-2"></i>
-                                <h5 class="font-bold">资源库</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                工作流、知识库、卡片、提示词库等核心工具
-                            </p>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-database text-green-500 mr-3"></i>
+                                知识库
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400">支持多种格式文档上传，自动构建向量知识库，为智能体提供专业知识支持</p>
                         </div>
-
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-cogs text-purple-600 dark:text-purple-400 mr-2"></i>
-                                <h5 class="font-bold">空间配置</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                智能体、插件、工作流和发布渠道的统一管理
-                            </p>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-project-diagram text-purple-500 mr-3"></i>
+                                工作流编排
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400">可视化的工作流设计器，通过拖拽方式构建复杂的业务逻辑</p>
                         </div>
-
-                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-route text-orange-600 dark:text-orange-400 mr-2"></i>
-                                <h5 class="font-bold">工作流</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                关卡通关路线图
-                            </p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-red-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-comments text-red-600 dark:text-red-400 mr-2"></i>
-                                <h5 class="font-bold">对话流</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                NPC对话通关
-                            </p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900 dark:to-indigo-800 rounded-xl p-4">
-                            <div class="flex items-center mb-2">
-                                <i class="fas fa-plug text-indigo-600 dark:text-indigo-400 mr-2"></i>
-                                <h5 class="font-bold">插件</h5>
-                            </div>
-                            <p class="text-sm text-gray-700 dark:text-gray-300">
-                                角色技能卡
-                            </p>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-share-alt text-orange-500 mr-3"></i>
+                                多平台发布
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400">一键发布到微信、钉钉、飞书等多个平台，实现智能体的广泛应用</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- 5.2.2 构建"每日AI简报"助手 -->
-                <div id="section-5-2-2" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.2.2 构建"每日AI简报"助手</h3>
-
-                    <!-- 案例说明 -->
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 mb-6">
-                        <h4 class="text-lg font-bold mb-3 flex items-center">
-                            <i class="fas fa-bullseye text-blue-600 dark:text-blue-400 mr-2"></i>
-                            案例说明
-                        </h4>
-                        <p class="text-gray-700 dark:text-gray-300 mb-4">
-                            本实践案例旨在深入剖析 Coze 平台的插件集成能力，指导读者从零开始构建一个功能强大的"每日AI简报"智能体。该智能体能够自动化地从多个信息源抓取当日最新的AI领域头条新闻、学术论文及开源项目动态，并将其结构化、专业化地整合成一份生动、精炼的简报。
-                        </p>
-
-                        <div class="grid md:grid-cols-3 gap-4">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
-                                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-2">
-                                    <i class="fas fa-globe text-blue-600 dark:text-blue-400"></i>
-                                </div>
-                                <h5 class="font-bold mb-1">多源信息聚合</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    利用插件生态实现跨平台数据流集成
-                                </p>
-                            </div>
-
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
-                                <div class="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-2">
-                                    <i class="fas fa-brain text-green-600 dark:text-green-400"></i>
-                                </div>
-                                <h5 class="font-bold mb-1">智能体行为定义</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    通过角色设定和提示词工程精准控制输出
-                                </p>
-                            </div>
-
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
-                                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-2">
-                                    <i class="fas fa-robot text-purple-600 dark:text-purple-400"></i>
-                                </div>
-                                <h5 class="font-bold mb-1">自动化工作流</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">
-                                    构建高效自动化的数据处理流程
-                                </p>
-                            </div>
-                        </div>
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">5.2.2 构建"每日AI简报"助手</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>接下来，我们将通过一个实际案例来演示如何在 Coze 平台上构建一个"每日AI简报"智能体。这个智能体能够自动收集最新的AI资讯，并生成结构化的简报内容。</p>
                     </div>
 
-                    <!-- 步骤指南 -->
-                    <div class="space-y-6">
-                        <!-- 步骤一 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">1</div>
-                                <h4 class="text-xl font-bold">添加并配置信息源插件</h4>
-                            </div>
-
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                构建"每日AI简报"智能体的首要任务是为其接入丰富且权威的信息来源。在 Coze 平台中，这通过添加和配置相应的插件来实现。
-                            </p>
-
-                            <!-- 插件配置 -->
-                            <div class="grid md:grid-cols-3 gap-4 mb-4">
-                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <h5 class="font-bold mb-2 text-blue-600 dark:text-blue-400">
-                                        <i class="fas fa-rss mr-2"></i>RSS插件
-                                    </h5>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                        订阅媒体平台RSS源
-                                    </p>
-                                    <div class="code-block text-xs">
-                                        <div>36氪: https://www.36kr.com/feed</div>
-                                        <div>虎嗅: https://rss.huxiu.com/</div>
-                                        <div>it之家: http://www.ithome.com/rss/</div>
-                                    </div>
+                    <!-- 构建步骤 -->
+                    <div class="space-y-8">
+                        <!-- 步骤1：信息源插件配置 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 step-indicator">
+                                    <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
                                 </div>
+                                <div class="flex-1">
+                                    <h4 class="text-xl font-semibold mb-4">信息源插件配置</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">首先配置信息收集插件，包括搜索引擎、RSS订阅等数据源。</p>
+                                    
+                                    <!-- Coze插件配置截图 -->
+                                     <div class="code-block mb-4">
+                                        <code>
+                                           RSS链接配置
 
-                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <h5 class="font-bold mb-2 text-green-600 dark:text-green-400">
-                                        <i class="fab fa-github mr-2"></i>GitHub插件
-                                    </h5>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                        追踪开源项目动态
-                                    </p>
-                                    <div class="code-block text-xs">
-                                        <div>q: AI</div>
-                                        <div>per_page: 10</div>
-                                        <div>sort: updated</div>
-                                    </div>
-                                </div>
+- **36氪：** https://www.36kr.com/feed
+- **虎嗅：** https://rss.huxiu.com/
+- **it之家：** http://www.ithome.com/rss/
+- **infoq：** https://feed.infoq.com/ai-ml-data-eng/
 
-                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <h5 class="font-bold mb-2 text-purple-600 dark:text-purple-400">
-                                        <i class="fas fa-graduation-cap mr-2"></i>Arxiv插件
-                                    </h5>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                                        获取最新学术研究成果
-                                    </p>
-                                    <div class="code-block text-xs">
-                                        <div>count: 5</div>
-                                        <div>search_query: AI</div>
-                                        <div>sort_by: 2</div>
-                                    </div>
-                                </div>
-                            </div>
+GitHub插件配置
 
-                            <!-- 编排流程图 -->
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">编排连接流程图</p>
-                                <div class="bg-white dark:bg-gray-800 rounded p-4">
-                                    <div class="flex items-center justify-center space-x-4">
-                                        <div class="w-20 h-12 bg-blue-500 rounded flex items-center justify-center text-white text-xs">RSS</div>
-                                        <i class="fas fa-arrow-right text-gray-400"></i>
-                                        <div class="w-20 h-12 bg-green-500 rounded flex items-center justify-center text-white text-xs">GitHub</div>
-                                        <i class="fas fa-arrow-right text-gray-400"></i>
-                                        <div class="w-20 h-12 bg-purple-500 rounded flex items-center justify-center text-white text-xs">Arxiv</div>
-                                        <i class="fas fa-arrow-right text-gray-400"></i>
-                                        <div class="w-24 h-12 bg-orange-500 rounded flex items-center justify-center text-white text-xs">大模型</div>
+- q:AI
+- per_page:10
+- sort:updated
+
+Arxiv插件配置
+
+- count：5
+- search_query：AI
+- sort_by：2
+
+                                        </code>                                        
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 步骤二 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">2</div>
-                                <h4 class="text-xl font-bold">设定智能体角色与提示词</h4>
-                            </div>
+                        <!-- 步骤2：智能体角色与提示词设定 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0 step-indicator">
+                                    <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-xl font-semibold mb-4">智能体角色与提示词设定</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">设定智能体的角色定位和行为规范，编写高质量的提示词。</p>
+                                    
+                                    <!-- 提示词示例 -->
+                                    <div class="code-block mb-4">
+                                        <code>
+                                            system-prompt：
 
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                角色设定与提示词编写是定义智能体行为与输出质量的核心环节。
-                            </p>
-
-                            <!-- 角色设定 -->
-                            <div class="bg-blue-50 dark:bg-blue-900 rounded-lg p-4 mb-4">
-                                <h5 class="font-bold mb-2 text-blue-800 dark:text-blue-200">
-                                    <i class="fas fa-user-tie mr-2"></i>角色设定
-                                </h5>
-                                <p class="text-blue-700 dark:text-blue-300">
-                                    我们将智能体设定为一位<strong>资深且权威的科技媒体编辑</strong>，使其在内容创作中能够模仿专业编辑的思维模式。
-                                </p>
-                            </div>
-
-                            <!-- 提示词配置 -->
-                            <div class="space-y-4">
-                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <h5 class="font-bold mb-2">系统提示（System Prompt）</h5>
-                                    <div class="code-block text-sm">
-                                        <pre># 角色
-你是一位资深且权威的科技媒体编辑,擅长高效精准地整合并创作极具专业性的科技简报。
+# 角色
+你是一位资深且权威的科技媒体编辑,擅长高效精准地整合并创作极具专业性的科技简报,特别在AI领域的技术动态、前沿学术研究成果及热门开源项目方面拥有深入的分析与整合能力。
 
 ## 工作流
 ### 日报输出格式
-1. 日报开头显著标注"AI日报"、"by@jasonhuang"和当天日期
-2. 根据每则内容添加独有的Emoji表情符号
-3. 输出内容必须与AI技术主题高度相关
-4. 必须为每一条目提供对应的原始链接
-5. 对每条新闻进行简短、精准的概况描述</pre>
+1. 日报开头显著标注“AI日报”、“by@jasonhuang“和当天日期，例如：“AI日报 | 2025年9月24日 | by@jasonhuang”。
+2. <!!!important!!!> 根据每则AI技术新闻、每篇AI学术论文、每个AI开源项目的不同内容，在其标题开头添加一个独有的Emoji表情符号。
+3. 输出的所有内容必须与AI、LLM、AIGC、大模型等技术主题高度相关，坚决排除任何无关信息、广告及营销类内容。
+4. 必须为每一条目（包括AI技术新闻、AI学术论文、AI开源项目）提供其对应的原始链接。
+5. 对输出的每一条新闻或项目，都进行一个简短、精准的概况描述。
+                                        </code>                                        
                                     </div>
-                                </div>
-
-                                <div class="border border-gray-200 dark:border-gray-600 rounded-lg p-4">
-                                    <h5 class="font-bold mb-2">用户提示（User Prompt）</h5>
-                                    <div class="code-block text-sm">
-                                        <pre>- **信息提取与整合：** 从输入源中筛选AI相关文章
-- **学术论文摘要：** 整理最新的论文内容
-- **开源项目筛选：** 提取最具影响力的5个AI开源项目
-
-# 注意事项
-- 严格遵循系统提示中定义的日报输出格式
-- 输出内容总量：10条AI技术新闻、5篇AI学术论文、5个AI开源项目</pre>
+                                    <div class="code-block mb-4">
+                                        <code>
+user-prompt：
+- **信息提取与整合：** 从输入源 `{{articles}}`、`{{articles1}}`、`{{articles2}}` 和 `{{articles3}}` 中，筛选并提取关于AI、大模型、AIGC、LLM等相关主题的文章标题及其对应链接，整理为**“AI技术新闻”**模块。
+- **学术论文摘要：** 从输入源 `{{arxiv}}` 中，根据字段 `arxiv_title` 和 `arxiv_link`，总结并整理最新的论文内容，形成**“AI学术论文”**模块。
+- **开源项目筛选：** 从输入源 `{{GitHub}}` 中，筛选出最受瞩目且具影响力的**5个AI开源项目**。提取这些项目的标题和对应链接，整理为**“AI开源项目”**模块。
+                                         </code>                                        
                                     </div>
+                        <!-- 步骤3：测试调试与多渠道发布 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- 步骤三 -->
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">3</div>
-                                <h4 class="text-xl font-bold">测试、调试与多渠道发布</h4>
-                            </div>
-
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                完成智能体的核心逻辑构建后，必须进行严格的测试与调试。
-                            </p>
-
-                            <!-- 效果预览 -->
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 mb-4">
-                                <h5 class="font-bold mb-2">运行预览效果</h5>
-                                <div class="bg-white dark:bg-gray-800 rounded p-4">
-                                    <div class="text-sm text-gray-700 dark:text-gray-300">
-                                        <p class="font-bold mb-2"># AI日报 by@jasonhuang 2025-09-24</p>
-                                        <p class="mb-2">## 🚀 AI技术新闻</p>
-                                        <p class="mb-1">🤖 **智元机器人GO-1通用具身基座大模型全面开源**</p>
-                                        <p class="text-xs text-gray-500 mb-2">链接：https://36kr.com/p/3479085489708163</p>
-                                        <p class="text-sm mb-3">概况：智元机器人宣布其GO-1通用具身基座大模型全面开源...</p>
-
-                                        <p class="mb-2">## 📚 AI学术论文</p>
-                                        <p class="mb-1">🧪 **Lyra: Generative 3D Scene Reconstruction**</p>
-                                        <p class="text-xs text-gray-500 mb-2">链接：http://arxiv.org/pdf/2509.19296v1</p>
-                                        <p class="text-sm">概况：提出通过视频扩散模型自蒸馏实现3D场景生成的创新框架...</p>
+                                <div class="flex-1">
+                                    <h4 class="text-xl font-semibold mb-4">测试调试与多渠道发布</h4>
+                                    <p class="text-gray-600 dark:text-gray-400 mb-4">完成配置后进行测试调试，确保功能正常，然后发布到各个平台。</p>
+                                    
+                                    <!-- 发布效果截图 -->
+                                    <div class="grid md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <img src="../docs/images/5-figures/coze-11.png" alt="AI智能体-每日AI新闻" class="w-full rounded-lg border">
+                                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.11 AI智能体-每日AI新闻</p>
+                                        </div>
+                                        <div>
+                                            <img src="../docs/images/5-figures/coze-12.png" alt="AI应用中的每日AI新闻" class="w-full rounded-lg border">
+                                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.12 AI应用中的每日AI新闻</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- 发布渠道 -->
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                                <div class="bg-green-100 dark:bg-green-900 rounded-lg p-3 text-center">
-                                    <i class="fab fa-weixin text-green-600 dark:text-green-400 text-2xl mb-1"></i>
-                                    <p class="text-xs font-bold">微信</p>
-                                </div>
-                                <div class="bg-blue-100 dark:bg-blue-900 rounded-lg p-3 text-center">
-                                    <i class="fas fa-comments text-blue-600 dark:text-blue-400 text-2xl mb-1"></i>
-                                    <p class="text-xs font-bold">飞书</p>
-                                </div>
-                                <div class="bg-orange-100 dark:bg-orange-900 rounded-lg p-3 text-center">
-                                    <i class="fas fa-cube text-orange-600 dark:text-orange-400 text-2xl mb-1"></i>
-                                    <p class="text-xs font-bold">豆包</p>
-                                </div>
-                                <div class="bg-purple-100 dark:bg-purple-900 rounded-lg p-3 text-center">
-                                    <i class="fas fa-globe text-purple-600 dark:text-purple-400 text-2xl mb-1"></i>
-                                    <p class="text-xs font-bold">API</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5.2.3 Coze的优势与局限性 -->
-                <div id="section-5-2-3" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.2.3 Coze的优势与局限性</h3>
-
-                    <div class="grid md:grid-cols-2 gap-6">
+                <!-- 5.2.3 Coze 的优势与局限性分析 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-blue-600 dark:text-blue-400">5.2.3 Coze 的优势与局限性分析</h3>
+                    
+                    <!-- 优势与局限性对比 -->
+                    <div class="grid lg:grid-cols-2 gap-8">
                         <!-- 优势 -->
-                        <div class="bg-green-50 dark:bg-green-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-4 text-green-800 dark:text-green-200">
-                                <i class="fas fa-thumbs-up mr-2"></i>优势
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                            <h4 class="text-xl font-semibold text-green-700 dark:text-green-400 mb-4 flex items-center">
+                                <i class="fas fa-thumbs-up mr-3"></i>
+                                优势
                             </h4>
-                            <ul class="space-y-2">
+                            <ul class="space-y-3">
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">强大的插件生态系统</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>强大的插件生态系统：</strong>丰富的插件库，轻松接入外部服务与数据源
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">直观的可视化编排界面</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>直观的可视化编排：</strong>低门槛的拖拽式工作流构建
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">灵活的提示词控制</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>灵活的提示词控制：</strong>精确的角色设定与提示词编写
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">便捷的多平台部署</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>便捷的多平台部署：</strong>一键发布到多个应用平台
+                                    </div>
                                 </li>
                             </ul>
                         </div>
 
                         <!-- 局限性 -->
-                        <div class="bg-red-50 dark:bg-red-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-4 text-red-800 dark:text-red-200">
-                                <i class="fas fa-thumbs-down mr-2"></i>局限性
+                        <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+                            <h4 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-3"></i>
+                                局限性
                             </h4>
-                            <ul class="space-y-2">
+                            <ul class="space-y-3">
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">不支持MCP协议</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>不支持MCP：</strong>无法使用Model Context Protocol，限制了扩展性
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">部分插件配置复杂度高</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>插件配置复杂度高：</strong>部分插件需要技术背景才能正确配置
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">无法导出标准JSON文件</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>无法导出标准格式：</strong>只能在Coze平台内导入导出，缺乏通用性
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -720,199 +573,408 @@
             </section>
 
             <!-- 5.3 平台二：Dify -->
-            <section id="section-5-3" class="mb-16 fade-in-up">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-cube text-green-500 mr-3"></i>
-                    5.3 平台二：Dify
+            <section id="section-5-3" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 flex items-center">
+                    <span class="bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg w-10 h-10 flex items-center justify-center text-lg font-bold mr-4">5.3</span>
+                    平台二：Dify
                 </h2>
 
-                <!-- 5.3.1 Dify的介绍与生态 -->
-                <div id="section-5-3-1" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.3.1 Dify的介绍与生态</h3>
-
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                            Dify 是一个开源的大语言模型（LLM）应用开发平台，融合了后端即服务（BaaS）和 LLMOps 理念，为从原型设计到生产部署提供全流程支持。
-                        </p>
-                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                            Dify 对模型高度中立且兼容性强，支持本地部署和云端部署，同时提供强大的 Marketplace 插件生态，目前已拥有超过 8677 个插件。
-                        </p>
+                <!-- 5.3.1 Dify 的介绍与生态 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-600 dark:text-purple-400">5.3.1 Dify 的介绍与生态</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>Dify 是一个开源的大语言模型（LLM）应用开发平台，融合了后端即服务（BaaS）和 LLMOps 理念，为从原型设计到生产部署提供全流程支持。它采用分层模块化架构，分为数据层、开发层、编排层和基础层，各层解耦便于扩展。</p>
                     </div>
 
-                    <!-- Dify特点卡片 -->
-                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div class="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900 dark:to-green-800 rounded-xl p-4 text-center">
-                            <i class="fas fa-open-source text-green-600 dark:text-green-400 text-3xl mb-2"></i>
-                            <h5 class="font-bold mb-1">开源平台</h5>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">完全开源，自由定制</p>
+                    <!-- Dify官网截图 -->
+                    <div class="mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/dify-01.png" alt="Dify官网" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.15 Dify官网</p>
                         </div>
+                    </div>
 
-                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-xl p-4 text-center">
-                            <i class="fas fa-layer-group text-blue-600 dark:text-blue-400 text-3xl mb-2"></i>
-                            <h5 class="font-bold mb-1">全栈式开发</h5>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">一站式解决方案</p>
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>Dify 对模型高度中立且兼容性强：无论开源或商业模型，用户都可通过简单配置将其接入，并通过统一接口调用其推理能力。其内置支持对数百种开源或专有 LLM 的集成，涵盖 GPT、Deepseek、Llama等模型，以及任何兼容 OpenAI API 的模型。</p>
+                    </div>
+
+                    <!-- Dify Marketplace -->
+                    <div class="mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/dify-02.png" alt="Dify Marketplace插件生态" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.16 Dify Marketplace插件生态</p>
                         </div>
+                    </div>
 
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 rounded-xl p-4 text-center">
-                            <i class="fas fa-puzzle-piece text-purple-600 dark:text-purple-400 text-3xl mb-2"></i>
-                            <h5 class="font-bold mb-1">丰富插件</h5>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">8000+ 插件生态</p>
-                        </div>
-
-                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900 dark:to-orange-800 rounded-xl p-4 text-center">
-                            <i class="fas fa-shield-alt text-orange-600 dark:text-orange-400 text-3xl mb-2"></i>
-                            <h5 class="font-bold mb-1">企业级安全</h5>
-                            <p class="text-xs text-gray-600 dark:text-gray-400">AES-256 加密保护</p>
+                    <!-- Marketplace 特性 -->
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl p-6 mb-8">
+                        <h4 class="text-lg font-semibold mb-4">Marketplace 插件生态</h4>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">Dify Marketplace 提供了一站式插件管理和一键部署功能，使开发者能够发现、扩展或提交插件，为社区带来更多可能。</p>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div>
+                                <h5 class="font-semibold mb-2">包含内容：</h5>
+                                <ul class="space-y-1 text-sm">
+                                    <li>• 模型 (Models)</li>
+                                    <li>• 工具 (Tools)</li>
+                                    <li>• 智能体策略 (Agent Strategies)</li>
+                                    <li>• 扩展 (Extensions)</li>
+                                    <li>• 捆绑包 (Bundles)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h5 class="font-semibold mb-2">官方推荐插件：</h5>
+                                <ul class="space-y-1 text-sm">
+                                    <li>• Google Search: langgenius/google</li>
+                                    <li>• Azure OpenAI: langgenius/azure_openai</li>
+                                    <li>• Notion: langgenius/notion</li>
+                                    <li>• DuckDuckGo: langgenius/duckduckgo</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5.3.2 构建超级智能体个人助手 -->
-                <div id="section-5-3-2" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.3.2 构建超级智能体个人助手</h3>
+                <!-- 5.3.2 构建一个超级智能体个人助手 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-600 dark:text-purple-400">5.3.2 构建一个超级智能体个人助手</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>在上一节 Coze 的案例中，我们搭建了一个每日AI简报智能体。虽然功能明确，但其单一的简报生成能力略显局限。本节将使用 Dify 构建一个功能全面的超级智能体个人助手，涵盖日常问答、文案优化、多模态生成、数据分析等多个场景。</p>
+                    </div>
 
-                    <p class="text-gray-700 dark:text-gray-300 mb-6">
-                        本节将使用 Dify 构建一个功能全面的超级智能体个人助手，涵盖日常问答、文案优化、多模态生成、数据分析等多个场景。
-                    </p>
+                    <!-- Dify界面截图 -->
+                    <div class="grid md:grid-cols-2 gap-4 mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/dify-14.png" alt="Dify 智能体搭建主页" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.17 Dify 智能体搭建主页</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/dify-18.png" alt="Dify 官方模板库" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.18 Dify 官方模板库</p>
+                        </div>
+                    </div>
+
+                    <!-- 智能体编排架构 -->
+                    <div class="mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                            <img src="../docs/images/5-figures/dify-12.png" alt="智能体编排" class="w-full rounded-lg">
+                            <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.25 智能体编排</p>
+                        </div>
+                    </div>
 
                     <!-- 功能模块展示 -->
-                    <div class="bg-gradient-to-r from-green-50 to-blue-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 mb-6">
-                        <h4 class="text-lg font-bold mb-4">核心功能模块</h4>
-                        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-comments text-blue-600 dark:text-blue-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">日常助手</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">基础对话模块，处理日常问答</p>
-                            </div>
+                    <div class="space-y-8">
+                        <!-- 日常助手模块 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-comments text-blue-500 mr-3"></i>
+                                日常助手模块
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">这是一个基础的对话模块，配置大语言模型和时间工具，作为兜底的通用问答服务。</p>
+                            <div class="code-block mb-4">
+                                        <code>
+# Role: 日常问题咨询专家
 
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-pen-fancy text-green-600 dark:text-green-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">文案优化</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">文本润色、修改、扩写等</p>
-                            </div>
+## Profile
+- language: 中文
+- description: 专门回答用户日常生活中的一般性问题，提供实用、准确、易懂的建议和解答
+- background: 拥有丰富的生活经验和广泛的知识储备，擅长将复杂问题简单化
+- personality: 亲切友好、耐心细致、务实可靠
+- expertise: 日常生活、健康养生、家庭管理、人际关系、实用技巧
 
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-image text-purple-600 dark:text-purple-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">多模态生成</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">图片和视频内容生成</p>
-                            </div>
 
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-chart-bar text-orange-600 dark:text-orange-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">数据分析</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">数据查询与可视化分析</p>
-                            </div>
+## Skills
 
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-red-100 dark:bg-red-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-map-marked-alt text-red-600 dark:text-red-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">高德地图</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">位置服务和路线规划</p>
-                            </div>
+1. 问题分析能力
+   - 快速理解: 迅速把握用户问题的核心要点
+   - 分类识别: 准确判断问题所属的生活领域
+   - 需求挖掘: 深入理解用户潜在需求
+   - 优先级排序: 合理评估问题的重要性和紧急性
 
-                            <div class="bg-white dark:bg-gray-800 rounded-lg p-4 hover-card">
-                                <div class="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-lg flex items-center justify-center mb-3">
-                                    <i class="fas fa-newspaper text-indigo-600 dark:text-indigo-400 text-xl"></i>
-                                </div>
-                                <h5 class="font-bold mb-2">新闻资讯</h5>
-                                <p class="text-sm text-gray-600 dark:text-gray-400">实时新闻信息获取</p>
+2. 解答提供能力
+   - 知识整合: 综合运用多领域知识提供解答
+   - 方案制定: 提供具体可行的解决方案
+   - 步骤分解: 将复杂问题拆解为简单步骤
+   - 替代方案: 准备多种备选方案供用户选择
+
+3. 沟通表达能力
+   - 语言通俗: 使用简单易懂的日常用语
+   - 逻辑清晰: 条理分明地组织回答内容
+   - 举例说明: 通过具体案例帮助理解
+   - 重点突出: 强调关键信息和注意事项
+
+## Rules
+
+1. 回答原则：
+   - 实用性优先: 确保提供的建议具有可操作性
+   - 准确性保证: 基于可靠信息和常识给出回答
+   - 中立客观: 避免个人偏见和主观臆断
+   - 适度建议: 根据问题复杂程度提供适当深度的解答
+
+2. 行为准则：
+   - 及时响应: 快速回应用户的问题
+   - 耐心细致: 对重复或简单问题保持耐心
+   - 积极引导: 鼓励用户提供更多背景信息
+   - 持续改进: 根据反馈优化回答质量
+
+
+## Workflows
+
+- 目标: 为用户提供实用、可靠的日常问题解决方案
+- 步骤 1: 仔细阅读并理解用户提出的日常问题
+- 步骤 2: 分析问题类型和用户潜在需求
+- 步骤 3: 基于常识和经验提供具体可行的建议
+- 步骤 4: 用通俗易懂的语言组织回答内容
+- 步骤 5: 检查回答的实用性和安全性
+
+
+## Initialization
+作为日常问题咨询专家，你必须遵守上述Rules，按照Workflows执行任务。
+
+                                         </code>                                        
+                                    </div>
+                            <div class="mb-4">
+                                <img src="../docs/images/5-figures/dify-03.png" alt="日常助手" class="w-full rounded-lg border">
+                                <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.26 日常助手</p>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- MCP配置说明 -->
-                    <div class="bg-yellow-50 dark:bg-yellow-900 rounded-xl p-6 mb-6">
-                        <h4 class="text-lg font-bold mb-3 text-yellow-800 dark:text-yellow-200">
-                            <i class="fas fa-cog mr-2"></i>MCP 配置
-                        </h4>
-                        <p class="text-yellow-700 dark:text-yellow-300 mb-4">
-                            Dify 支持 MCP（Model Context Protocol）协议，可以集成更多外部工具和服务。本案例使用魔搭社区的 MCP 市场进行演示。
-                        </p>
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
-                            <div class="flex items-center justify-between">
-                                <div class="flex items-center">
-                                    <i class="fas fa-plug text-yellow-600 dark:text-yellow-400 text-2xl mr-3"></i>
-                                    <div>
-                                        <p class="font-bold">高德 MCP</p>
-                                        <p class="text-sm text-gray-500">SSE 模式通信</p>
-                                    </div>
+                        <!-- 文案优化模块 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-edit text-green-500 mr-3"></i>
+                                文案优化模块
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">根据 OpenAI 的数据报告，超过60%的用户使用 ChatGPT 进行文本优化相关任务，包括润色、修改、扩写、缩写等。</p>
+                            <div class="code-block mb-4">
+                                        <code>
+# 一、 角色人设（Role）
+你是一位专业的文案优化专家，拥有丰富的营销文案写作和优化经验，擅长提升文案的吸引力、转化率和可读性。你的视角是站在目标受众和营销目标的角度，专业度边界限于文案优化领域，不涉及技术实现或产品开发。
+
+# 二、 背景（Background）
+用户提供了一段原始文案，需要你对其进行优化，以提升其整体效果。背景信息包括：文案可能用于营销、品牌推广或信息传达等场景，但具体用途未详细说明。已知条件是用户希望文案更吸引人、清晰或具有说服力，但未提供原始文案内容，因此你需要基于通用优化原则工作。
+
+# 三、 任务目标（Task）
+- 分析并优化文案的结构、语言和风格，使其更符合目标受众的偏好。
+- 提升文案的吸引力、可读性和转化潜力，确保信息传达清晰。
+- 根据常见优化原则（如简洁性、情感共鸣、行动号召等）进行调整，不涉及内容重写，除非必要。
+- 在保持核心信息的前提下，适当扩展和丰富文案内容，提供更全面的优化版本。
+
+# 四、 限制提示（Limit）
+- 避免改变原始文案的核心信息或意图，除非用户明确要求。
+- 不要添加虚构或无关内容，确保优化基于逻辑和最佳实践。
+- 避免使用过于技术性或专业术语，除非目标受众是专业人士。
+- 不涉及对图片、布局或其他非文本元素的优化。
+
+# 五、 输出格式要求（Example）
+输出应为优化后的文案文本，结构清晰，语言流畅，内容详实。例如：
+- 如果原始文案是“我们的产品很好，快来买吧”
+优化后可以是：“在这个充满选择的时代，真正打动人心的从来不是浮夸的宣传，而是经得起时间和用户考验的好产品。我们的产品正是如此。它不仅在设计上注重细节与品质，更在功能上不断打磨与创新，只为给每一位用户带来更好的使用体验。无论是外观的质感，还是性能的稳定，我们始终坚持高标准严要求，力求让每一位选择我们的顾客都能感受到物超所值的惊喜。
+我们深知，购买一款产品，不仅仅是一次简单的消费，更是一种对生活方式的选择。因此，我们从选材、工艺到售后服务的每一个环节，都倾注了满满的诚意与专业，用心守护您的每一次体验。无论您是追求实用、注重品质，还是想要与众不同的个性化，我们的产品都能为您提供理想的解决方案。
+现在，就让我们用行动来证明一切。真正的好产品，不需要过多修饰，它本身就是最好的代言人。立即行动，选择我们，让品质改变生活，从此拥有与众不同的体验！”
+- 输出应直接呈现优化内容，无需额外解释或注释，除非用户要求。请确保优化后的文案内容更加丰富和完整，优化后的文案文本须超过500字。
+
+
+                                         </code>                                        
+                            </div>
+                            <div class="mb-4">
+                                <img src="../docs/images/5-figures/dify-04.png" alt="文案助手" class="w-full rounded-lg border">
+                                <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.27 文案助手</p>
+                            </div>
+                        </div>
+
+                        <!-- 多模态生成模块 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-image text-purple-500 mr-3"></i>
+                                多模态生成模块
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">图片和视频生成是另一个高频应用场景。随着豆包生图、Google Imagen 等模型的进化，多模态内容生成的质量已达到实用水平。</p>
+                            
+                            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-05.png" alt="生图助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.29 生图助手</p>
                                 </div>
-                                <button class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors">
-                                    连接配置
-                                </button>
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-06.png" alt="视频助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.30 视频助手</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 数据查询与分析模块 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-chart-bar text-orange-500 mr-3"></i>
+                                数据查询与分析模块
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">数据处理是智能体的重要能力之一。本模块演示如何在 Dify 中连接数据库，实现数据查询和可视化分析。</p>
+                            <div class="code-block mb-4">
+                                        <code>
+# 一、 角色人设（Role）
+您是一位专业的数据查询师，擅长数据整理，具有清晰的逻辑思维和简洁表达能力。
+
+# 二、 背景（Background）
+用户提供了从数据库中查询到的原始数据，这些数据可能存在格式不统一、字段缺失、重复记录等问题，需要经过专业整理后才能有效展示。
+
+# 三、 任务目标（Task）
+1. 对原始数据进行归纳和整理
+2. 按照正确的逻辑对数据进行分类和排序
+3. 数据展示突出关键信息和数据洞察
+4. 提供易于理解的数据展示
+
+# 四、 限制提示（Limit）
+1. 不得随意删除重要数据
+2. 避免使用过于复杂或专业的统计术语
+3. 不得篡改原始数据的真实值
+4. 避免展示过多冗余信息，保持简洁明了
+5. 不得泄露敏感数据或个人隐私信息
+
+# 五、 输出格式要求（Example）
+ 数据概览：简要说明数据内容即可
+                                         </code>                                        
+                            </div>
+                            <div class="code-block mb-4">
+                                        <code>
+# 一、 角色人设（Role）
+你是一位专业的数据分析师，具备数据整理、清洗和可视化能力，能够从原始数据中提取关键信息并转化为直观的可视化展示。
+
+# 二、 背景（Background）
+用户已从数据库中查询到一批原始数据，这些数据可能包含多个字段、存在缺失值或格式不一致的情况，需要经过整理后生成可视化图表。
+
+# 三、 任务目标（Task）
+#工作流程
+1. 数据分析
+按照合理的规则进行数据分析整理总结
+2. 分析 & 可视化
+至少生成 1 幅图表（柱状 / 折线 / 饼图任选其1或以上）
+可调用工具：“generate_pie_chart" | "generate_column_chart" | "generate_line_chart"
+
+# 四、 限制提示（Limit）
+1. 避免使用过于复杂的图表类型，确保可视化结果易于理解
+2. 不要忽略数据质量问题，必须进行必要的数据清洗
+3. 避免在可视化中使用过多颜色或元素，保持简洁明了
+4. 不要遗漏关键数据的标注和说明
+5.必须进行总结和图表生成，不管数据多少
+
+# 五、 输出格式要求（Example）
+请按照以下格式输出：
+1. 数据概况总结（不要输出字段名称，不要分点，一小段话就行）
+2. 展示生成的图表
+
+                                         </code>                                        
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-07.png" alt="数据查询助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.32 数据查询助手</p>
+                                </div>
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-08.png" alt="数据分析助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.33 数据分析助手</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MCP 工具集成 -->
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-xl font-semibold mb-4 flex items-center">
+                                <i class="fas fa-plug text-red-500 mr-3"></i>
+                                MCP 工具集成
+                            </h4>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">最后是 MCP 工具的集成应用。在前面我们已经完成了 MCP 的配置，现在将其集成到智能体中。</p>
+                            
+                            <div class="grid md:grid-cols-3 gap-4 mb-4">
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-09.png" alt="高德助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.35 高德助手</p>
+                                </div>
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-10.png" alt="饮食助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.36 饮食助手</p>
+                                </div>
+                                <div>
+                                    <img src="../docs/images/5-figures/dify-11.png" alt="新闻助手" class="w-full rounded-lg border">
+                                    <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.37 新闻助手</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5.3.3 Dify的优势与局限性 -->
-                <div id="section-5-3-3" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.3.3 Dify的优势与局限性</h3>
-
-                    <div class="grid md:grid-cols-2 gap-6">
+                <!-- 5.3.3 Dify 的优势与局限性分析 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-purple-600 dark:text-purple-400">5.3.3 Dify 的优势与局限性分析</h3>
+                    
+                    <!-- 优势与局限性对比 -->
+                    <div class="grid lg:grid-cols-2 gap-8">
                         <!-- 优势 -->
-                        <div class="bg-green-50 dark:bg-green-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-4 text-green-800 dark:text-green-200">
-                                <i class="fas fa-thumbs-up mr-2"></i>核心优势
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                            <h4 class="text-xl font-semibold text-green-700 dark:text-green-400 mb-4 flex items-center">
+                                <i class="fas fa-thumbs-up mr-3"></i>
+                                核心优势
                             </h4>
-                            <ul class="space-y-2">
+                            <ul class="space-y-3">
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">全栈式开发体验</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>全栈式开发体验：</strong>将 RAG 管道、AI 工作流、模型管理等功能整合到一个平台中
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">低代码与高扩展性平衡</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>低代码与高扩展性的平衡：</strong>在便利性和灵活性之间取得良好平衡
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">企业级安全与合规</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>企业级安全与合规：</strong>提供 AES-256 加密、RBAC 权限控制和审计日志
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">丰富的工具集成能力</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-green-600 dark:text-green-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">活跃的开源社区</span>
+                                    <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>丰富的工具集成能力：</strong>支持 9000+ 工具和 API 扩展
+                                    </div>
                                 </li>
                             </ul>
                         </div>
 
                         <!-- 局限性 -->
-                        <div class="bg-red-50 dark:bg-red-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-4 text-red-800 dark:text-red-200">
-                                <i class="fas fa-thumbs-down mr-2"></i>主要局限
+                        <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+                            <h4 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 flex items-center">
+                                <i class="fas fa-exclamation-triangle mr-3"></i>
+                                主要局限
                             </h4>
-                            <ul class="space-y-2">
+                            <ul class="space-y-3">
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">学习曲线较陡</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>学习曲线较陡：</strong>对于完全没有技术背景的用户，仍然存在一定的学习曲线
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">高并发场景性能瓶颈</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>性能瓶颈：</strong>在高并发场景下可能面临性能挑战
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">多模态支持不足</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>多模态支持不足：</strong>当前主要以文本处理为主
+                                    </div>
                                 </li>
                                 <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">企业版成本较高</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-times-circle text-red-600 dark:text-red-400 mt-1 mr-2"></i>
-                                    <span class="text-sm text-gray-700 dark:text-gray-300">API兼容性问题</span>
+                                    <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                    <div>
+                                        <strong>API 兼容性问题：</strong>API 格式不兼容 OpenAI，可能限制第三方集成
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -921,374 +983,564 @@
             </section>
 
             <!-- 5.4 平台三：n8n -->
-            <section id="section-5-4" class="mb-16 fade-in-up">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-project-diagram text-orange-500 mr-3"></i>
-                    5.4 平台三：n8n
+            <section id="section-5-4" class="mb-16">
+                <h2 class="text-3xl font-bold mb-8 flex items-center">
+                    <span class="bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-lg w-10 h-10 flex items-center justify-center text-lg font-bold mr-4">5.4</span>
+                    平台三：n8n
                 </h2>
 
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 mb-6">
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        n8n 的核心身份是一个通用的工作流自动化平台，而非一个纯粹的 LLM 应用构建工具。理解这一点，是掌握 n8n 的关键。
-                    </p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        在使用 n8n 构建智能应用时，我们实际上是在设计一个更宏大的自动化流程，而大语言模型只是这个流程中的一个（或多个）强大的"处理节点"。
-                    </p>
-                </div>
+                <!-- 5.4.1 n8n 的节点与工作流 -->
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-green-600 dark:text-green-400">5.4.1 n8n 的节点与工作流</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>正如我们之前所介绍的，n8n 的核心身份是一个通用的工作流自动化平台，而非一个纯粹的 LLM 应用构建工具。理解这一点，是掌握 n8n 的关键。在使用 n8n 构建智能应用时，我们实际上是在设计一个更宏大的自动化流程，而大语言模型只是这个流程中的一个（或多个）强大的"处理节点"。</p>
+                    </div>
 
-                <!-- 5.4.1 n8n的节点与工作流 -->
-                <div id="section-5-4-1" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.4.1 n8n的节点与工作流</h3>
-
-                    <!-- 基本概念介绍 -->
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div class="bg-blue-50 dark:bg-blue-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-3 text-blue-800 dark:text-blue-200">
-                                <i class="fas fa-circle-nodes mr-2"></i>节点 (Node)
+                    <!-- 核心概念卡片 -->
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-cube text-green-500 mr-3"></i>
+                                节点 (Node)
                             </h4>
-                            <p class="text-blue-700 dark:text-blue-300 mb-3">
-                                节点是工作流中执行具体操作的最小单元，分为触发节点和常规节点。
-                            </p>
-                            <ul class="space-y-1 text-sm text-blue-600 dark:text-blue-400">
-                                <li>• 触发节点：工作流起点</li>
-                                <li>• 常规节点：处理数据和逻辑</li>
-                                <li>• 数百种预置节点</li>
-                            </ul>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">节点是工作流中执行具体操作的最小单元。你可以把它想象成一个具有特定功能的"积木块"。</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center text-sm">
+                                    <i class="fas fa-play text-blue-500 mr-2"></i>
+                                    <span><strong>触发节点：</strong>工作流的起点</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <i class="fas fa-cog text-purple-500 mr-2"></i>
+                                    <span><strong>常规节点：</strong>处理具体的数据和逻辑</span>
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="bg-green-50 dark:bg-green-900 rounded-xl p-6">
-                            <h4 class="text-lg font-bold mb-3 text-green-800 dark:text-green-200">
-                                <i class="fas fa-route mr-2"></i>工作流 (Workflow)
+                        
+                        <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                            <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                <i class="fas fa-project-diagram text-green-500 mr-3"></i>
+                                工作流 (Workflow)
                             </h4>
-                            <p class="text-green-700 dark:text-green-300 mb-3">
-                                工作流是由多个节点连接而成的自动化流程图，定义数据传递路径。
-                            </p>
-                            <ul class="space-y-1 text-sm text-green-600 dark:text-green-400">
-                                <li>• 数据以JSON格式传递</li>
-                                <li>• 端到端业务流程自动化</li>
-                                <li>• 可视化流程设计</li>
-                            </ul>
+                            <p class="text-gray-600 dark:text-gray-400 mb-4">工作流是由多个节点连接而成的自动化流程图。它定义了数据从触发节点开始的完整处理路径。</p>
+                            <div class="space-y-2">
+                                <div class="flex items-center text-sm">
+                                    <i class="fas fa-arrow-right text-blue-500 mr-2"></i>
+                                    <span>数据以JSON格式在节点间传递</span>
+                                </div>
+                                <div class="flex items-center text-sm">
+                                    <i class="fas fa-link text-purple-500 mr-2"></i>
+                                    <span>连接孤立的应用程序和服务</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 5.4.2 搭建智能邮件助手 -->
-                <div id="section-5-4-2" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.4.2 搭建智能邮件助手</h3>
-
-                    <p class="text-gray-700 dark:text-gray-300 mb-6">
-                        这个案例将清晰地展示现代 AI Agent 与传统自动化工作流的核心区别。我们将构建一个能够接收用户邮件，通过 AI Agent 进行"思考"，自主理解用户意图，并自动生成回复的智能助手。
-                    </p>
+                <div class="mb-12">
+                    <h3 class="text-2xl font-semibold mb-6 text-green-600 dark:text-green-400">5.4.2 搭建智能邮件助手</h3>
+                    
+                    <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                        <p>这个案例将清晰地展示现代 AI Agent 与传统自动化工作流的核心区别。传统流程是线性的，而我们即将构建的 Agent 将能够接收用户邮件，通过一个核心的 AI Agent 节点进行"思考"，自主理解用户意图，并在多个可用"工具"中进行决策和选择，最终自动生成并发送高度相关的回复。</p>
+                    </div>
 
                     <!-- 架构示意图 -->
-                    <div class="bg-gradient-to-r from-orange-50 to-red-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 mb-6">
-                        <h4 class="text-lg font-bold mb-4">一体化智能邮件Agent架构</h4>
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4">
-                            <div class="flex items-center justify-center space-x-2 md:space-x-4">
-                                <div class="w-16 md:w-20 h-12 bg-red-500 rounded flex items-center justify-center text-white text-xs">Gmail接收</div>
-                                <i class="fas fa-arrow-right text-gray-400"></i>
-                                <div class="w-20 md:w-24 h-12 bg-orange-500 rounded flex items-center justify-center text-white text-xs">AI Agent思考</div>
-                                <i class="fas fa-arrow-right text-gray-400"></i>
-                                <div class="w-16 md:w-20 h-12 bg-green-500 rounded flex items-center justify-center text-white text-xs">Gmail回复</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                     <div class="mb-8">
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                             <img src="../docs/images/5-figures/n8n-01.png" alt="一体化智能邮件 Agent 架构示意图" class="w-full rounded-lg">
+                             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.38 一体化智能邮件 Agent 架构示意图</p>
+                         </div>
+                     </div>
 
-                <!-- 5.4.3 构建Agent的私有知识库 -->
-                <div id="section-5-4-3" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.4.3 构建Agent的私有知识库</h3>
+                     <!-- 构建步骤 -->
+                     <div class="space-y-8">
+                         <!-- 步骤1：邮件监听设置 -->
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <div class="flex items-start space-x-4">
+                                 <div class="flex-shrink-0 step-indicator">
+                                     <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
+                                 </div>
+                                 <div class="flex-1">
+                                     <h4 class="text-xl font-semibold mb-4">邮件监听设置</h4>
+                                     <p class="text-gray-600 dark:text-gray-400 mb-4">配置邮件触发器，监听新邮件的到达。</p>
+                                     
+                                     <div class="mb-4">
+                                         <img src="../docs/images/5-figures/n8n-02.png" alt="n8n邮件监听配置" class="w-full rounded-lg border">
+                                         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.39 n8n邮件监听配置</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
 
-                    <!-- 步骤说明 -->
-                    <div class="space-y-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">1</div>
-                                <h4 class="text-lg font-bold">定义知识源</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                使用 Code 节点存放原始知识文本，以 JSON 格式写入。
-                            </p>
-                            <div class="code-block text-sm">
-                                <pre>return [
-  {
-    "doc_id": "work-schedule-001",
-    "content": "我的工作时间是周一至周五，上午9点到下午5点。"
-  },
-  {
-    "doc_id": "off-hours-policy-001",
-    "content": "在非工作时间，我无法立即回复邮件。"
-  }
-];</pre>
-                            </div>
-                        </div>
+                         <!-- 步骤2：AI Agent 核心节点 -->
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <div class="flex items-start space-x-4">
+                                 <div class="flex-shrink-0 step-indicator">
+                                     <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
+                                 </div>
+                                 <div class="flex-1">
+                                     <h4 class="text-xl font-semibold mb-4">AI Agent 核心节点</h4>
+                                     <p class="text-gray-600 dark:text-gray-400 mb-4">配置智能体的核心逻辑，包括意图识别和工具选择。</p>
+                                     
+                                     <div class="mb-4">
+                                         <img src="../docs/images/5-figures/n8n-03.png" alt="AI Agent节点配置" class="w-full rounded-lg border">
+                                         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.40 AI Agent节点配置</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">2</div>
-                                <h4 class="text-lg font-bold">文本向量化</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                使用 Embeddings 节点将文本转换为向量，让计算机能够理解。
-                            </p>
-                        </div>
+                         <!-- 步骤3：工具集成与回复生成 -->
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <div class="flex items-start space-x-4">
+                                 <div class="flex-shrink-0">
+                                     <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
+                                 </div>
+                                 <div class="flex-1">
+                                     <h4 class="text-xl font-semibold mb-4">工具集成与回复生成</h4>
+                                     <p class="text-gray-600 dark:text-gray-400 mb-4">集成各种工具并生成智能回复。</p>
+                                     
+                                     <div class="mb-4">
+                                         <img src="../docs/images/5-figures/n8n-04.png" alt="工具集成配置" class="w-full rounded-lg border">
+                                         <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.41 工具集成配置</p>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">3</div>
-                                <h4 class="text-lg font-bold">存入向量存储</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                将向量化的知识存入内存数据库，为知识库起一个唯一的名字。
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                 <!-- 5.4.3 构建 Agent 的私有知识库 -->
+                 <div class="mb-12">
+                     <h3 class="text-2xl font-semibold mb-6 text-green-600 dark:text-green-400">5.4.3 构建 Agent 的私有知识库</h3>
+                     
+                     <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                         <p>为了让我们的智能邮件助手能够回答特定领域的问题，我们需要为其构建一个私有知识库。这个知识库将存储企业内部文档、FAQ、产品信息等专业知识。</p>
+                     </div>
 
-                <!-- 5.4.4 创建Agent主工作流 -->
-                <div id="section-5-4-4" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.4.4 创建Agent主工作流</h3>
+                     <!-- 知识库架构图 -->
+                     <div class="mb-8">
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                             <img src="../docs/images/5-figures/n8n-05.png" alt="私有知识库架构" class="w-full rounded-lg">
+                             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.42 私有知识库架构</p>
+                         </div>
+                     </div>
 
-                    <!-- 配置步骤 -->
-                    <div class="space-y-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">1</div>
-                                <h4 class="text-lg font-bold">配置 Gmail 触发器</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300">
-                                使用 Gmail 节点作为触发器，设置为 Message Received，配置邮箱账号。
-                            </p>
-                        </div>
+                     <!-- 知识库构建步骤 -->
+                     <div class="grid md:grid-cols-2 gap-6">
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                 <i class="fas fa-upload text-blue-500 mr-3"></i>
+                                 文档处理
+                             </h4>
+                             <p class="text-gray-600 dark:text-gray-400 mb-4">自动处理各种格式的文档，提取关键信息。</p>
+                             <ul class="space-y-2 text-sm">
+                                 <li>• PDF、Word、Excel 文档解析</li>
+                                 <li>• 网页内容抓取</li>
+                                 <li>• 文本分块和预处理</li>
+                             </ul>
+                         </div>
+                         
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                 <i class="fas fa-search text-green-500 mr-3"></i>
+                                 向量化存储
+                             </h4>
+                             <p class="text-gray-600 dark:text-gray-400 mb-4">将文档转换为向量并存储到向量数据库。</p>
+                             <ul class="space-y-2 text-sm">
+                                 <li>• 使用 Embedding 模型向量化</li>
+                                 <li>• 存储到 Pinecone 或 Weaviate</li>
+                                 <li>• 支持语义相似度搜索</li>
+                             </ul>
+                         </div>
+                     </div>
+                 </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">2</div>
-                                <h4 class="text-lg font-bold">配置 AI Agent 节点</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300 mb-4">
-                                这是整个工作流的大脑，连接大语言模型、记忆和工具。
-                            </p>
-                            <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
-                                <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">核心组件：</p>
-                                <ul class="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                                    <li>• Chat Model: Google Gemini Chat Model</li>
-                                    <li>• Memory: Simple Memory 节点</li>
-                                    <li>• Tools: SerpAPI + Simple Vector Store</li>
-                                </ul>
-                            </div>
-                        </div>
+                 <!-- 5.4.4 创建 Agent 主工作流 -->
+                 <div class="mb-12">
+                     <h3 class="text-2xl font-semibold mb-6 text-green-600 dark:text-green-400">5.4.4 创建 Agent 主工作流</h3>
+                     
+                     <div class="prose prose-lg max-w-none dark:prose-invert mb-8">
+                         <p>现在我们将所有组件整合到一个完整的智能体工作流中。这个工作流将展示 n8n 在构建复杂 AI 应用方面的强大能力。</p>
+                     </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                            <div class="flex items-center mb-4">
-                                <div class="step-indicator mr-4">3</div>
-                                <h4 class="text-lg font-bold">发送最终回复</h4>
-                            </div>
-                            <p class="text-gray-700 dark:text-gray-300">
-                                将 AI Agent 节点的输出连接到 Gmail 发送节点，实现自动回复。
-                            </p>
-                        </div>
-                    </div>
-                </div>
+                     <!-- 主工作流截图 -->
+                     <div class="mb-8">
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-lg">
+                             <img src="../docs/images/5-figures/n8n-06.png" alt="完整的Agent工作流" class="w-full rounded-lg">
+                             <p class="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">图 5.43 完整的Agent工作流</p>
+                         </div>
+                     </div>
 
-                <!-- 5.4.5 n8n的优势与局限性 -->
-                <div id="section-5-4-5" class="mb-8">
-                    <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">5.4.5 n8n的优势与局限性</h3>
+                     <!-- 工作流特性 -->
+                     <div class="grid md:grid-cols-3 gap-6">
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                 <i class="fas fa-brain text-purple-500 mr-3"></i>
+                                 智能决策
+                             </h4>
+                             <p class="text-gray-600 dark:text-gray-400">基于邮件内容自动选择最合适的处理策略</p>
+                         </div>
+                         
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                 <i class="fas fa-tools text-orange-500 mr-3"></i>
+                                 工具调用
+                             </h4>
+                             <p class="text-gray-600 dark:text-gray-400">动态调用各种外部工具和API服务</p>
+                         </div>
+                         
+                         <div class="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+                             <h4 class="text-lg font-semibold mb-3 flex items-center">
+                                 <i class="fas fa-sync text-blue-500 mr-3"></i>
+                                 自动化流程
+                             </h4>
+                             <p class="text-gray-600 dark:text-gray-400">全程无人工干预的智能邮件处理</p>
+                         </div>
+                     </div>
+                 </div>
 
-                    <!-- 对比表格 -->
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-                        <table class="w-full">
-                            <thead class="bg-gray-50 dark:bg-gray-700">
-                                <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">维度</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">优势</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">局限性</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 dark:divide-gray-600">
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">开发效率</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">可视化工作流，低代码特性</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">调试与错误处理繁琐</td>
-                                </tr>
-                                <tr class="bg-gray-50 dark:bg-gray-700">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">功能集成</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">丰富的内置节点库</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">内置存储非持久化</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">部署运维</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">支持私有化部署</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">版本控制不成熟</td>
-                                </tr>
-                                <tr class="bg-gray-50 dark:bg-gray-700">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">性能表现</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">满足大多数企业需求</td>
-                                    <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">超高并发场景性能开销</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
+                 <!-- 5.4.5 n8n 的优势与局限性分析 -->
+                 <div class="mb-12">
+                     <h3 class="text-2xl font-semibold mb-6 text-green-600 dark:text-green-400">5.4.5 n8n 的优势与局限性分析</h3>
+                     
+                     <!-- 优势与局限性对比 -->
+                     <div class="grid lg:grid-cols-2 gap-8">
+                         <!-- 优势 -->
+                         <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                             <h4 class="text-xl font-semibold text-green-700 dark:text-green-400 mb-4 flex items-center">
+                                 <i class="fas fa-thumbs-up mr-3"></i>
+                                 核心优势
+                             </h4>
+                             <ul class="space-y-3">
+                                 <li class="flex items-start">
+                                     <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>强大的集成能力：</strong>支持 400+ 预置节点，几乎可以连接任何服务
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>灵活的工作流设计：</strong>支持复杂的条件分支和循环逻辑
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>开源且可扩展：</strong>完全开源，支持自定义节点开发
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-check-circle text-green-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>企业级部署：</strong>支持私有化部署和高可用配置
+                                     </div>
+                                 </li>
+                             </ul>
+                         </div>
 
-            <!-- 5.5 本章小结 -->
-            <section id="section-5-5" class="mb-16 fade-in-up">
-                <h2 class="text-3xl font-bold mb-6 flex items-center">
-                    <i class="fas fa-book text-purple-500 mr-3"></i>
-                    5.5 本章小结
-                </h2>
+                         <!-- 局限性 -->
+                         <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-6 border border-red-200 dark:border-red-800">
+                             <h4 class="text-xl font-semibold text-red-700 dark:text-red-400 mb-4 flex items-center">
+                                 <i class="fas fa-exclamation-triangle mr-3"></i>
+                                 主要局限
+                             </h4>
+                             <ul class="space-y-3">
+                                 <li class="flex items-start">
+                                     <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>学习曲线陡峭：</strong>需要理解工作流概念和节点配置
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>AI 功能相对基础：</strong>主要依赖外部 AI 服务，本身 AI 能力有限
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>调试复杂度高：</strong>复杂工作流的调试和错误排查较困难
+                                     </div>
+                                 </li>
+                                 <li class="flex items-start">
+                                     <i class="fas fa-times-circle text-red-500 mr-3 mt-1"></i>
+                                     <div>
+                                         <strong>性能限制：</strong>大量数据处理时可能遇到性能瓶颈
+                                     </div>
+                                 </li>
+                             </ul>
+                         </div>
+                     </div>
+                 </div>
+             </section>
 
-                <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-700 rounded-xl p-6 mb-6">
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        本章系统介绍了基于低代码平台构建智能体应用的理念、方法与实践，标志着我们从"手写代码"向"平台化开发"的重要转变。
-                    </p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mb-4">
-                        通过三个平台的对比实践，我们可以得出以下选型建议：
-                    </p>
+             <!-- 5.5 本章小结 -->
+             <section id="section-5-5" class="mb-16">
+                 <h2 class="text-3xl font-bold mb-8 flex items-center">
+                     <span class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-lg w-10 h-10 flex items-center justify-center text-lg font-bold mr-4">5.5</span>
+                     本章小结
+                 </h2>
 
-                    <!-- 选型建议卡片 -->
-                    <div class="grid md:grid-cols-3 gap-4 mt-6">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center hover-card">
-                            <div class="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-rocket text-blue-600 dark:text-blue-400 text-2xl"></i>
-                            </div>
-                            <h5 class="font-bold mb-2">快速原型验证</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">非技术用户</p>
-                            <div class="text-lg font-bold text-blue-600 dark:text-blue-400">Coze</div>
-                        </div>
+                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mb-8">
+                     <div class="prose prose-lg max-w-none dark:prose-invert">
+                         <p>本章我们深入探索了基于低代码平台的智能体搭建方法，通过对比 Coze、Dify 和 n8n 三个平台的特性和应用场景，展示了不同平台在智能体开发中的独特价值。</p>
+                     </div>
+                 </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center hover-card">
-                            <div class="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-building text-green-600 dark:text-green-400 text-2xl"></i>
-                            </div>
-                            <h5 class="font-bold mb-2">企业级应用</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">复杂业务逻辑</p>
-                            <div class="text-lg font-bold text-green-600 dark:text-green-400">Dify</div>
-                        </div>
+                 <!-- 平台对比总结 -->
+                 <div class="grid lg:grid-cols-3 gap-8 mb-8">
+                     <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+                         <h3 class="text-xl font-bold text-blue-700 dark:text-blue-400 mb-4 flex items-center">
+                             <i class="fas fa-magic mr-3"></i>
+                             Coze
+                         </h3>
+                         <div class="space-y-3 text-sm">
+                             <div><strong>定位：</strong>零代码智能体平台</div>
+                             <div><strong>适用场景：</strong>快速原型、内容创作、多平台发布</div>
+                             <div><strong>核心优势：</strong>上手简单、插件丰富、发布便捷</div>
+                             <div><strong>主要限制：</strong>定制化有限、平台依赖性强</div>
+                         </div>
+                     </div>
 
-                        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 text-center hover-card">
-                            <div class="w-16 h-16 bg-orange-100 dark:bg-orange-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                                <i class="fas fa-cogs text-orange-600 dark:text-orange-400 text-2xl"></i>
-                            </div>
-                            <h5 class="font-bold mb-2">深度业务集成</h5>
-                            <p class="text-sm text-gray-600 dark:text-gray-400 mb-2">自动化流程</p>
-                            <div class="text-lg font-bold text-orange-600 dark:text-orange-400">n8n</div>
-                        </div>
-                    </div>
-                </div>
+                     <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 border border-purple-200 dark:border-purple-800">
+                         <h3 class="text-xl font-bold text-purple-700 dark:text-purple-400 mb-4 flex items-center">
+                             <i class="fas fa-cogs mr-3"></i>
+                             Dify
+                         </h3>
+                         <div class="space-y-3 text-sm">
+                             <div><strong>定位：</strong>开源LLM应用开发平台</div>
+                             <div><strong>适用场景：</strong>企业应用、复杂工作流、私有部署</div>
+                             <div><strong>核心优势：</strong>功能全面、模型中立、企业级</div>
+                             <div><strong>主要限制：</strong>学习曲线、性能挑战、API兼容性</div>
+                         </div>
+                     </div>
 
-                <!-- 结语 -->
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-                    <h4 class="text-lg font-bold mb-3">结语</h4>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
-                        值得强调的是，低代码平台并非要取代代码开发，而是提供了一种互补的选择。在实际项目中，我们完全可以根据不同阶段的需求灵活切换：用低代码平台快速验证想法，用代码实现精细化控制；用平台处理标准化流程，用代码处理特殊逻辑。这种"混合开发"的思维，才是智能体工程化的最佳实践。
-                    </p>
-                    <p class="text-gray-700 dark:text-gray-300 leading-relaxed mt-4">
-                        下一章，我们将进一步探讨更加底层的智能体框架，帮助读者构建更加可靠、有趣的应用。
-                    </p>
-                </div>
-            </section>
+                     <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-6 border border-green-200 dark:border-green-800">
+                         <h3 class="text-xl font-bold text-green-700 dark:text-green-400 mb-4 flex items-center">
+                             <i class="fas fa-project-diagram mr-3"></i>
+                             n8n
+                         </h3>
+                         <div class="space-y-3 text-sm">
+                             <div><strong>定位：</strong>工作流自动化平台</div>
+                             <div><strong>适用场景：</strong>业务集成、自动化流程、系统连接</div>
+                             <div><strong>核心优势：</strong>集成能力强、灵活度高、开源扩展</div>
+                             <div><strong>主要限制：</strong>学习成本、AI能力基础、调试复杂</div>
+                         </div>
+                     </div>
+                 </div>
 
-            <!-- 页面底部 -->
-            <footer class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
-                <div class="text-center text-gray-500 dark:text-gray-400">
-                    <p class="mb-2">Hello Agents - 第五章 基于低代码平台的智能体搭建</p>
-                    <p class="text-sm">© 2024 Datawhale. 本文档采用开源协议发布。</p>
-                </div>
-            </footer>
-    </main>
+                 <!-- 选择建议 -->
+                 <div class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-8">
+                     <h3 class="text-2xl font-bold mb-6 text-center">平台选择建议</h3>
+                     
+                     <div class="grid md:grid-cols-2 gap-8">
+                         <div>
+                             <h4 class="text-lg font-semibold mb-4 text-green-600 dark:text-green-400">
+                                 <i class="fas fa-lightbulb mr-2"></i>
+                                 选择原则
+                             </h4>
+                             <ul class="space-y-2 text-sm">
+                                 <li>• <strong>团队技术水平：</strong>评估团队的技术背景和学习能力</li>
+                                 <li>• <strong>项目复杂度：</strong>根据业务需求的复杂程度选择合适平台</li>
+                                 <li>• <strong>部署要求：</strong>考虑是否需要私有化部署和数据安全</li>
+                                 <li>• <strong>扩展需求：</strong>评估未来的功能扩展和定制化需求</li>
+                                 <li>• <strong>成本预算：</strong>综合考虑开发成本和运营成本</li>
+                             </ul>
+                         </div>
+                         
+                         <div>
+                             <h4 class="text-lg font-semibold mb-4 text-blue-600 dark:text-blue-400">
+                                 <i class="fas fa-route mr-2"></i>
+                                 发展路径
+                             </h4>
+                             <div class="space-y-3 text-sm">
+                                 <div class="flex items-center">
+                                     <span class="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs mr-3">1</span>
+                                     <span><strong>原型验证：</strong>使用 Coze 快速验证想法</span>
+                                 </div>
+                                 <div class="flex items-center">
+                                     <span class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs mr-3">2</span>
+                                     <span><strong>功能完善：</strong>转向 Dify 构建完整应用</span>
+                                 </div>
+                                 <div class="flex items-center">
+                                     <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs mr-3">3</span>
+                                     <span><strong>系统集成：</strong>使用 n8n 实现业务自动化</span>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
 
-    <!-- 返回顶部按钮 -->
-    <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 invisible">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+                 <!-- 未来展望 -->
+                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 mt-8">
+                     <h3 class="text-2xl font-bold mb-6 text-center">未来展望</h3>
+                     <div class="prose prose-lg max-w-none dark:prose-invert text-center">
+                         <p>随着 AI 技术的快速发展，低代码平台将继续演进，我们可以期待：</p>
+                         <div class="grid md:grid-cols-2 gap-6 mt-6 text-left">
+                             <div>
+                                 <h4 class="font-semibold mb-3">技术发展趋势</h4>
+                                 <ul class="space-y-2 text-sm">
+                                     <li>• 更智能的自动化代码生成</li>
+                                     <li>• 更强大的多模态处理能力</li>
+                                     <li>• 更完善的 MCP 协议支持</li>
+                                     <li>• 更高效的模型推理优化</li>
+                                 </ul>
+                             </div>
+                             <div>
+                                 <h4 class="font-semibold mb-3">应用场景扩展</h4>
+                                 <ul class="space-y-2 text-sm">
+                                     <li>• 更深入的行业垂直应用</li>
+                                     <li>• 更复杂的多智能体协作</li>
+                                     <li>• 更广泛的企业级部署</li>
+                                     <li>• 更个性化的用户体验</li>
+                                 </ul>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </section>
+         </div>
+     </main>
 
-    <!-- JavaScript -->
-    <script>
-        // 主题切换功能
-        const themeToggle = document.getElementById('theme-toggle');
-        const html = document.documentElement;
+     <!-- 侧边目录 -->
+     <div class="toc-sidebar hidden lg:block">
+         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 max-w-xs">
+             <h3 class="font-bold text-lg mb-4 text-gray-800 dark:text-gray-200">目录导航</h3>
+             <nav class="space-y-2 text-sm">
+                 <a href="#section-5-1" class="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                     5.1 平台化构建的兴起
+                 </a>
+                 <a href="#section-5-2" class="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                     5.2 平台一：Coze
+                 </a>
+                 <a href="#section-5-3" class="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                     5.3 平台二：Dify
+                 </a>
+                 <a href="#section-5-4" class="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                     5.4 平台三：n8n
+                 </a>
+                 <a href="#section-5-5" class="block py-2 px-3 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                     5.5 本章小结
+                 </a>
+             </nav>
+         </div>
+     </div>
 
-        // 初始化主题
-        if (localStorage.getItem('theme') === 'dark' ||
-            (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            html.classList.add('dark');
-        }
+     <!-- JavaScript -->
+     <script>
+         // 主题切换功能
+         const themeToggle = document.getElementById('theme-toggle');
+         const html = document.documentElement;
 
-        themeToggle.addEventListener('click', () => {
-            html.classList.toggle('dark');
-            localStorage.setItem('theme', html.classList.contains('dark') ? 'dark' : 'light');
-        });
+         // 检查本地存储的主题设置
+         const currentTheme = localStorage.getItem('theme');
+         if (currentTheme) {
+             html.classList.toggle('dark', currentTheme === 'dark');
+         } else {
+             // 默认跟随系统设置
+             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+             html.classList.toggle('dark', prefersDark);
+         }
 
-  
-        // 返回顶部按钮
-        const backToTop = document.getElementById('back-to-top');
+         themeToggle.addEventListener('click', () => {
+             html.classList.toggle('dark');
+             const isDark = html.classList.contains('dark');
+             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+         });
 
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                backToTop.classList.remove('opacity-0', 'invisible');
-                backToTop.classList.add('opacity-100', 'visible');
-            } else {
-                backToTop.classList.add('opacity-0', 'invisible');
-                backToTop.classList.remove('opacity-100', 'visible');
-            }
-        });
+         // 平滑滚动
+         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+             anchor.addEventListener('click', function (e) {
+                 e.preventDefault();
+                 const target = document.querySelector(this.getAttribute('href'));
+                 if (target) {
+                     target.scrollIntoView({
+                         behavior: 'smooth',
+                         block: 'start'
+                     });
+                 }
+             });
+         });
 
-        backToTop.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
+         // 懒加载图片
+         const images = document.querySelectorAll('img');
+         const imageObserver = new IntersectionObserver((entries, observer) => {
+             entries.forEach(entry => {
+                 if (entry.isIntersecting) {
+                     const img = entry.target;
+                     img.classList.add('fade-in-up');
+                     observer.unobserve(img);
+                 }
+             });
+         });
 
-        // 懒加载动画
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+         images.forEach(img => {
+             imageObserver.observe(img);
+         });
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in-up');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+         // 滚动时添加动画效果
+         const sections = document.querySelectorAll('section');
+         const sectionObserver = new IntersectionObserver((entries) => {
+             entries.forEach(entry => {
+                 if (entry.isIntersecting) {
+                     entry.target.classList.add('fade-in-up');
+                 }
+             });
+         }, {
+             threshold: 0.1
+         });
 
-        // 观察所有section元素
-        document.querySelectorAll('section').forEach(section => {
-            observer.observe(section);
-        });
+         sections.forEach(section => {
+             sectionObserver.observe(section);
+         });
 
-        // 平滑滚动到锚点
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offset = 80; // 导航栏高度
-                    const targetPosition = target.offsetTop - offset;
+         // 代码块复制功能
+         document.querySelectorAll('.code-block').forEach(block => {
+             const button = document.createElement('button');
+             button.className = 'absolute top-2 right-2 px-3 py-1 bg-gray-600 text-white text-xs rounded hover:bg-gray-700 transition-colors';
+             button.textContent = '复制';
+             button.style.position = 'absolute';
+             
+             block.style.position = 'relative';
+             block.appendChild(button);
+             
+             button.addEventListener('click', () => {
+                 const code = block.querySelector('code');
+                 if (code) {
+                     navigator.clipboard.writeText(code.textContent).then(() => {
+                         button.textContent = '已复制';
+                         setTimeout(() => {
+                             button.textContent = '复制';
+                         }, 2000);
+                     });
+                 }
+             });
+         });
 
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+         // 返回顶部按钮
+         const backToTop = document.createElement('button');
+         backToTop.innerHTML = '<i class="fas fa-arrow-up"></i>';
+         backToTop.className = 'fixed bottom-8 right-8 w-12 h-12 bg-primary text-white rounded-full shadow-lg hover:bg-secondary transition-all duration-300 opacity-0 pointer-events-none z-50';
+         document.body.appendChild(backToTop);
 
-                    // 高亮目标section
-                    target.classList.add('ring-2', 'ring-blue-500', 'ring-opacity-50');
-                    setTimeout(() => {
-                        target.classList.remove('ring-2', 'ring-blue-500', 'ring-opacity-50');
-                    }, 2000);
-                }
-            });
-        });
+         window.addEventListener('scroll', () => {
+             if (window.pageYOffset > 300) {
+                 backToTop.classList.remove('opacity-0', 'pointer-events-none');
+             } else {
+                 backToTop.classList.add('opacity-0', 'pointer-events-none');
+             }
+         });
 
-        // 添加加载完成提示
-        window.addEventListener('load', () => {
-            console.log('第五章页面加载完成！');
-        });
-    </script>
-</body>
-</html>
+         backToTop.addEventListener('click', () => {
+             window.scrollTo({
+                 top: 0,
+                 behavior: 'smooth'
+             });
+         });
+     </script>
+ </body>
+ </html>
