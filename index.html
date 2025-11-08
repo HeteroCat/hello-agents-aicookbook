@@ -183,24 +183,24 @@
          */
         const fileNameMapping = {
             'helloagent': 'helloagent.html',
-            '前言': 'preface-new.html',
+            '前言': 'preface.html',
             '第一章': 'chapter1.html',
-            '第二章': 'chapter2-new.html',
-            '第三章': 'chapter3-new.html',
-            '第四章': 'chapter4-new.html',
-            '第五章': 'chapter5-new.html',
-            '第六章': 'chapter6-new.html',
-            '第七章': 'chapter7-new.html',
-            '第八章': 'chapter8-new.html',
-            '第九章': 'chapter9-new.html',
-            '第十章': 'chapter10-new.html',
-            '第十一章': 'chapter11-new.html',
-            '第十二章': 'chapter12-new.html',
-            '第十三章': 'chapter13-new.html',
-            '第十四章': 'chapter14-new.html',
-            '第十五章': 'chapter15-new.html',
-            '第十六章': 'chapter16-new.html',
-            '第十七章': null
+            '第二章': 'chapter2.html',
+            '第三章': 'chapter3.html',
+            '第四章': 'chapter4.html',
+            '第五章': 'chapter5.html',
+            '第六章': 'chapter6.html',
+            '第七章': 'chapter7.html',
+            '第八章': 'chapter8.html',
+            '第九章': 'chapter9.html',
+            '第十章': 'chapter10.html',
+            '第十一章': 'chapter11.html',
+            '第十二章': 'chapter12.html',
+            '第十三章': 'chapter13.html',
+            '第十四章': 'chapter14.html',
+            '第十五章': 'chapter15.html',
+            '第十六章': 'chapter16.html',
+            
         };
 
         /**
@@ -237,7 +237,7 @@
             `;
             
             // 使用fetch API加载HTML文件（从html目录）
-            fetch(`html/${actualFileName}`)
+            fetch(`docs_html/${actualFileName}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);

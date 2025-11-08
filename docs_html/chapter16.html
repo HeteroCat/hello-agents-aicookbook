@@ -1,0 +1,876 @@
+<h1>第十六章 毕业设计：构建属于你的多智能体应用</h1>
+<p>恭喜你来到 Hello-Agents 教程的最后一章！在前面的 15 章中，我们从零开始构建了 HelloAgents 框架，学习了智能体的核心概念、多种范式、工具系统、记忆机制、通信协议、强化学习训练和性能评估等知识。在第 13-15 章中，我们还通过三个完整的实战项目（智能旅行助手、自动化深度研究智能体、赛博小镇）展示了如何将所学知识融会贯通。</p>
+<p>现在，是时候让你成为真正的智能体系统构建者了！本章将指导你<strong>构建属于你自己的多智能体应用</strong>，并通过开源协作的方式与社区分享你的成果。</p>
+<h2>16.1 毕业设计的意义</h2>
+<h3>16.1.1 为什么要做毕业设计</h3>
+<p>学习技术最好的方式不是看教程，而是<strong>动手实践</strong>。通过前面章节的学习，你已经掌握了构建智能体系统的理论知识和技术工具。但是，真正的挑战在于：<strong>如何将这些知识应用到实际问题中？如何设计一个完整的系统？如何处理各种边界情况和异常？</strong></p>
+<p>毕业设计的核心价值在于培养你的综合应用能力，将前面学到的所有知识（智能体范式、工具系统、记忆机制、通信协议等）选择性的整合到一个完整的项目中。</p>
+<p>通过本章的学习和实践，希望你能够独立设计并实现一个完整的智能体应用，熟练使用 HelloAgents 框架的各种功能，掌握 Git 和 GitHub 的基本操作，学会编写清晰的项目文档，参与开源社区的协作开发，最终获得一个可以展示的技术作品。</p>
+<h3>16.1.2 毕业设计的形式</h3>
+<p>你的毕业设计将以<strong>开源项目</strong>的形式提交到 Hello-Agents 的共创项目仓库（<code>Co-creation-projects</code>目录）。具体要求如下：</p>
+<ol>
+<li>
+<p><strong>项目命名</strong>：使用<code>{你的GitHub用户名}-{项目名称}</code>的格式，例如<code>jjyaoao-CodeReviewAgent</code></p>
+</li>
+<li>
+<p><strong>项目内容</strong>：</p>
+<ul>
+<li>一个可运行的 Jupyter Notebook（<code>.ipynb</code>文件）或 Python 脚本</li>
+<li>完整的依赖列表（<code>requirements.txt</code>）</li>
+<li>清晰的 README 文档（<code>README.md</code>）</li>
+<li>可选：演示视频、截图、数据集等</li>
+</ul>
+</li>
+<li>
+<p><strong>提交方式</strong>：通过 GitHub 的 Pull Request（PR）提交</p>
+</li>
+<li>
+<p><strong>评审流程</strong>：社区成员会 review 你的代码，提出改进建议，通过后合并到主仓库</p>
+</li>
+</ol>
+<h2>16.2 项目选题指南</h2>
+<h3>16.2.1 选题原则</h3>
+<p>一个好的毕业设计项目应该具有实用性，解决真实的问题而不是为了技术而技术，我们需要追求在有限的时间和资源内可以完成，并且能够清晰地展示你的技术能力。</p>
+<h3>16.2.2 推荐选题方向</h3>
+<p>以下是一些推荐的项目方向，你可以选择其中一个，也可以自己提出新的想法：</p>
+<p><strong>（1）生产力工具类</strong></p>
+<ul>
+<li><strong>智能代码审查助手</strong>：自动分析代码质量、发现潜在 bug、提出优化建议</li>
+<li><strong>智能文档生成器</strong>：根据代码自动生成 API 文档、用户手册</li>
+<li><strong>智能会议助手</strong>：记录会议内容、生成会议纪要、提取行动项</li>
+<li><strong>智能邮件助手</strong>：自动分类邮件、生成回复草稿、提醒重要事项</li>
+</ul>
+<p><strong>（2）学习辅助类</strong></p>
+<ul>
+<li><strong>智能学习伙伴</strong>：根据学习进度推荐学习资源、生成练习题、答疑解惑</li>
+<li><strong>智能论文助手</strong>：帮助查找文献、总结论文、生成引用</li>
+<li><strong>智能编程导师</strong>：提供编程练习、代码 review、学习路径规划</li>
+<li><strong>智能语言学习助手</strong>：提供对话练习、语法纠错、词汇扩展</li>
+</ul>
+<p><strong>（3）创意娱乐类</strong></p>
+<ul>
+<li><strong>智能故事生成器</strong>：根据用户输入生成小说、剧本、诗歌</li>
+<li><strong>智能游戏 NPC</strong>：创建有个性的游戏角色，能够与玩家自然对话</li>
+<li><strong>智能音乐推荐</strong>：根据心情、场景推荐音乐，生成播放列表</li>
+<li><strong>智能菜谱助手</strong>：根据食材、口味推荐菜谱，生成购物清单</li>
+</ul>
+<p><strong>（4）数据分析类</strong></p>
+<ul>
+<li><strong>智能数据分析师</strong>：自动分析数据、生成可视化图表、撰写分析报告</li>
+<li><strong>智能股票分析</strong>：分析股票数据、新闻舆情，提供投资建议</li>
+<li><strong>智能舆情监控</strong>：监控社交媒体、新闻网站，分析舆情趋势</li>
+<li><strong>智能竞品分析</strong>：收集竞品信息、对比分析、生成报告</li>
+</ul>
+<p><strong>（5）生活服务类</strong></p>
+<ul>
+<li><strong>智能健康助手</strong>：记录健康数据、提供健康建议、制定运动计划</li>
+<li><strong>智能理财助手</strong>：记录收支、分析消费习惯、提供理财建议</li>
+<li><strong>智能购物助手</strong>：比价、推荐商品、生成购物清单</li>
+<li><strong>智能家居控制</strong>：通过自然语言控制智能家居设备</li>
+</ul>
+<h3>16.2.3 选题示例</h3>
+<p>让我们通过一个具体的例子来说明如何选题和设计项目。</p>
+<p><strong>项目名称</strong>：智能代码审查助手（CodeReviewAgent）</p>
+<p><strong>问题分析</strong>：代码审查是软件开发中的重要环节，但人工审查耗时且容易遗漏问题。现有的静态分析工具只能发现语法错误，无法理解代码逻辑，因此需要一个能够理解代码语义、提供深度分析的智能助手。</p>
+<p><strong>核心功能</strong>：该项目将实现代码质量分析（检查代码风格、命名规范、注释完整性）、潜在 bug 检测（发现逻辑错误、边界条件问题、资源泄漏）、性能优化建议（识别性能瓶颈、提出优化方案）、安全漏洞扫描（检测 SQL 注入、XSS 等安全问题）以及最佳实践推荐（根据语言特性和设计模式提出改进建议）。</p>
+<p><strong>预期成果</strong>：最终将交付一个可运行的 Jupyter Notebook 展示完整的审查流程，支持 Python、JavaScript 等主流语言，能够生成结构化的 Markdown 格式审查报告，并提供具体的代码示例和改进建议。</p>
+<h2>16.3 开发环境准备</h2>
+<h3>16.3.1 安装必要工具</h3>
+<p>在开始开发之前，请确保你的开发环境已经安装了以下工具：</p>
+<p><strong>（1）Python 环境</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 安装HelloAgents</span>
+</span><span class="code-line line-number" line="2">pip <span class="token function">install</span> <span class="token string">"hello-agents[all]"</span>
+</span></code></pre>
+<p><strong>（2）Git 和 GitHub</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 检查Git版本</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> <span class="token parameter variable">--version</span>
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 配置Git用户信息</span>
+</span><span class="code-line line-number" line="5"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.name <span class="token string">"你的名字"</span>
+</span><span class="code-line line-number" line="6"><span class="token function">git</span> config <span class="token parameter variable">--global</span> user.email <span class="token string">"你的邮箱"</span>
+</span><span class="code-line line-number" line="7">
+</span><span class="code-line line-number" line="8"><span class="token comment"># 配置GitHub SSH密钥（推荐）</span>
+</span><span class="code-line line-number" line="9"><span class="token comment"># 1. 生成SSH密钥</span>
+</span><span class="code-line line-number" line="10">ssh-keygen <span class="token parameter variable">-t</span> ed25519 <span class="token parameter variable">-C</span> <span class="token string">"你的邮箱"</span>
+</span><span class="code-line line-number" line="11">
+</span><span class="code-line line-number" line="12"><span class="token comment"># 2. 将公钥添加到GitHub</span>
+</span><span class="code-line line-number" line="13"><span class="token comment"># 复制 ~/.ssh/id_ed25519.pub 的内容</span>
+</span><span class="code-line line-number" line="14"><span class="token comment"># 在GitHub Settings &gt; SSH and GPG keys 中添加</span>
+</span><span class="code-line line-number" line="15">
+</span><span class="code-line line-number" line="16"><span class="token comment"># 3. 测试连接</span>
+</span><span class="code-line line-number" line="17"><span class="token function">ssh</span> <span class="token parameter variable">-T</span> git@github.com
+</span></code></pre>
+<p><strong>（3）Jupyter Notebook</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 安装Jupyter</span>
+</span><span class="code-line line-number" line="2">pip <span class="token function">install</span> jupyter notebook
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 或者使用JupyterLab（推荐）</span>
+</span><span class="code-line line-number" line="5">pip <span class="token function">install</span> jupyterlab
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7"><span class="token comment"># 启动Jupyter</span>
+</span><span class="code-line line-number" line="8">jupyter lab
+</span></code></pre>
+<h3>16.3.2 Fork 项目仓库</h3>
+<p><strong>步骤 1：Fork 仓库</strong></p>
+<ol>
+<li>访问 Hello-Agents 仓库：<a href="https://github.com/datawhalechina/Hello-Agents">https://github.com/datawhalechina/Hello-Agents</a></li>
+<li>点击右上角的"Fork"按钮，如图 16.1 红色方框位置</li>
+<li>选择你的 GitHub 账号，创建 Fork</li>
+</ol>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-1.png" alt="" width="85%">
+  <p>图 16.1 Fork 仓库步骤</p>
+</div>
+<p><strong>步骤 2：克隆到本地</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 如图16.2所示，克隆你Fork的仓库</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> clone git@github.com:你的用户名/Hello-Agents.git
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 进入项目目录</span>
+</span><span class="code-line line-number" line="5"><span class="token builtin class-name">cd</span> Hello-Agents
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7"><span class="token comment"># 添加上游仓库（用于同步更新）</span>
+</span><span class="code-line line-number" line="8"><span class="token function">git</span> remote <span class="token function">add</span> upstream https://github.com/datawhalechina/Hello-Agents.git
+</span><span class="code-line line-number" line="9">
+</span><span class="code-line line-number" line="10"><span class="token comment"># 查看远程仓库</span>
+</span><span class="code-line line-number" line="11"><span class="token function">git</span> remote <span class="token parameter variable">-v</span>
+</span></code></pre>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-2.png" alt="" width="85%">
+  <p>图 16.2 克隆仓库到本地</p>
+</div>
+<p><strong>步骤 3：创建开发分支</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 创建并切换到新分支</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> checkout <span class="token parameter variable">-b</span> feature/你的项目名称
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 例如:</span>
+</span><span class="code-line line-number" line="5"><span class="token function">git</span> checkout <span class="token parameter variable">-b</span> feature/code-review-agent
+</span></code></pre>
+<h3>16.3.3 项目目录结构</h3>
+<p>在<code>Co-creation-projects</code>目录下创建你的项目文件夹：</p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 进入共创项目目录</span>
+</span><span class="code-line line-number" line="2"><span class="token builtin class-name">cd</span> Co-creation-projects
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 创建项目文件夹（格式:GitHub用户名-项目名称）</span>
+</span><span class="code-line line-number" line="5"><span class="token function">mkdir</span> 你的用户名-项目名称
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7"><span class="token comment"># 例如:</span>
+</span><span class="code-line line-number" line="8"><span class="token function">mkdir</span> jjyaoao-CodeReviewAgent
+</span><span class="code-line line-number" line="9">
+</span><span class="code-line line-number" line="10"><span class="token comment"># 进入项目目录</span>
+</span><span class="code-line line-number" line="11"><span class="token builtin class-name">cd</span> jjyaoao-CodeReviewAgent
+</span></code></pre>
+<p>推荐的项目结构：</p>
+<pre><code class="code-highlight"><span class="code-line line-number" line="1">jjyaoao-CodeReviewAgent/
+</span><span class="code-line line-number" line="2">├── README.md              # 项目说明文档
+</span><span class="code-line line-number" line="3">├── requirements.txt       # Python依赖列表
+</span><span class="code-line line-number" line="4">├── main.ipynb            # 主要的Jupyter Notebook
+</span><span class="code-line line-number" line="5">├── data/                 # 数据文件（可选）
+</span><span class="code-line line-number" line="6">│   ├── sample_code.py
+</span><span class="code-line line-number" line="7">│   └── test_cases.json
+</span><span class="code-line line-number" line="8">├── outputs/              # 输出结果（可选）
+</span><span class="code-line line-number" line="9">│   ├── review_report.md
+</span><span class="code-line line-number" line="10">│   └── screenshots/
+</span><span class="code-line line-number" line="11">├── src/                  # 源代码（可选，如果代码较多）
+</span><span class="code-line line-number" line="12">│   ├── agents/
+</span><span class="code-line line-number" line="13">│   ├── tools/
+</span><span class="code-line line-number" line="14">│   └── utils/
+</span><span class="code-line line-number" line="15">└──
+</span></code></pre>
+<h2>16.4 项目开发指南</h2>
+<h3>16.4.1 编写 README 文档</h3>
+<p>README 是项目的门面，一个好的 README 应该包含以下内容：</p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">#</span> 项目名称</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3"><span class="token blockquote punctuation">&gt;</span> 一句话描述你的项目
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token title important"><span class="token punctuation">##</span> 📝 项目简介</span>
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7">详细介绍你的项目:
+</span><span class="code-line line-number" line="8"><span class="token list punctuation">-</span> 解决什么问题？
+</span><span class="code-line line-number" line="9"><span class="token list punctuation">-</span> 有什么特色功能？
+</span><span class="code-line line-number" line="10"><span class="token list punctuation">-</span> 适用于什么场景？
+</span><span class="code-line line-number" line="11">
+</span><span class="code-line line-number" line="12"><span class="token title important"><span class="token punctuation">##</span> ✨ 核心功能</span>
+</span><span class="code-line line-number" line="13">
+</span><span class="code-line line-number" line="14"><span class="token list punctuation">-</span> [ ] 功能1:描述
+</span><span class="code-line line-number" line="15"><span class="token list punctuation">-</span> [ ] 功能2:描述
+</span><span class="code-line line-number" line="16"><span class="token list punctuation">-</span> [ ] 功能3:描述
+</span><span class="code-line line-number" line="17">
+</span><span class="code-line line-number" line="18"><span class="token title important"><span class="token punctuation">##</span> 🛠️ 技术栈</span>
+</span><span class="code-line line-number" line="19">
+</span><span class="code-line line-number" line="20"><span class="token list punctuation">-</span> HelloAgents框架
+</span><span class="code-line line-number" line="21"><span class="token list punctuation">-</span> 使用的智能体范式（如ReAct、Plan-and-Solve等）
+</span><span class="code-line line-number" line="22"><span class="token list punctuation">-</span> 使用的工具和API
+</span><span class="code-line line-number" line="23"><span class="token list punctuation">-</span> 其他依赖库
+</span><span class="code-line line-number" line="24">
+</span><span class="code-line line-number" line="25"><span class="token title important"><span class="token punctuation">##</span> 🚀 快速开始</span>
+</span><span class="code-line line-number" line="26">
+</span><span class="code-line line-number" line="27"><span class="token title important"><span class="token punctuation">###</span> 环境要求</span>
+</span><span class="code-line line-number" line="28">
+</span><span class="code-line line-number" line="29"><span class="token list punctuation">-</span> Python 3.10+
+</span><span class="code-line line-number" line="30"><span class="token list punctuation">-</span> 其他要求
+</span><span class="code-line line-number" line="31">
+</span><span class="code-line line-number" line="32"><span class="token title important"><span class="token punctuation">###</span> 安装依赖</span>
+</span><span class="code-line line-number" line="33">
+</span><span class="code-line line-number" line="34">\`\`\`bash
+</span><span class="code-line line-number" line="35">pip install -r requirements.txt
+</span><span class="code-line line-number" line="36">\`\`\`
+</span><span class="code-line line-number" line="37">
+</span><span class="code-line line-number" line="38"><span class="token title important"><span class="token punctuation">###</span> 配置API密钥</span>
+</span><span class="code-line line-number" line="39">
+</span><span class="code-line line-number" line="40">\`\`\`bash
+</span><span class="code-line line-number" line="41"><span class="token title important"><span class="token punctuation">#</span> 创建.env文件</span>
+</span><span class="code-line line-number" line="42">cp .env.example .env
+</span><span class="code-line line-number" line="43">
+</span><span class="code-line line-number" line="44"><span class="token title important"><span class="token punctuation">#</span> 编辑.env文件，填入你的API密钥</span>
+</span><span class="code-line line-number" line="45">\`\`\`
+</span><span class="code-line line-number" line="46">
+</span><span class="code-line line-number" line="47"><span class="token title important"><span class="token punctuation">###</span> 运行项目</span>
+</span><span class="code-line line-number" line="48">
+</span><span class="code-line line-number" line="49">\`\`\`bash
+</span><span class="code-line line-number" line="50"><span class="token title important"><span class="token punctuation">#</span> 启动Jupyter Notebook</span>
+</span><span class="code-line line-number" line="51">jupyter lab
+</span><span class="code-line line-number" line="52">
+</span><span class="code-line line-number" line="53"><span class="token title important"><span class="token punctuation">#</span> 打开main.ipynb并运行</span>
+</span><span class="code-line line-number" line="54">\`\`\`
+</span><span class="code-line line-number" line="55">
+</span><span class="code-line line-number" line="56"><span class="token title important"><span class="token punctuation">##</span> 📖 使用示例</span>
+</span><span class="code-line line-number" line="57">
+</span><span class="code-line line-number" line="58">展示如何使用你的项目，最好包含代码示例和运行结果。
+</span><span class="code-line line-number" line="59">
+</span><span class="code-line line-number" line="60"><span class="token title important"><span class="token punctuation">##</span> 🎯 项目亮点</span>
+</span><span class="code-line line-number" line="61">
+</span><span class="code-line line-number" line="62"><span class="token list punctuation">-</span> 亮点1:说明
+</span><span class="code-line line-number" line="63"><span class="token list punctuation">-</span> 亮点2:说明
+</span><span class="code-line line-number" line="64"><span class="token list punctuation">-</span> 亮点3:说明
+</span><span class="code-line line-number" line="65">
+</span><span class="code-line line-number" line="66"><span class="token title important"><span class="token punctuation">##</span> 📊 性能评估</span>
+</span><span class="code-line line-number" line="67">
+</span><span class="code-line line-number" line="68">如果有评估结果，展示在这里:
+</span><span class="code-line line-number" line="69"><span class="token list punctuation">-</span> 准确率:XX%
+</span><span class="code-line line-number" line="70"><span class="token list punctuation">-</span> 响应时间:XX秒
+</span><span class="code-line line-number" line="71"><span class="token list punctuation">-</span> 其他指标
+</span><span class="code-line line-number" line="72">
+</span><span class="code-line line-number" line="73"><span class="token title important"><span class="token punctuation">##</span> 🔮 未来计划</span>
+</span><span class="code-line line-number" line="74">
+</span><span class="code-line line-number" line="75"><span class="token list punctuation">-</span> [ ] 待实现的功能1
+</span><span class="code-line line-number" line="76"><span class="token list punctuation">-</span> [ ] 待实现的功能2
+</span><span class="code-line line-number" line="77"><span class="token list punctuation">-</span> [ ] 待优化的部分
+</span><span class="code-line line-number" line="78">
+</span><span class="code-line line-number" line="79"><span class="token title important"><span class="token punctuation">##</span> 🤝 贡献指南</span>
+</span><span class="code-line line-number" line="80">
+</span><span class="code-line line-number" line="81">欢迎提出Issue和Pull Request！
+</span><span class="code-line line-number" line="82">
+</span><span class="code-line line-number" line="83"><span class="token title important"><span class="token punctuation">##</span> 📄 许可证</span>
+</span><span class="code-line line-number" line="84">
+</span><span class="code-line line-number" line="85">MIT License
+</span><span class="code-line line-number" line="86">
+</span><span class="code-line line-number" line="87"><span class="token title important"><span class="token punctuation">##</span> 👤 作者</span>
+</span><span class="code-line line-number" line="88">
+</span><span class="code-line line-number" line="89"><span class="token list punctuation">-</span> GitHub: <span class="token url">[<span class="token content">@你的用户名</span>](<span class="token url">https://github.com/你的用户名</span>)</span>
+</span><span class="code-line line-number" line="90"><span class="token list punctuation">-</span> Email: 你的邮箱（可选）
+</span><span class="code-line line-number" line="91">
+</span><span class="code-line line-number" line="92"><span class="token title important"><span class="token punctuation">##</span> 🙏 致谢</span>
+</span><span class="code-line line-number" line="93">
+</span><span class="code-line line-number" line="94">感谢Datawhale社区和Hello-Agents项目！
+</span></code></pre>
+<h3>16.4.2 编写 requirements.txt</h3>
+<p>列出项目所需的所有 Python 依赖：</p>
+<pre class="language-txt"><code class="language-txt code-highlight"><span class="code-line line-number" line="1"># 核心依赖
+</span><span class="code-line line-number" line="2">hello-agents[all]&gt;=0.2.7
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"># 可视化（如果需要）
+</span><span class="code-line line-number" line="5">matplotlib&gt;=3.7.0
+</span><span class="code-line line-number" line="6">plotly&gt;=5.14.0
+</span><span class="code-line line-number" line="7">
+</span><span class="code-line line-number" line="8"># Web框架（如果需要）
+</span><span class="code-line line-number" line="9">fastapi&gt;=0.109.0
+</span><span class="code-line line-number" line="10">uvicorn&gt;=0.27.0
+</span></code></pre>
+<h3>16.4.3 开发 Jupyter Notebook</h3>
+<p><strong>（1）Notebook 结构建议</strong></p>
+<p>一个好的 Jupyter Notebook 应该包含以下部分：</p>
+<pre class="language-python"><code class="language-python code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="2"><span class="token comment"># 第1部分:项目介绍</span>
+</span><span class="code-line line-number" line="3"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token triple-quoted-string string">"""
+</span></span><span class="code-line line-number" line="6"><span class="token triple-quoted-string string"># 项目名称
+</span></span><span class="code-line line-number" line="7"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="8"><span class="token triple-quoted-string string">## 项目简介
+</span></span><span class="code-line line-number" line="9"><span class="token triple-quoted-string string">简要介绍项目的目标和功能
+</span></span><span class="code-line line-number" line="10"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="11"><span class="token triple-quoted-string string">## 作者信息
+</span></span><span class="code-line line-number" line="12"><span class="token triple-quoted-string string">- 姓名:XXX
+</span></span><span class="code-line line-number" line="13"><span class="token triple-quoted-string string">- GitHub:@XXX
+</span></span><span class="code-line line-number" line="14"><span class="token triple-quoted-string string">- 日期:2025-XX-XX
+</span></span><span class="code-line line-number" line="15"><span class="token triple-quoted-string string">"""</span>
+</span><span class="code-line line-number" line="16">
+</span><span class="code-line line-number" line="17"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="18"><span class="token comment"># 第2部分:环境配置</span>
+</span><span class="code-line line-number" line="19"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="20">
+</span><span class="code-line line-number" line="21"><span class="token comment"># 安装依赖</span>
+</span><span class="code-line line-number" line="22">!pip install <span class="token operator">-</span>q hello<span class="token operator">-</span>agents<span class="token punctuation">[</span><span class="token builtin">all</span><span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="23">
+</span><span class="code-line line-number" line="24"><span class="token comment"># 导入必要的库</span>
+</span><span class="code-line line-number" line="25"><span class="token keyword">from</span> hello_agents <span class="token keyword">import</span> SimpleAgent<span class="token punctuation">,</span> HelloAgentsLLM
+</span><span class="code-line line-number" line="26"><span class="token keyword">from</span> hello_agents<span class="token punctuation">.</span>tools <span class="token keyword">import</span> BaseTool
+</span><span class="code-line line-number" line="27"><span class="token keyword">import</span> os
+</span><span class="code-line line-number" line="28"><span class="token keyword">from</span> dotenv <span class="token keyword">import</span> load_dotenv
+</span><span class="code-line line-number" line="29">
+</span><span class="code-line line-number" line="30"><span class="token comment"># 加载环境变量</span>
+</span><span class="code-line line-number" line="31">load_dotenv<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="32">
+</span><span class="code-line line-number" line="33"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="34"><span class="token comment"># 第3部分:工具定义</span>
+</span><span class="code-line line-number" line="35"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="36">
+</span><span class="code-line line-number" line="37"><span class="token keyword">class</span> <span class="token class-name">CustomTool</span><span class="token punctuation">(</span>BaseTool<span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="38">    <span class="token triple-quoted-string string">"""自定义工具类"""</span>
+</span><span class="code-line line-number" line="39">
+</span><span class="code-line line-number" line="40">    name <span class="token operator">=</span> <span class="token string">"tool_name"</span>
+</span><span class="code-line line-number" line="41">    description <span class="token operator">=</span> <span class="token string">"工具描述"</span>
+</span><span class="code-line line-number" line="42">
+</span><span class="code-line line-number" line="43">    <span class="token keyword">def</span> <span class="token function">run</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> query<span class="token punctuation">:</span> <span class="token builtin">str</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="44">        <span class="token triple-quoted-string string">"""工具执行逻辑"""</span>
+</span><span class="code-line line-number" line="45">        <span class="token comment"># 实现你的工具逻辑</span>
+</span><span class="code-line line-number" line="46">        <span class="token keyword">return</span> <span class="token string">"结果"</span>
+</span><span class="code-line line-number" line="47">
+</span><span class="code-line line-number" line="48"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="49"><span class="token comment"># 第4部分:智能体构建</span>
+</span><span class="code-line line-number" line="50"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="51">
+</span><span class="code-line line-number" line="52"><span class="token comment"># 创建LLM</span>
+</span><span class="code-line line-number" line="53">llm <span class="token operator">=</span> HelloAgentsLLM<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="54">
+</span><span class="code-line line-number" line="55"><span class="token comment"># 创建智能体</span>
+</span><span class="code-line line-number" line="56">agent <span class="token operator">=</span> SimpleAgent<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="57">    name<span class="token operator">=</span><span class="token string">"智能体名称"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="58">    llm<span class="token operator">=</span>llm<span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="59">    system_prompt<span class="token operator">=</span><span class="token string">"系统提示词"</span>
+</span><span class="code-line line-number" line="60"><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="61">
+</span><span class="code-line line-number" line="62"><span class="token comment"># 添加工具</span>
+</span><span class="code-line line-number" line="63">agent<span class="token punctuation">.</span>add_tool<span class="token punctuation">(</span>CustomTool<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="64">
+</span><span class="code-line line-number" line="65"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="66"><span class="token comment"># 第5部分:功能演示</span>
+</span><span class="code-line line-number" line="67"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="68">
+</span><span class="code-line line-number" line="69"><span class="token comment"># 示例1:基础功能</span>
+</span><span class="code-line line-number" line="70"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"=== 示例1:基础功能 ==="</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="71">result <span class="token operator">=</span> agent<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token string">"用户输入"</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="72"><span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="73">
+</span><span class="code-line line-number" line="74"><span class="token comment"># 示例2:复杂场景</span>
+</span><span class="code-line line-number" line="75"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n=== 示例2:复杂场景 ==="</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="76">result <span class="token operator">=</span> agent<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token string">"复杂的用户输入"</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="77"><span class="token keyword">print</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="78">
+</span><span class="code-line line-number" line="79"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="80"><span class="token comment"># 第6部分:性能评估（可选）</span>
+</span><span class="code-line line-number" line="81"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="82">
+</span><span class="code-line line-number" line="83"><span class="token comment"># 评估代码</span>
+</span><span class="code-line line-number" line="84"><span class="token comment"># ...</span>
+</span><span class="code-line line-number" line="85">
+</span><span class="code-line line-number" line="86"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="87"><span class="token comment"># 第7部分:总结与展望</span>
+</span><span class="code-line line-number" line="88"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="89">
+</span><span class="code-line line-number" line="90"><span class="token triple-quoted-string string">"""
+</span></span><span class="code-line line-number" line="91"><span class="token triple-quoted-string string">## 项目总结
+</span></span><span class="code-line line-number" line="92"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="93"><span class="token triple-quoted-string string">### 实现的功能
+</span></span><span class="code-line line-number" line="94"><span class="token triple-quoted-string string">- 功能1
+</span></span><span class="code-line line-number" line="95"><span class="token triple-quoted-string string">- 功能2
+</span></span><span class="code-line line-number" line="96"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="97"><span class="token triple-quoted-string string">### 遇到的挑战
+</span></span><span class="code-line line-number" line="98"><span class="token triple-quoted-string string">- 挑战1及解决方案
+</span></span><span class="code-line line-number" line="99"><span class="token triple-quoted-string string">- 挑战2及解决方案
+</span></span><span class="code-line line-number" line="100"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="101"><span class="token triple-quoted-string string">### 未来改进方向
+</span></span><span class="code-line line-number" line="102"><span class="token triple-quoted-string string">- 改进1
+</span></span><span class="code-line line-number" line="103"><span class="token triple-quoted-string string">- 改进2
+</span></span><span class="code-line line-number" line="104"><span class="token triple-quoted-string string">"""</span>
+</span></code></pre>
+<h3>16.4.4 测试你的项目</h3>
+<p>在提交之前，可以使用测试清单来判断自己的项目是否满足提交要求：</p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token list punctuation">-</span> [ ] 代码能够正常运行，没有报错
+</span><span class="code-line line-number" line="2"><span class="token list punctuation">-</span> [ ] README文档完整，说明清晰
+</span><span class="code-line line-number" line="3"><span class="token list punctuation">-</span> [ ] requirements.txt包含所有依赖
+</span><span class="code-line line-number" line="4"><span class="token list punctuation">-</span> [ ] 有清晰的使用示例
+</span><span class="code-line line-number" line="5"><span class="token list punctuation">-</span> [ ] 代码有适当的注释
+</span><span class="code-line line-number" line="6"><span class="token list punctuation">-</span> [ ] 输出结果符合预期
+</span><span class="code-line line-number" line="7"><span class="token list punctuation">-</span> [ ] 处理了常见的异常情况
+</span><span class="code-line line-number" line="8"><span class="token list punctuation">-</span> [ ] 项目结构清晰，文件命名规范
+</span><span class="code-line line-number" line="9"><span class="token list punctuation">-</span> [ ] 大文件已妥善处理（见下节）
+</span></code></pre>
+<h3>16.4.5 大文件处理指南</h3>
+<p><strong>⚠️ 重要：避免主仓库过大</strong></p>
+<p>为了保持 Hello-Agents 主仓库的轻量化，请遵循以下大文件处理规范：</p>
+<p><strong>（1）文件大小限制</strong></p>
+<ul>
+<li><strong>项目总大小</strong>： 不超过 5MB</li>
+<li><strong>禁止直接提交</strong>： 视频文件、大型数据集、模型文件</li>
+</ul>
+<p><strong>（2）大文件处理方案</strong></p>
+<p>如果你的项目包含大文件（数据集、视频、模型等），请使用以下方案：</p>
+<p><strong>方案 1：使用外部链接（推荐）</strong></p>
+<p>将大文件上传到外部平台，在 README 中提供下载链接：</p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">##</span> 数据集</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3">本项目使用的数据集较大，请从以下链接下载:
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token list punctuation">-</span> 数据集1: <span class="token url">[<span class="token content">百度网盘</span>](<span class="token url">链接</span>)</span> 提取码: xxxx
+</span><span class="code-line line-number" line="6"><span class="token list punctuation">-</span> 数据集2: <span class="token url">[<span class="token content">Google Drive</span>](<span class="token url">链接</span>)</span>
+</span><span class="code-line line-number" line="7"><span class="token list punctuation">-</span> 演示视频: <span class="token url">[<span class="token content">B站</span>](<span class="token url">链接</span>)</span> / <span class="token url">[<span class="token content">YouTube</span>](<span class="token url">链接</span>)</span>
+</span></code></pre>
+<p>推荐的外部平台：</p>
+<ul>
+<li><strong>数据集</strong>： 百度网盘、Google Drive、Kaggle、HuggingFace Datasets</li>
+<li><strong>视频</strong>： B 站、YouTube、腾讯视频</li>
+<li><strong>模型</strong>： HuggingFace Models、ModelScope</li>
+<li><strong>图片</strong>： GitHub Issues、图床服务</li>
+</ul>
+<p><strong>方案 2：创建独立仓库</strong></p>
+<p>如果项目资源较多，建议创建独立的数据仓库：</p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">##</span> 项目资源</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3">由于项目包含大量数据和演示资源，已单独创建资源仓库:
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token list punctuation">-</span> 资源仓库: https://github.com/你的用户名/项目名称-resources
+</span><span class="code-line line-number" line="6"><span class="token list punctuation">-</span> 包含内容: 数据集、演示视频、模型文件、测试数据等
+</span><span class="code-line line-number" line="7">
+</span><span class="code-line line-number" line="8"><span class="token title important"><span class="token punctuation">###</span> 使用方法</span>
+</span><span class="code-line line-number" line="9">
+</span><span class="code-line line-number" line="10">\`\`\`bash
+</span><span class="code-line line-number" line="11"><span class="token title important"><span class="token punctuation">#</span> 克隆资源仓库</span>
+</span><span class="code-line line-number" line="12">git clone https://github.com/你的用户名/项目名称-resources.git
+</span><span class="code-line line-number" line="13">
+</span><span class="code-line line-number" line="14"><span class="token title important"><span class="token punctuation">#</span> 将数据放到项目目录</span>
+</span><span class="code-line line-number" line="15">cp -r 项目名称-resources/data ./data
+</span><span class="code-line line-number" line="16">\`\`\`
+</span></code></pre>
+<p><strong>方案 3：使用示例数据</strong></p>
+<p>在主仓库中只提供小规模的示例数据：</p>
+<pre class="language-python"><code class="language-python code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 在README中说明</span>
+</span><span class="code-line line-number" line="2"><span class="token comment">## 数据说明</span>
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token operator">-</span> `data<span class="token operator">/</span>sample<span class="token punctuation">.</span>csv`<span class="token punctuation">:</span> 示例数据（<span class="token number">100</span>条记录）
+</span><span class="code-line line-number" line="5"><span class="token operator">-</span> 完整数据集（<span class="token number">10</span>万条记录）请从<span class="token punctuation">[</span>这里<span class="token punctuation">]</span><span class="token punctuation">(</span>链接<span class="token punctuation">)</span>下载
+</span></code></pre>
+<p><strong>（3）最佳实践示例</strong></p>
+<pre><code class="code-highlight"><span class="code-line line-number" line="1">你的用户名-项目名称/
+</span><span class="code-line line-number" line="2">├── README.md              # 包含外部资源链接
+</span><span class="code-line line-number" line="3">├── requirements.txt
+</span><span class="code-line line-number" line="4">├── main.ipynb
+</span><span class="code-line line-number" line="5">├── .gitignore            # 忽略大文件
+</span><span class="code-line line-number" line="6">├── data/
+</span><span class="code-line line-number" line="7">│   └── sample.csv        # 仅示例数据（&lt;1MB）
+</span><span class="code-line line-number" line="8">└── outputs/
+</span><span class="code-line line-number" line="9">    └── demo_result.png   # 仅演示结果（&lt;1MB）
+</span></code></pre>
+<p>README 中的说明：</p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">##</span> 数据和资源</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3"><span class="token title important"><span class="token punctuation">###</span> 示例数据</span>
+</span><span class="code-line line-number" line="4">项目包含小规模示例数据用于快速测试（位于<span class="token code-snippet code keyword">`data/sample.csv`</span>）
+</span><span class="code-line line-number" line="5">
+</span><span class="code-line line-number" line="6"><span class="token title important"><span class="token punctuation">###</span> 完整数据集</span>
+</span><span class="code-line line-number" line="7">完整数据集（500MB）请从以下链接下载:
+</span><span class="code-line line-number" line="8"><span class="token list punctuation">-</span> 百度网盘: [链接] 提取码: xxxx
+</span><span class="code-line line-number" line="9"><span class="token list punctuation">-</span> 下载后解压到<span class="token code-snippet code keyword">`data/`</span>目录
+</span><span class="code-line line-number" line="10">
+</span><span class="code-line line-number" line="11"><span class="token title important"><span class="token punctuation">###</span> 演示视频</span>
+</span><span class="code-line line-number" line="12"><span class="token list punctuation">-</span> B站: <span class="token url">[<span class="token content">项目演示视频</span>](<span class="token url">链接</span>)</span>
+</span><span class="code-line line-number" line="13"><span class="token list punctuation">-</span> YouTube: <span class="token url">[<span class="token content">Demo Video</span>](<span class="token url">链接</span>)</span>
+</span></code></pre>
+<h2>16.5 提交 Pull Request</h2>
+<h3>16.5.1 提交代码到 GitHub</h3>
+<p><strong>步骤 1：检查修改</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 查看修改的文件</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> status
+</span></code></pre>
+<p><strong>步骤 2：添加文件</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 添加所有修改的文件</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>
+</span><span class="code-line line-number" line="3">
+</span><span class="code-line line-number" line="4"><span class="token comment"># 或者添加特定文件</span>
+</span><span class="code-line line-number" line="5"><span class="token function">git</span> <span class="token function">add</span> Co-creation-projects/你的用户名-项目名称/
+</span></code></pre>
+<p><strong>步骤 3：提交修改</strong></p>
+<p>提交信息应遵循以下格式：</p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 格式:类型: 简短描述</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">"feat: 添加XXX毕业设计项目"</span>
+</span></code></pre>
+<p><strong>提交类型规范：</strong></p>
+<ul>
+<li><code>feat</code>： 新增功能或项目（毕业设计项目使用此类型）</li>
+<li><code>fix</code>： 修复 bug</li>
+<li><code>docs</code>： 文档更新</li>
+<li><code>style</code>： 代码格式调整（不影响功能）</li>
+<li><code>refactor</code>： 代码重构</li>
+<li><code>test</code>： 测试相关</li>
+<li><code>chore</code>： 其他修改（如依赖更新）</li>
+</ul>
+<p><strong>步骤 4：推送到 GitHub</strong></p>
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># 推送到你的Fork仓库</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> push origin feature/你的项目名称
+</span></code></pre>
+<h3>16.5.2 创建 Pull Request</h3>
+<p><strong>步骤 1：访问 GitHub</strong></p>
+<ol>
+<li>访问你 Fork 的仓库：<code>https://github.com/你的用户名/Hello-Agents</code></li>
+<li>点击"Pull requests"标签，如图 16.3 所示</li>
+<li>点击"New pull request"按钮</li>
+</ol>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-3.png" alt="" width="85%">
+  <p>图 16.3 创建 Pull Request</p>
+</div>
+<p><strong>步骤 2：选择分支</strong></p>
+<ul>
+<li>Base repository： <code>datawhalechina/Hello-Agents</code></li>
+<li>Base branch： <code>main</code></li>
+<li>Head repository： <code>你的用户名/Hello-Agents</code></li>
+<li>Compare branch： <code>feature/你的项目名称</code></li>
+</ul>
+<p><strong>步骤 3：填写 PR 信息</strong></p>
+<p><strong>⚠️ 重要：PR 标题统一格式</strong></p>
+<p>为了便于管理和检索，所有毕业设计项目的 PR 标题必须遵循以下格式：</p>
+<pre><code class="code-highlight"><span class="code-line line-number" line="1">[毕业设计] 项目名称 - 简短描述
+</span></code></pre>
+<p>示例：</p>
+<ul>
+<li><code>[毕业设计] CodeReviewAgent - 智能代码审查助手</code></li>
+<li><code>[毕业设计] StudyBuddy - AI学习伙伴</code></li>
+<li><code>[毕业设计] DataAnalyst - 智能数据分析师</code></li>
+</ul>
+<p><strong>PR 描述模板：</strong></p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">##</span> 项目信息</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">项目名称</span><span class="token punctuation">**</span></span>:XXX
+</span><span class="code-line line-number" line="4"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">作者</span><span class="token punctuation">**</span></span>:@你的用户名
+</span><span class="code-line line-number" line="5"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">项目类型</span><span class="token punctuation">**</span></span>:生产力工具/学习辅助/创意娱乐/数据分析/生活服务
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7"><span class="token title important"><span class="token punctuation">##</span> 项目简介</span>
+</span><span class="code-line line-number" line="8">
+</span><span class="code-line line-number" line="9">简要描述你的项目（2-3句话）
+</span><span class="code-line line-number" line="10">
+</span><span class="code-line line-number" line="11"><span class="token title important"><span class="token punctuation">##</span> 核心功能</span>
+</span><span class="code-line line-number" line="12">
+</span><span class="code-line line-number" line="13"><span class="token list punctuation">-</span> [ ] 功能1
+</span><span class="code-line line-number" line="14"><span class="token list punctuation">-</span> [ ] 功能2
+</span><span class="code-line line-number" line="15"><span class="token list punctuation">-</span> [ ] 功能3
+</span><span class="code-line line-number" line="16">
+</span><span class="code-line line-number" line="17"><span class="token title important"><span class="token punctuation">##</span> 技术亮点</span>
+</span><span class="code-line line-number" line="18">
+</span><span class="code-line line-number" line="19"><span class="token list punctuation">-</span> 使用了XXX范式
+</span><span class="code-line line-number" line="20"><span class="token list punctuation">-</span> 实现了XXX功能
+</span><span class="code-line line-number" line="21"><span class="token list punctuation">-</span> 优化了XXX性能
+</span><span class="code-line line-number" line="22">
+</span><span class="code-line line-number" line="23"><span class="token title important"><span class="token punctuation">##</span> 演示效果</span>
+</span><span class="code-line line-number" line="24">
+</span><span class="code-line line-number" line="25">（可选）添加截图或GIF展示项目效果
+</span><span class="code-line line-number" line="26">
+</span><span class="code-line line-number" line="27"><span class="token title important"><span class="token punctuation">##</span> 自检清单</span>
+</span><span class="code-line line-number" line="28">
+</span><span class="code-line line-number" line="29"><span class="token list punctuation">-</span> [ ] 代码能够正常运行
+</span><span class="code-line line-number" line="30"><span class="token list punctuation">-</span> [ ] README文档完整
+</span><span class="code-line line-number" line="31"><span class="token list punctuation">-</span> [ ] requirements.txt完整
+</span><span class="code-line line-number" line="32"><span class="token list punctuation">-</span> [ ] 有清晰的使用示例
+</span><span class="code-line line-number" line="33"><span class="token list punctuation">-</span> [ ] 代码有适当的注释
+</span><span class="code-line line-number" line="34">
+</span><span class="code-line line-number" line="35"><span class="token title important"><span class="token punctuation">##</span> 其他说明</span>
+</span><span class="code-line line-number" line="36">
+</span><span class="code-line line-number" line="37">（可选）其他需要说明的内容
+</span></code></pre>
+<p><strong>步骤 4：提交 PR</strong></p>
+<p>如图 16.4 所示，点击"Create pull request"按钮提交。</p>
+<div align="center">
+  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-4.png" alt="" width="85%">
+  <p>图 16.4 提交 Pull Request</p>
+</div>
+<h3>16.5.3 响应 Review 意见</h3>
+<p>提交 PR 后，社区成员会 review 你的代码并提出建议。请及时响应：</p>
+<ol>
+<li><strong>查看评论</strong>：在 PR 页面查看 reviewer 的评论</li>
+<li><strong>修改代码</strong>：根据建议修改代码</li>
+<li><strong>提交更新</strong>：
+<pre class="language-bash"><code class="language-bash code-highlight"><span class="code-line line-number" line="1"><span class="token function">git</span> <span class="token function">add</span> <span class="token builtin class-name">.</span>
+</span><span class="code-line line-number" line="2"><span class="token function">git</span> commit <span class="token parameter variable">-m</span> <span class="token string">"fix: 根据review意见修改XXX"</span>
+</span><span class="code-line line-number" line="3"><span class="token function">git</span> push origin feature/你的项目名称
+</span></code></pre>
+</li>
+<li><strong>回复评论</strong>：在 GitHub 上回复 reviewer，说明你的修改</li>
+</ol>
+<h2>16.6 示例项目展示</h2>
+<p>为了帮助你更好地理解毕业设计的要求，这里展示一个完整的示例项目，请别担心，小的创意同样可以被收录，只要是自己动手的作品都是值得珍惜的。</p>
+<p><strong>项目信息</strong></p>
+<ul>
+<li><strong>项目名称</strong>：CodeReviewAgent</li>
+<li><strong>作者</strong>：@jjyaoao</li>
+<li><strong>项目路径</strong>：<code>Co-creation-projects/jjyaoao-CodeReviewAgent/</code></li>
+</ul>
+<p><strong>项目结构</strong></p>
+<pre><code class="code-highlight"><span class="code-line line-number" line="1">jjyaoao-CodeReviewAgent/
+</span><span class="code-line line-number" line="2">├── README.md              # 项目文档
+</span><span class="code-line line-number" line="3">├── requirements.txt       # 依赖列表
+</span><span class="code-line line-number" line="4">├── main.ipynb            # 主程序(含快速演示和完整功能)
+</span><span class="code-line line-number" line="5">├── .env.example          # 环境变量示例
+</span><span class="code-line line-number" line="6">├── .gitignore            # Git忽略规则
+</span><span class="code-line line-number" line="7">├── data/
+</span><span class="code-line line-number" line="8">│   └── sample_code.py    # 示例代码
+</span><span class="code-line line-number" line="9">└── outputs/
+</span><span class="code-line line-number" line="10">    └── review_report.md  # 示例报告
+</span></code></pre>
+<p><strong>核心代码片段（main.ipynb）</strong></p>
+<pre class="language-python"><code class="language-python code-highlight"><span class="code-line line-number" line="1"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="2"><span class="token comment"># 智能代码审查助手</span>
+</span><span class="code-line line-number" line="3"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token keyword">from</span> hello_agents <span class="token keyword">import</span> SimpleAgent<span class="token punctuation">,</span> HelloAgentsLLM<span class="token punctuation">,</span> ToolRegistry
+</span><span class="code-line line-number" line="6"><span class="token keyword">from</span> hello_agents<span class="token punctuation">.</span>tools <span class="token keyword">import</span> Tool<span class="token punctuation">,</span> ToolParameter
+</span><span class="code-line line-number" line="7"><span class="token keyword">from</span> typing <span class="token keyword">import</span> Dict<span class="token punctuation">,</span> Any<span class="token punctuation">,</span> List
+</span><span class="code-line line-number" line="8"><span class="token keyword">import</span> ast
+</span><span class="code-line line-number" line="9"><span class="token keyword">import</span> os
+</span><span class="code-line line-number" line="10">
+</span><span class="code-line line-number" line="11"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="12"><span class="token comment"># 0. 配置LLM参数</span>
+</span><span class="code-line line-number" line="13"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="14">
+</span><span class="code-line line-number" line="15">os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"LLM_MODEL_ID"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"Qwen/Qwen2.5-72B-Instruct"</span>
+</span><span class="code-line line-number" line="16">os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"LLM_API_KEY"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"your_api_key_here"</span>
+</span><span class="code-line line-number" line="17">os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"LLM_BASE_URL"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"https://api-inference.modelscope.cn/v1/"</span>
+</span><span class="code-line line-number" line="18">os<span class="token punctuation">.</span>environ<span class="token punctuation">[</span><span class="token string">"LLM_TIMEOUT"</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"60"</span>
+</span><span class="code-line line-number" line="19">
+</span><span class="code-line line-number" line="20"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="21"><span class="token comment"># 1. 定义代码分析工具</span>
+</span><span class="code-line line-number" line="22"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="23">
+</span><span class="code-line line-number" line="24"><span class="token keyword">class</span> <span class="token class-name">CodeAnalysisTool</span><span class="token punctuation">(</span>Tool<span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="25">    <span class="token triple-quoted-string string">"""代码静态分析工具"""</span>
+</span><span class="code-line line-number" line="26">
+</span><span class="code-line line-number" line="27">    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="28">        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="29">            name<span class="token operator">=</span><span class="token string">"code_analysis"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="30">            description<span class="token operator">=</span><span class="token string">"分析Python代码的结构、复杂度和潜在问题"</span>
+</span><span class="code-line line-number" line="31">        <span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="32">
+</span><span class="code-line line-number" line="33">    <span class="token keyword">def</span> <span class="token function">run</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> parameters<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="34">        <span class="token triple-quoted-string string">"""分析代码并返回结果"""</span>
+</span><span class="code-line line-number" line="35">        code <span class="token operator">=</span> parameters<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"code"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="36">        <span class="token keyword">if</span> <span class="token keyword">not</span> code<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="37">            <span class="token keyword">return</span> <span class="token string">"错误:代码不能为空"</span>
+</span><span class="code-line line-number" line="38">
+</span><span class="code-line line-number" line="39">        <span class="token keyword">try</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="40">            tree <span class="token operator">=</span> ast<span class="token punctuation">.</span>parse<span class="token punctuation">(</span>code<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="41">            functions <span class="token operator">=</span> <span class="token punctuation">[</span>node <span class="token keyword">for</span> node <span class="token keyword">in</span> ast<span class="token punctuation">.</span>walk<span class="token punctuation">(</span>tree<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="42">                        <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> ast<span class="token punctuation">.</span>FunctionDef<span class="token punctuation">)</span><span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="43">            classes <span class="token operator">=</span> <span class="token punctuation">[</span>node <span class="token keyword">for</span> node <span class="token keyword">in</span> ast<span class="token punctuation">.</span>walk<span class="token punctuation">(</span>tree<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="44">                      <span class="token keyword">if</span> <span class="token builtin">isinstance</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> ast<span class="token punctuation">.</span>ClassDef<span class="token punctuation">)</span><span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="45">
+</span><span class="code-line line-number" line="46">            result <span class="token operator">=</span> <span class="token punctuation">{</span>
+</span><span class="code-line line-number" line="47">                <span class="token string">"函数数量"</span><span class="token punctuation">:</span> <span class="token builtin">len</span><span class="token punctuation">(</span>functions<span class="token punctuation">)</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="48">                <span class="token string">"类数量"</span><span class="token punctuation">:</span> <span class="token builtin">len</span><span class="token punctuation">(</span>classes<span class="token punctuation">)</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="49">                <span class="token string">"代码行数"</span><span class="token punctuation">:</span> <span class="token builtin">len</span><span class="token punctuation">(</span>code<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="50">                <span class="token string">"函数列表"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>f<span class="token punctuation">.</span>name <span class="token keyword">for</span> f <span class="token keyword">in</span> functions<span class="token punctuation">]</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="51">                <span class="token string">"类列表"</span><span class="token punctuation">:</span> <span class="token punctuation">[</span>c<span class="token punctuation">.</span>name <span class="token keyword">for</span> c <span class="token keyword">in</span> classes<span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="52">            <span class="token punctuation">}</span>
+</span><span class="code-line line-number" line="53">            <span class="token keyword">return</span> <span class="token builtin">str</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="54">        <span class="token keyword">except</span> SyntaxError <span class="token keyword">as</span> e<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="55">            <span class="token keyword">return</span> <span class="token string-interpolation"><span class="token string">f"语法错误:</span><span class="token interpolation"><span class="token punctuation">{</span><span class="token builtin">str</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">}</span></span><span class="token string">"</span></span>
+</span><span class="code-line line-number" line="56">
+</span><span class="code-line line-number" line="57">    <span class="token keyword">def</span> <span class="token function">get_parameters</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> List<span class="token punctuation">[</span>ToolParameter<span class="token punctuation">]</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="58">        <span class="token keyword">return</span> <span class="token punctuation">[</span>
+</span><span class="code-line line-number" line="59">            ToolParameter<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="60">                name<span class="token operator">=</span><span class="token string">"code"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="61">                <span class="token builtin">type</span><span class="token operator">=</span><span class="token string">"string"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="62">                description<span class="token operator">=</span><span class="token string">"要分析的Python代码"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="63">                required<span class="token operator">=</span><span class="token boolean">True</span>
+</span><span class="code-line line-number" line="64">            <span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="65">        <span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="66">
+</span><span class="code-line line-number" line="67"><span class="token keyword">class</span> <span class="token class-name">StyleCheckTool</span><span class="token punctuation">(</span>Tool<span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="68">    <span class="token triple-quoted-string string">"""代码风格检查工具"""</span>
+</span><span class="code-line line-number" line="69">
+</span><span class="code-line line-number" line="70">    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="71">        <span class="token builtin">super</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="72">            name<span class="token operator">=</span><span class="token string">"style_check"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="73">            description<span class="token operator">=</span><span class="token string">"检查代码是否符合PEP 8规范"</span>
+</span><span class="code-line line-number" line="74">        <span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="75">
+</span><span class="code-line line-number" line="76">    <span class="token keyword">def</span> <span class="token function">run</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span> parameters<span class="token punctuation">:</span> Dict<span class="token punctuation">[</span><span class="token builtin">str</span><span class="token punctuation">,</span> Any<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> <span class="token builtin">str</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="77">        <span class="token triple-quoted-string string">"""检查代码风格"""</span>
+</span><span class="code-line line-number" line="78">        code <span class="token operator">=</span> parameters<span class="token punctuation">.</span>get<span class="token punctuation">(</span><span class="token string">"code"</span><span class="token punctuation">,</span> <span class="token string">""</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="79">        <span class="token keyword">if</span> <span class="token keyword">not</span> code<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="80">            <span class="token keyword">return</span> <span class="token string">"错误:代码不能为空"</span>
+</span><span class="code-line line-number" line="81">
+</span><span class="code-line line-number" line="82">        issues <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="83">        lines <span class="token operator">=</span> code<span class="token punctuation">.</span>split<span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="84">        <span class="token keyword">for</span> i<span class="token punctuation">,</span> line <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>lines<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="85">            <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span> <span class="token operator">&gt;</span> <span class="token number">79</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="86">                issues<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"第</span><span class="token interpolation"><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span><span class="token string">行:超过79个字符"</span></span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="87">            <span class="token keyword">if</span> line<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span> <span class="token keyword">and</span> <span class="token keyword">not</span> line<span class="token punctuation">.</span>startswith<span class="token punctuation">(</span><span class="token string">'    '</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="88">                <span class="token keyword">if</span> <span class="token builtin">len</span><span class="token punctuation">(</span>line<span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token builtin">len</span><span class="token punctuation">(</span>line<span class="token punctuation">.</span>lstrip<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">not</span> <span class="token keyword">in</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">12</span><span class="token punctuation">]</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="89">                    issues<span class="token punctuation">.</span>append<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"第</span><span class="token interpolation"><span class="token punctuation">{</span>i<span class="token punctuation">}</span></span><span class="token string">行:缩进不规范"</span></span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="90">
+</span><span class="code-line line-number" line="91">        <span class="token keyword">if</span> <span class="token keyword">not</span> issues<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="92">            <span class="token keyword">return</span> <span class="token string">"代码风格良好，符合PEP 8规范"</span>
+</span><span class="code-line line-number" line="93">        <span class="token keyword">return</span> <span class="token string">"发现以下问题:\n"</span> <span class="token operator">+</span> <span class="token string">"\n"</span><span class="token punctuation">.</span>join<span class="token punctuation">(</span>issues<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="94">
+</span><span class="code-line line-number" line="95">    <span class="token keyword">def</span> <span class="token function">get_parameters</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">&gt;</span> List<span class="token punctuation">[</span>ToolParameter<span class="token punctuation">]</span><span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="96">        <span class="token keyword">return</span> <span class="token punctuation">[</span>
+</span><span class="code-line line-number" line="97">            ToolParameter<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="98">                name<span class="token operator">=</span><span class="token string">"code"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="99">                <span class="token builtin">type</span><span class="token operator">=</span><span class="token string">"string"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="100">                description<span class="token operator">=</span><span class="token string">"要检查的Python代码"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="101">                required<span class="token operator">=</span><span class="token boolean">True</span>
+</span><span class="code-line line-number" line="102">            <span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="103">        <span class="token punctuation">]</span>
+</span><span class="code-line line-number" line="104">
+</span><span class="code-line line-number" line="105"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="106"><span class="token comment"># 2. 创建工具注册表和智能体</span>
+</span><span class="code-line line-number" line="107"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="108">
+</span><span class="code-line line-number" line="109"><span class="token comment"># 创建工具注册表</span>
+</span><span class="code-line line-number" line="110">tool_registry <span class="token operator">=</span> ToolRegistry<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="111">tool_registry<span class="token punctuation">.</span>register_tool<span class="token punctuation">(</span>CodeAnalysisTool<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="112">tool_registry<span class="token punctuation">.</span>register_tool<span class="token punctuation">(</span>StyleCheckTool<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="113">
+</span><span class="code-line line-number" line="114"><span class="token comment"># 初始化LLM</span>
+</span><span class="code-line line-number" line="115">llm <span class="token operator">=</span> HelloAgentsLLM<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="116">
+</span><span class="code-line line-number" line="117"><span class="token comment"># 定义系统提示词</span>
+</span><span class="code-line line-number" line="118">system_prompt <span class="token operator">=</span> <span class="token triple-quoted-string string">"""你是一位经验丰富的代码审查专家。你的任务是:
+</span></span><span class="code-line line-number" line="119"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="120"><span class="token triple-quoted-string string">1. 使用code_analysis工具分析代码结构
+</span></span><span class="code-line line-number" line="121"><span class="token triple-quoted-string string">2. 使用style_check工具检查代码风格
+</span></span><span class="code-line line-number" line="122"><span class="token triple-quoted-string string">3. 基于分析结果，提供详细的审查报告
+</span></span><span class="code-line line-number" line="123"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="124"><span class="token triple-quoted-string string">审查报告应包括:
+</span></span><span class="code-line line-number" line="125"><span class="token triple-quoted-string string">- 代码结构分析
+</span></span><span class="code-line line-number" line="126"><span class="token triple-quoted-string string">- 风格问题
+</span></span><span class="code-line line-number" line="127"><span class="token triple-quoted-string string">- 潜在bug
+</span></span><span class="code-line line-number" line="128"><span class="token triple-quoted-string string">- 性能优化建议
+</span></span><span class="code-line line-number" line="129"><span class="token triple-quoted-string string">- 最佳实践建议
+</span></span><span class="code-line line-number" line="130"><span class="token triple-quoted-string string">
+</span></span><span class="code-line line-number" line="131"><span class="token triple-quoted-string string">请以Markdown格式输出报告。"""</span>
+</span><span class="code-line line-number" line="132">
+</span><span class="code-line line-number" line="133"><span class="token comment"># 创建智能体</span>
+</span><span class="code-line line-number" line="134">agent <span class="token operator">=</span> SimpleAgent<span class="token punctuation">(</span>
+</span><span class="code-line line-number" line="135">    name<span class="token operator">=</span><span class="token string">"代码审查助手"</span><span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="136">    llm<span class="token operator">=</span>llm<span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="137">    system_prompt<span class="token operator">=</span>system_prompt<span class="token punctuation">,</span>
+</span><span class="code-line line-number" line="138">    tool_registry<span class="token operator">=</span>tool_registry
+</span><span class="code-line line-number" line="139"><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="140">
+</span><span class="code-line line-number" line="141"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="142"><span class="token comment"># 3. 运行示例</span>
+</span><span class="code-line line-number" line="143"><span class="token comment"># ========================================</span>
+</span><span class="code-line line-number" line="144">
+</span><span class="code-line line-number" line="145"><span class="token comment"># 读取示例代码</span>
+</span><span class="code-line line-number" line="146"><span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"data/sample_code.py"</span><span class="token punctuation">,</span> <span class="token string">"r"</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="147">    sample_code <span class="token operator">=</span> f<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="148">
+</span><span class="code-line line-number" line="149"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"=== 待审查的代码 ==="</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="150"><span class="token keyword">print</span><span class="token punctuation">(</span>sample_code<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="151"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n"</span> <span class="token operator">+</span> <span class="token string">"="</span><span class="token operator">*</span><span class="token number">50</span> <span class="token operator">+</span> <span class="token string">"\n"</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="152">
+</span><span class="code-line line-number" line="153"><span class="token comment"># 执行代码审查</span>
+</span><span class="code-line line-number" line="154"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"=== 开始代码审查 ==="</span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="155">review_result <span class="token operator">=</span> agent<span class="token punctuation">.</span>run<span class="token punctuation">(</span><span class="token string-interpolation"><span class="token string">f"请审查以下Python代码:\n\n```python\n</span><span class="token interpolation"><span class="token punctuation">{</span>sample_code<span class="token punctuation">}</span></span><span class="token string">\n```"</span></span><span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="156">
+</span><span class="code-line line-number" line="157"><span class="token keyword">print</span><span class="token punctuation">(</span>review_result<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="158">
+</span><span class="code-line line-number" line="159"><span class="token comment"># 保存审查报告</span>
+</span><span class="code-line line-number" line="160"><span class="token keyword">with</span> <span class="token builtin">open</span><span class="token punctuation">(</span><span class="token string">"outputs/review_report.md"</span><span class="token punctuation">,</span> <span class="token string">"w"</span><span class="token punctuation">,</span> encoding<span class="token operator">=</span><span class="token string">"utf-8"</span><span class="token punctuation">)</span> <span class="token keyword">as</span> f<span class="token punctuation">:</span>
+</span><span class="code-line line-number" line="161">    f<span class="token punctuation">.</span>write<span class="token punctuation">(</span>review_result<span class="token punctuation">)</span>
+</span><span class="code-line line-number" line="162">
+</span><span class="code-line line-number" line="163"><span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">"\n审查报告已保存到 outputs/review_report.md"</span><span class="token punctuation">)</span>
+</span></code></pre>
+<p><strong>README.md 示例</strong></p>
+<pre class="language-markdown"><code class="language-markdown code-highlight"><span class="code-line line-number" line="1"><span class="token title important"><span class="token punctuation">#</span> CodeReviewAgent - 智能代码审查助手</span>
+</span><span class="code-line line-number" line="2">
+</span><span class="code-line line-number" line="3"><span class="token blockquote punctuation">&gt;</span> 基于HelloAgents框架的智能代码审查工具
+</span><span class="code-line line-number" line="4">
+</span><span class="code-line line-number" line="5"><span class="token title important"><span class="token punctuation">##</span> 📝 项目简介</span>
+</span><span class="code-line line-number" line="6">
+</span><span class="code-line line-number" line="7">CodeReviewAgent是一个智能代码审查助手，能够自动分析Python代码的质量、发现潜在问题并提供优化建议。
+</span><span class="code-line line-number" line="8">
+</span><span class="code-line line-number" line="9"><span class="token title important"><span class="token punctuation">###</span> 核心功能</span>
+</span><span class="code-line line-number" line="10">
+</span><span class="code-line line-number" line="11"><span class="token list punctuation">-</span> ✅ 代码结构分析:统计函数、类、代码行数等
+</span><span class="code-line line-number" line="12"><span class="token list punctuation">-</span> ✅ 风格检查:检查是否符合PEP 8规范
+</span><span class="code-line line-number" line="13"><span class="token list punctuation">-</span> ✅ 智能建议:基于LLM提供深度分析和优化建议
+</span><span class="code-line line-number" line="14"><span class="token list punctuation">-</span> ✅ 报告生成:生成Markdown格式的审查报告
+</span><span class="code-line line-number" line="15">
+</span><span class="code-line line-number" line="16"><span class="token title important"><span class="token punctuation">##</span> 🛠️ 技术栈</span>
+</span><span class="code-line line-number" line="17">
+</span><span class="code-line line-number" line="18"><span class="token list punctuation">-</span> HelloAgents框架（SimpleAgent + ToolRegistry）
+</span><span class="code-line line-number" line="19"><span class="token list punctuation">-</span> Python AST模块（代码解析）
+</span><span class="code-line line-number" line="20"><span class="token list punctuation">-</span> ModelScope API（Qwen2.5-72B模型）
+</span><span class="code-line line-number" line="21">
+</span><span class="code-line line-number" line="22"><span class="token title important"><span class="token punctuation">##</span> 🚀 快速开始</span>
+</span><span class="code-line line-number" line="23">
+</span><span class="code-line line-number" line="24"><span class="token title important"><span class="token punctuation">###</span> 安装依赖</span>
+</span><span class="code-line line-number" line="25">
+</span><span class="code-line line-number" line="26">\`\`\`bash
+</span><span class="code-line line-number" line="27">pip install -r requirements.txt
+</span><span class="code-line line-number" line="28">\`\`\`
+</span><span class="code-line line-number" line="29">
+</span><span class="code-line line-number" line="30"><span class="token title important"><span class="token punctuation">###</span> 配置LLM参数</span>
+</span><span class="code-line line-number" line="31">
+</span><span class="code-line line-number" line="32"><span class="token bold"><span class="token punctuation">**</span><span class="token content">方式1: 使用.env文件</span><span class="token punctuation">**</span></span>
+</span><span class="code-line line-number" line="33">
+</span><span class="code-line line-number" line="34">\`\`\`bash
+</span><span class="code-line line-number" line="35">cp .env.example .env
+</span><span class="code-line line-number" line="36"><span class="token title important"><span class="token punctuation">#</span> 编辑.env文件,填入你的API密钥</span>
+</span><span class="code-line line-number" line="37">\`\`\`
+</span><span class="code-line line-number" line="38">
+</span><span class="code-line line-number" line="39"><span class="token bold"><span class="token punctuation">**</span><span class="token content">方式2: 直接在Notebook中设置</span><span class="token punctuation">**</span></span>
+</span><span class="code-line line-number" line="40">
+</span><span class="code-line line-number" line="41">项目已预配置ModelScope API,可直接运行。如需修改,编辑main.ipynb第1部分的配置代码。
+</span><span class="code-line line-number" line="42">
+</span><span class="code-line line-number" line="43"><span class="token title important"><span class="token punctuation">###</span> 运行项目</span>
+</span><span class="code-line line-number" line="44">
+</span><span class="code-line line-number" line="45">\`\`\`bash
+</span><span class="code-line line-number" line="46">jupyter lab
+</span><span class="code-line line-number" line="47"><span class="token title important"><span class="token punctuation">#</span> 打开main.ipynb并运行所有单元格</span>
+</span><span class="code-line line-number" line="48">\`\`\`
+</span><span class="code-line line-number" line="49">
+</span><span class="code-line line-number" line="50"><span class="token title important"><span class="token punctuation">##</span> 📖 使用示例</span>
+</span><span class="code-line line-number" line="51">
+</span><span class="code-line line-number" line="52"><span class="token list punctuation">1.</span> 将待审查的代码放入<span class="token code-snippet code keyword">`data/sample_code.py`</span>
+</span><span class="code-line line-number" line="53"><span class="token list punctuation">2.</span> 运行<span class="token code-snippet code keyword">`main.ipynb`</span>
+</span><span class="code-line line-number" line="54"><span class="token list punctuation">3.</span> 查看生成的审查报告<span class="token code-snippet code keyword">`outputs/review_report.md`</span>
+</span><span class="code-line line-number" line="55">
+</span><span class="code-line line-number" line="56"><span class="token title important"><span class="token punctuation">##</span> 🎯 项目亮点</span>
+</span><span class="code-line line-number" line="57">
+</span><span class="code-line line-number" line="58"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">自动化</span><span class="token punctuation">**</span></span>:无需人工逐行检查，自动发现问题
+</span><span class="code-line line-number" line="59"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">智能化</span><span class="token punctuation">**</span></span>:利用LLM理解代码语义，提供深度建议
+</span><span class="code-line line-number" line="60"><span class="token list punctuation">-</span> <span class="token bold"><span class="token punctuation">**</span><span class="token content">可扩展</span><span class="token punctuation">**</span></span>:易于添加新的检查规则和工具
+</span><span class="code-line line-number" line="61">
+</span><span class="code-line line-number" line="62"><span class="token title important"><span class="token punctuation">##</span> 👤 作者</span>
+</span><span class="code-line line-number" line="63">
+</span><span class="code-line line-number" line="64"><span class="token list punctuation">-</span> GitHub: <span class="token url">[<span class="token content">@jjyaoao</span>](<span class="token url">https://github.com/jjyaoao</span>)</span>
+</span><span class="code-line line-number" line="65"><span class="token list punctuation">-</span> 项目链接:<span class="token url">[<span class="token content">CodeReviewAgent</span>](<span class="token url">https://github.com/datawhalechina/Hello-Agents/tree/main/Co-creation-projects/jjyaoao-CodeReviewAgent</span>)</span>
+</span><span class="code-line line-number" line="66">
+</span><span class="code-line line-number" line="67"><span class="token title important"><span class="token punctuation">##</span> 🙏 致谢</span>
+</span><span class="code-line line-number" line="68">
+</span><span class="code-line line-number" line="69">感谢Datawhale社区和Hello-Agents项目！
+</span></code></pre>
+<h2>16.7 总结与展望</h2>
+<p>通过完成毕业设计，你应该已经掌握了智能体系统设计的完整流程。从需求出发设计系统架构，熟练使用 HelloAgents 框架的各种功能和组件，开发自定义工具扩展智能体能力，完成从需求分析到代码实现的完整项目开发，学会使用 Git 和 GitHub 进行开源协作，以及编写清晰的技术文档。</p>
+<p>在本项目中，我们从零开始构建了 HelloAgents 框架，并用它实现了多个实用的应用。完成毕业设计只是开始，你可以继续深入学习更多智能体范式和算法、提示工程和上下文工程、多智能体协作机制等理论知识；也可以扩展技术栈，学习 Web 开发构建完整的应用、学习数据库实现数据持久化、学习部署将应用上线；还可以持续优化你的项目，添加更多功能、优化性能和用户体验、完善测试和文档；更重要的是，积极参与社区贡献，帮助其他学习者、参与 Hello-Agents 框架开发、分享你的经验和心得。</p>
+<p>从第一章的简单智能体，到现在能够独立构建完整的多智能体应用，你已经走过了一段精彩的学习旅程。但这不是终点，而是新的起点。</p>
+<p>AI 技术日新月异，智能体领域更是充满无限可能。希望你能够保持好奇心持续学习新技术，勇于用 AI 技术解决实际问题创造价值，乐于将你的经验和成果分享给社区，不断打磨你的作品追求卓越。</p>
+<p>最后，感谢你完整阅读了本项目。希望你在学习的过程中有所收获，也希望你能够将所学应用到实际项目中，创造出令人惊叹的智能体应用。AI 的未来充满无限可能，让我们一起探索和创造!</p>
+<p><strong>记住：最好的学习方式就是动手实践！</strong></p>
+<p>现在，开始构建属于你的智能体应用吧！我们期待在 Co-creation-projects 目录中看到你的精彩作品！</p>
+<p>如果你觉得 Hello-Agents 项目对你有帮助，请给我们一个⭐Star！</p>
+<hr>
+<div align="center">
+  <strong>🎓 恭喜你完成了 Hello-Agents 教程的学习！🎉</strong></div>
