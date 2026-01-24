@@ -104,7 +104,7 @@ export default defineConfig({
     // 页脚
     footer: {
       message: '基于 CC BY-NC-SA 4.0 发布',
-      copyright: 'Copyright © 2024-present Datawhale'
+      copyright: 'Copyright © 2026-present Datawhale'
     },
 
     // 编辑链接
