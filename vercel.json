@@ -3,12 +3,8 @@
   "public": true,
   "buildCommand": "npm run docs:build",
   "outputDirectory": ".vitepress/dist",
-  "builds": [
-    {
-      "src": "**/*",
-      "use": "@vercel/static"
-    }
-  ],
+  "installCommand": "npm install",
+  "framework": null,
   "headers": [
     {
       "source": "/(.*)",
