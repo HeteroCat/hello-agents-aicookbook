@@ -1,0 +1,50 @@
+/* VitePress 自定义样式 */
+
+/* Giscus 评论区域样式 */
+.giscus-wrapper {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+/* 主色调自定义 */
+:root {
+  --vp-c-brand-1: #3c8772;
+  --vp-c-brand-2: #347562;
+  --vp-c-brand-3: #2a5f4f;
+}
+
+/* 代码块样式优化 */
+.vp-code-group .tabs {
+  border-radius: 8px 8px 0 0;
+}
+
+/* 图片响应式 */
+img {
+  border-radius: 8px;
+}
+
+/* 表格样式优化 */
+table {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg-soft);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-brand-1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-brand-2);
+}

@@ -1,6 +1,8 @@
 {
   "version": 2,
   "public": true,
+  "buildCommand": "npm run docs:build",
+  "outputDirectory": ".vitepress/dist",
   "builds": [
     {
       "src": "**/*",

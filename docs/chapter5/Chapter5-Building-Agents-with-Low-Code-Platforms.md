@@ -190,9 +190,9 @@ You are a senior and authoritative technology media editor, skilled at efficient
 The user prompt is used to define specific task instructions and data sources.
 
 ```
-- **Information Extraction and Integration:** From input sources `{{articles}}`, `{{articles1}}`, `{{articles2}}`, and `{{articles3}}`, filter and extract article titles and corresponding links related to AI, large models, AIGC, LLM, and other topics, and organize them into the **"AI Technology News"** module.
-- **Academic Paper Summary:** From input source `{{arxiv}}`, based on fields `arxiv_title` and `arxiv_link`, summarize and organize the latest paper content to form the **"AI Academic Papers"** module.
-- **Open-Source Project Filtering:** From input source `{{GitHub}}`, filter out the **5 most prominent and influential AI open-source projects**. Extract the titles and corresponding links of these projects and organize them into the **"AI Open-Source Projects"** module.
+- **Information Extraction and Integration:** From input sources `&#123;&#123;articles&#125;&#125;`, `&#123;&#123;articles1&#125;&#125;`, `&#123;&#123;articles2&#125;&#125;`, and `&#123;&#123;articles3&#125;&#125;`, filter and extract article titles and corresponding links related to AI, large models, AIGC, LLM, and other topics, and organize them into the **"AI Technology News"** module.
+- **Academic Paper Summary:** From input source `&#123;&#123;arxiv&#125;&#125;`, based on fields `arxiv_title` and `arxiv_link`, summarize and organize the latest paper content to form the **"AI Academic Papers"** module.
+- **Open-Source Project Filtering:** From input source `&#123;&#123;GitHub&#125;&#125;`, filter out the **5 most prominent and influential AI open-source projects**. Extract the titles and corresponding links of these projects and organize them into the **"AI Open-Source Projects"** module.
 
 # Attention
 - Strictly follow the daily report output format defined in the system prompt.
@@ -835,7 +835,7 @@ This is the brain of the entire workflow. Drag an `AI Agent` node from the node 
   <p>Figure 5.46 AI Agent Node Settings</p>
 </div>
 
-This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject (`{{ $json.snippet }}{{ $json.Subject }}`) as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
+This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject (`&#123;&#123; $json.snippet &#125;&#125;&#123;&#123; $json.Subject &#125;&#125;`) as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
 
 For the AI Agent node, we mainly need to fill in the `User Message` and `System Message` sections, as shown in Figure 5.47.
 
@@ -849,17 +849,17 @@ Here is the Prompt used in our case:
 ```json
 # Prompt (User Message)
 # Context Information
-- Current Time: {{ new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: false }) }} (Sydney, Australia time)
-- Sender: {{ $json.From }}
-- Subject: {{ $json.Subject }}
-- Email Body: {{ $json.snippet }}
+- Current Time: &#123;&#123; new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: false }) &#125;&#125; (Sydney, Australia time)
+- Sender: &#123;&#123; $json.From &#125;&#125;
+- Subject: &#123;&#123; $json.Subject &#125;&#125;
+- Email Body: &#123;&#123; $json.snippet &#125;&#125;
 
 # System Message
 # Role and Goal
 You are a 24/7 on-call, professional and efficient AI email assistant. Your task is: to do your best to answer all questions in emails using public information at the first opportunity, and add contextual status reminders at the beginning of replies based on my work schedule.
 
 # Context Information
-- Current Time: {{ new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: false }) }} (Sydney, Australia time)
+- Current Time: &#123;&#123; new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', hour12: false }) &#125;&#125; (Sydney, Australia time)
 - Email information is in the input data.
 
 # Available Tools
@@ -918,7 +918,7 @@ The Description parameter is the description definition of the tool when the AI 
 This is the Simple Vector Store2 tool, used to query my personal information, especially my working hours and email reply policy. When you need to determine whether it is currently working hours, or need to inform the other party when I will reply to emails, you must use this tool.
 ```
 
-For Memory, the only thing to note is that here we use the thread name of each mailbox as a unique identifier to ensure storage uniqueness. The Key is set to `{{ $('Gmail').item.json.threadId }}`
+For Memory, the only thing to note is that here we use the thread name of each mailbox as a unique identifier to ensure storage uniqueness. The Key is set to `&#123;&#123; $('Gmail').item.json.threadId &#125;&#125;`
 
 
 
@@ -926,9 +926,9 @@ For Memory, the only thing to note is that here we use the thread name of each m
 
 The last step is execution. Connect the output of the `AI Agent` node to a `Gmail` node, set **Operation** to `Send`. Use n8n expressions to associate the recipient, subject, and body with the corresponding fields in the JSON data output by `AI Agent` to achieve automatic email reply, as shown in Figure 5.49.
 
-- **To**: `{{ $('Gmail').item.json.From }}` (or sender field in other triggers)
-- **Subject**: `Re:  {{ $('Gmail').item.json.Subject }}`
-- **Message**: `{{ $json.output }}`
+- **To**: `&#123;&#123; $('Gmail').item.json.From &#125;&#125;` (or sender field in other triggers)
+- **Subject**: `Re:  &#123;&#123; $('Gmail').item.json.Subject &#125;&#125;`
+- **Message**: `&#123;&#123; $json.output &#125;&#125;`
 
 <div align="center">
   <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-12.png" alt="" width="90%"/>
