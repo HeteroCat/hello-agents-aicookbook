@@ -1,6 +1,6 @@
 # Chapter 9 Context Engineering
 
-In previous chapters, we have introduced memory systems and RAG for agents. However, to enable agents to stably "think" and "act" in real complex scenarios, memory and retrieval alone are not enough—we need an engineering methodology to continuously and systematically construct appropriate "context" for the model. This is the theme of this chapter: Context Engineering. It focuses on "how to assemble and optimize input context in a reusable, measurable, and evolvable way before each model call", thereby improving correctness, robustness, and efficiency<sup>[1][2]</sup>.
+In previous chapters, we have introduced memory systems and RAG for agents. However, to enable agents to stably "think" and "act" in real complex scenarios, memory and retrieval alone are not enough—we need an engineering methodology to continuously and systematically construct appropriate "context" for the model. This is the theme of this chapter: Context Engineering. It focuses on "how to assemble and optimize input context in a reusable, measurable, and evolvable way before each model call", thereby improving correctness, robustness, and efficiency[1][2].
 
 To enable readers to quickly experience the complete functionality of this chapter, we provide a directly installable Python package. You can install the version corresponding to this chapter with the following command:
 
@@ -56,7 +56,7 @@ Under the constraint of "limited attention budget", the goal of excellent contex
 - **System Prompt**: Clear and straightforward language, with information hierarchy at "just right" height. Common pitfalls at two extremes:
   - Over-hardcoding: Writing complex, fragile if-else logic in prompts, with high long-term maintenance costs and fragility.
   - Too vague: Only providing macro goals and generalized guidance, lacking **specific signals** for expected output or assuming incorrect "shared context".
-  It is recommended to organize prompts into sections (such as <background_information>, <instructions>, tool guidance, output description, etc.), separated by XML/Markdown. Regardless of format, the pursuit is the **"minimum necessary information set" that can fully outline expected behavior** ("minimum" does not equal "shortest"). First run with the best model on the minimum prompt, then add clear instructions and examples based on failure modes.
+  It is recommended to organize prompts into sections (such as , , tool guidance, output description, etc.), separated by XML/Markdown. Regardless of format, the pursuit is the **"minimum necessary information set" that can fully outline expected behavior** ("minimum" does not equal "shortest"). First run with the best model on the minimum prompt, then add clear instructions and examples based on failure modes.
 
 - **Tools**: Tools define the contract between the agent and the information/action space, and must promote efficiency: they must return **token-friendly** information while encouraging efficient agent behavior. Tools should:
   - Have single responsibilities with low overlap, clear interface semantics;

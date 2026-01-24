@@ -2,10 +2,10 @@
 
 To deeply understand why modern agents present their current form and the origins of their core design philosophies, this chapter will trace back through history: starting from the classical era of artificial intelligence, exploring how the earliest "intelligence" was defined within rule systems of logic and symbols; then witnessing the major shift from single, centralized intelligence models to distributed, collaborative intelligence thinking; and finally understanding how the "learning" paradigm completely transformed the way agents acquire capabilities, giving birth to the modern agents we see today.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-00.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.1 The evolutionary ladder of AI agents</p>
-</div>
+
+  
+  Figure 2.1 The evolutionary ladder of AI agents
+
 
 As shown in Figure 2.1, **the emergence of each new paradigm is to solve the core "pain points" or fundamental limitations of the previous generation paradigm.** While new solutions bring capability leaps, they also introduce new "limitations" that are difficult to overcome at the time, which in turn lay the groundwork for the birth of the next generation paradigm. Understanding this "problem-driven" iterative process helps us more profoundly grasp the deep reasons and historical inevitability behind modern agent technology choices.
 
@@ -17,7 +17,7 @@ In the view of symbolicism, the core of intelligent behavior is operating on sym
 
 ### 2.1.1 Physical Symbol System Hypothesis
 
-The theoretical foundation of the symbolicism era was the **Physical Symbol System Hypothesis (PSSH)**<sup>[1]</sup>, jointly proposed by **Allen Newell** and **Herbert A. Simon** in 1976. These two Turing Award winners provided theoretical guidance and criteria for implementing general artificial intelligence on computers through this hypothesis.
+The theoretical foundation of the symbolicism era was the **Physical Symbol System Hypothesis (PSSH)**[1], jointly proposed by **Allen Newell** and **Herbert A. Simon** in 1976. These two Turing Award winners provided theoretical guidance and criteria for implementing general artificial intelligence on computers through this hypothesis.
 
 The hypothesis contains two core assertions:
 
@@ -26,10 +26,10 @@ The hypothesis contains two core assertions:
 
 A physical symbol system here refers to a system that can exist in the physical world, composed of a set of distinguishable symbols and a series of processes that operate on these symbols, with constituent elements as shown in Figure 2.2. These symbols can be combined into more complex structures (such as expressions), while processes can create, modify, copy, and destroy these symbol structures.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-0.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.2 Constituent elements of a physical symbol system</p>
-</div>
+
+  
+  Figure 2.2 Constituent elements of a physical symbol system
+
 
 In short, PSSH boldly declared: **The essence of intelligence is the computation and processing of symbols.**
 
@@ -41,10 +41,10 @@ Under the direct influence of the physical symbol system hypothesis, **Expert Sy
 
 A typical expert system usually consists of several core components including a knowledge base, inference engine, and user interface, with a general architecture as shown in Figure 2.3.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-1.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.3 General architecture of expert systems</p>
-</div>
+
+  
+  Figure 2.3 General architecture of expert systems
+
 
 This architecture clearly embodies the design philosophy of separating knowledge from reasoning, an important characteristic of symbolicism AI.
 
@@ -59,26 +59,26 @@ The "intelligence" of expert systems mainly comes from its two core components: 
 
 **Application Case and Analysis: MYCIN System**
 
-MYCIN is one of the most famous and influential expert systems in history, developed by Stanford University in the 1970s<sup>[2]</sup>. It was designed to assist doctors in diagnosing bacterial blood infections and recommending appropriate antibiotic treatment plans.
+MYCIN is one of the most famous and influential expert systems in history, developed by Stanford University in the 1970s[2]. It was designed to assist doctors in diagnosing bacterial blood infections and recommending appropriate antibiotic treatment plans.
 
 - **Working Principle**: MYCIN collected patient symptoms, medical history, and test results through question-and-answer interactions with doctors. Its knowledge base contained about 600 "IF-THEN" rules provided by medical experts. The inference engine mainly worked in backward chaining: starting from the highest goal of "determining the pathogen," it backward-derived what evidence and conditions were needed, then asked doctors questions to obtain this information. Its simplified workflow is shown in Figure 2.4.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-2.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.4 Schematic diagram of MYCIN backward chaining reasoning process</p>
-</div>
+
+  
+  Figure 2.4 Schematic diagram of MYCIN backward chaining reasoning process
+
 
 - **Uncertainty Handling**: Medical diagnosis is full of uncertainty. An important innovation of MYCIN was introducing the concept of **Certainty Factor (CF)**, using a numerical value between -1 and 1 to represent the credibility of a conclusion. This enabled the system to handle uncertain, ambiguous medical knowledge and provide diagnostic results with credibility assessments, which was closer to the real world than simple Boolean logic.
 - **Achievements and Significance**: In an evaluation, MYCIN's performance in blood infection diagnosis exceeded that of non-specialist doctors and even reached the level of human experts. Its success eloquently proved the validity of the physical symbol system hypothesis: through careful knowledge engineering and symbolic reasoning, machines could indeed exhibit excellent "intelligence" in highly complex professional domains. MYCIN was not only a milestone in the development history of expert systems but also paved the way for subsequent commercial applications of artificial intelligence in various vertical domains.
 
 ### 2.1.3 SHRDLU
 
-If expert systems demonstrated the "depth" of symbolic AI in professional domains, then the SHRDLU project<sup>[3]</sup> developed by **Terry Winograd** from 1968-1970 achieved a revolutionary breakthrough in "breadth." As shown in Figure 2.5, SHRDLU aimed to build a comprehensive intelligent agent that could interact fluently with humans through natural language in the micro-environment of the "blocks world." The "blocks world" is a simulated three-dimensional virtual space containing blocks of different shapes, colors, and sizes, as well as a virtual robotic arm that can grasp and move them. Users issue commands or ask questions to SHRDLU in natural language, and SHRDLU executes actions in the virtual world or provides text responses.
+If expert systems demonstrated the "depth" of symbolic AI in professional domains, then the SHRDLU project[3] developed by **Terry Winograd** from 1968-1970 achieved a revolutionary breakthrough in "breadth." As shown in Figure 2.5, SHRDLU aimed to build a comprehensive intelligent agent that could interact fluently with humans through natural language in the micro-environment of the "blocks world." The "blocks world" is a simulated three-dimensional virtual space containing blocks of different shapes, colors, and sizes, as well as a virtual robotic arm that can grasp and move them. Users issue commands or ask questions to SHRDLU in natural language, and SHRDLU executes actions in the virtual world or provides text responses.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-3.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.5 SHRDLU's "blocks world" interaction interface</p>
-</div>
+
+  
+  Figure 2.5 SHRDLU's "blocks world" interaction interface
+
 
 SHRDLU attracted widespread attention at the time mainly because it was the first to integrate multiple independent artificial intelligence modules (such as language parsing, planning, memory) into a unified system and make them work collaboratively:
 
@@ -106,13 +106,13 @@ Despite significant achievements in early projects, starting from the 1980s, sym
 The "intelligence" of symbolic agents depends entirely on the quality and completeness of their knowledge bases. However, how to build a knowledge base that can support real-world interaction has proven to be an extremely arduous task, mainly reflected in two aspects:
 
 - **Knowledge Acquisition Bottleneck**: The knowledge of expert systems needs to be constructed by human experts and knowledge engineers through tedious processes of interviews, refinement, and encoding. This process is costly, time-consuming, and difficult to scale. More importantly, much of human expert knowledge is implicit and intuitive, difficult to be clearly expressed as "IF-THEN" rules. Attempting to manually symbolize all knowledge of the entire world is considered an almost impossible task.
-- **Common-sense Problem**: Human behavior relies on a vast background of common sense (for example, "water is wet," "ropes can pull but not push"), but symbolic systems know nothing about this unless explicitly encoded. Establishing a complete knowledge base for broad, vague common sense remains a major challenge to this day. The Cyc project<sup>[4]</sup>, after decades of effort, still has very limited results and applications.
+- **Common-sense Problem**: Human behavior relies on a vast background of common sense (for example, "water is wet," "ropes can pull but not push"), but symbolic systems know nothing about this unless explicitly encoded. Establishing a complete knowledge base for broad, vague common sense remains a major challenge to this day. The Cyc project[4], after decades of effort, still has very limited results and applications.
 
 **(2) Frame Problem and System Brittleness**
 
 In addition to knowledge-level challenges, symbolicism also encountered logical dilemmas when dealing with a dynamically changing world.
 
-- **Frame Problem**: In a dynamic world, how to efficiently determine what things have not changed after an agent executes an action is a logical puzzle<sup>[5]</sup>. Explicitly declaring all invariant states for each action is computationally infeasible, yet humans can effortlessly ignore irrelevant changes.
+- **Frame Problem**: In a dynamic world, how to efficiently determine what things have not changed after an agent executes an action is a logical puzzle[5]. Explicitly declaring all invariant states for each action is computationally infeasible, yet humans can effortlessly ignore irrelevant changes.
 - **Brittleness**: Symbolic systems rely entirely on preset rules, making their behavior very "brittle." Once encountering any minor change or new situation outside the rules, the system may completely fail, unable to adapt flexibly like humans. SHRDLU's success was precisely because it operated in a closed world with complete rules, while the real world is full of exceptions.
 
 ## 2.2 Building Rule-Based Chatbots
@@ -121,7 +121,7 @@ After exploring the theoretical challenges of symbolicism, in this section we wi
 
 ### 2.2.1 ELIZA's Design Philosophy
 
-ELIZA was a computer program released in 1966 by MIT computer scientist **Joseph Weizenbaum**<sup>[6]</sup>, one of the famous early attempts in the field of natural language processing. ELIZA was not a single program but a framework that could execute different "scripts." Among them, the most widely known and successful script was "DOCTOR," which imitated a Rogerian non-directive psychotherapist.
+ELIZA was a computer program released in 1966 by MIT computer scientist **Joseph Weizenbaum**[6], one of the famous early attempts in the field of natural language processing. ELIZA was not a single program but a framework that could execute different "scripts." Among them, the most widely known and successful script was "DOCTOR," which imitated a Rogerian non-directive psychotherapist.
 
 ELIZA's working method was extremely clever: it never directly answered questions or provided information but identified keywords in user input, then applied a set of preset transformation rules to convert user statements into open-ended questions. For example, when a user said "I am sad about my boyfriend," ELIZA might identify the keyword "I am sad about..." and apply a rule to generate the response: "Why are you sad about your boyfriend?"
 
@@ -286,7 +286,7 @@ ELIZA's practice clearly revealed the core contradiction of the symbolicism appr
 
 ## 2.3 Marvin Minsky's Society of Mind
 
-The exploration of symbolicism and ELIZA's practice jointly pointed to a problem: a single, centralized reasoning engine built through preset rules seems difficult to lead to true intelligence. No matter how large the rule base, the system always appears rigid and brittle when facing the ambiguity, complexity, and infinite changes of the real world. This dilemma prompted some top thinkers to reflect on the most fundamental design philosophy of artificial intelligence. Among them, **Marvin Minsky** did not continue trying to add more rules to a single reasoning core but proposed a revolutionary question in his book **"The Society of Mind"**<sup>[7]</sup>: "What magical trick makes us intelligent? The trick is that there is no trick. The power of intelligence stems from our vast diversity, not from any single, perfect principle."
+The exploration of symbolicism and ELIZA's practice jointly pointed to a problem: a single, centralized reasoning engine built through preset rules seems difficult to lead to true intelligence. No matter how large the rule base, the system always appears rigid and brittle when facing the ambiguity, complexity, and infinite changes of the real world. This dilemma prompted some top thinkers to reflect on the most fundamental design philosophy of artificial intelligence. Among them, **Marvin Minsky** did not continue trying to add more rules to a single reasoning core but proposed a revolutionary question in his book **"The Society of Mind"**[7]: "What magical trick makes us intelligent? The trick is that there is no trick. The power of intelligence stems from our vast diversity, not from any single, perfect principle."
 
 ### 2.3.1 Reflection on Single Holistic Intelligence Models
 
@@ -319,10 +319,10 @@ Let's use the classic "building a block tower" task as an example to illustrate 
 
 In this process, no single agent or agency has a global plan for the entire task. `GRASP` is only responsible for grasping; it doesn't know what a tower is; `BUILDER` is only responsible for looping; it doesn't know how to control the arm. However, when this society composed of countless "mindless" agents interacts through simple activation and inhibition rules, a seemingly highly intelligent behavior—building a block tower—naturally emerges.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-4.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.6 Schematic diagram of the emergence mechanism of block tower building behavior in the "society of mind"</p>
-</div>
+
+  
+  Figure 2.6 Schematic diagram of the emergence mechanism of block tower building behavior in the "society of mind"
+
 
 ### 2.3.3 Theoretical Inspiration for Multi-Agent Systems
 
@@ -348,7 +348,7 @@ This question opened the "learning" era of artificial intelligence. Its core goa
 
 ### 2.4.1 From Symbols to Connections
 
-As a direct response to the limitations of symbolicism, **Connectionism** re-emerged in the 1980s. Unlike symbolicism's top-down design philosophy relying on explicit logical rules, connectionism is a bottom-up approach inspired by mimicking the neural network structure of biological brains<sup>[8]</sup>. Its core ideas can be summarized as follows:
+As a direct response to the limitations of symbolicism, **Connectionism** re-emerged in the 1980s. Unlike symbolicism's top-down design philosophy relying on explicit logical rules, connectionism is a bottom-up approach inspired by mimicking the neural network structure of biological brains[8]. Its core ideas can be summarized as follows:
 
 1. **Distributed Representation of Knowledge**: Knowledge is not stored in some knowledge base in the form of explicit symbols or rules but is stored in a distributed manner in the form of connection weights between numerous simple processing units (i.e., artificial neurons). The connection pattern of the entire network itself constitutes knowledge.
 2. **Simple Processing Units**: Each neuron only performs very simple computations, such as receiving weighted inputs from other neurons, processing them through an activation function, and then outputting results to the next neuron.
@@ -356,10 +356,10 @@ As a direct response to the limitations of symbolicism, **Connectionism** re-eme
 
 Under this paradigm, agents are no longer passive logical reasoning machines executing rules but adaptive systems capable of self-optimization through experience. As shown in Figure 2.7, this represents a fundamental shift in the core idea of building agents. Symbolicism attempted to explicitly encode human knowledge to machines, while connectionism attempted to create machines that could learn knowledge like humans.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-5.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.7 Comparison of symbolicism and connectionism paradigms</p>
-</div>
+
+  
+  Figure 2.7 Comparison of symbolicism and connectionism paradigms
+
 
 The rise of connectionism, especially the success of deep learning in the 21st century, endowed agents with powerful perception and pattern recognition capabilities, enabling them to directly understand the world from raw data (such as images, sounds, text), which was unimaginable in the symbolicism era. However, how to enable agents to learn to make optimal sequential decisions in dynamic interactions with the environment required supplementation from another learning paradigm.
 
@@ -367,7 +367,7 @@ The rise of connectionism, especially the success of deep learning in the 21st c
 
 Connectionism mainly solved perception problems (for example, "What's in this picture?"), but the more core task of agents is decision-making (for example, "What should I do in this situation?"). **Reinforcement Learning (RL)** is precisely the learning paradigm focused on solving sequential decision problems. It does not directly learn from labeled static datasets but learns how to maximize its long-term benefits through direct interaction between agents and the environment, learning through "trial and error."
 
-Taking AlphaGo as an example, its core self-play learning process is a classic embodiment of reinforcement learning<sup>[9]</sup>. In this process, AlphaGo (the agent) observes the current board layout (environment state) and decides where to place the next stone (action). After a game ends, based on the win-loss result, it receives a clear signal: winning is a positive reward, losing is a negative reward. Through millions of such self-play sessions, AlphaGo continuously adjusts its internal strategy, gradually learning which actions to choose in which board situations are most likely to lead to final victory. This process is completely autonomous, not relying on direct guidance from human game records.
+Taking AlphaGo as an example, its core self-play learning process is a classic embodiment of reinforcement learning[9]. In this process, AlphaGo (the agent) observes the current board layout (environment state) and decides where to place the next stone (action). After a game ends, based on the win-loss result, it receives a clear signal: winning is a positive reward, losing is a negative reward. Through millions of such self-play sessions, AlphaGo continuously adjusts its internal strategy, gradually learning which actions to choose in which board situations are most likely to lead to final victory. This process is completely autonomous, not relying on direct guidance from human game records.
 
 This learning mechanism of optimizing one's own behavior through interaction with the environment and based on feedback signals is the core framework of reinforcement learning. Below we will detail its basic constituent elements and working mode.
 
@@ -381,10 +381,10 @@ The reinforcement learning framework can be described by several core elements:
 
 Based on the above core elements, reinforcement learning agents continuously iterate in a "perceive-act-learn" closed loop, with their working mode shown in Figure 2.8.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-6.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.8 Core interaction loop of reinforcement learning</p>
-</div>
+
+  
+  Figure 2.8 Core interaction loop of reinforcement learning
+
 
 The specific steps of this loop are as follows:
 
@@ -409,10 +409,10 @@ Before the emergence of the pre-training paradigm, traditional natural language 
 
 As shown in Figure 2.9, this intuitively demonstrates the complete process of pre-training and fine-tuning: general text data forms a foundation model through self-supervised learning, then fine-tuning with specific task data ultimately adapts to various downstream tasks.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-7.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.9 Schematic diagram of the "pre-training-fine-tuning" paradigm</p>
-</div>
+
+  
+  Figure 2.9 Schematic diagram of the "pre-training-fine-tuning" paradigm
+
 
 **Birth of Large Language Models and Emergent Abilities**
 
@@ -429,10 +429,10 @@ At this point, in the long river of agent development history, several key techn
 
 With the rapid development of large language model technology, LLM-centric agents have become a new paradigm in the field of artificial intelligence. They can not only understand and generate human language but, more importantly, can autonomously perceive, plan, decide, and execute tasks through interaction with the environment.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-8.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.10 Core component architecture of LLM-driven agents</p>
-</div>
+
+  
+  Figure 2.10 Core component architecture of LLM-driven agents
+
 
 As described in Chapter 1, the interaction between agents and the environment can be abstracted as a core loop. LLM-driven agents complete tasks through a continuously iterative closed-loop process where multiple modules work together. This process follows the architecture shown in Figure 2.10, with specific steps as follows:
 
@@ -459,19 +459,19 @@ Among these, three major trends dominated research paradigms in different period
 
 Entering the 2020s, these ideological schools have deeply integrated in unprecedented ways. Large language models represented by the GPT series are themselves products of connectionism but have become the core "brain" for executing symbolic reasoning, tool invocation, and planning decisions, forming a modern agent architecture combining neural and symbolic approaches. To systematically review this development context, Figure 2.11 below organizes key theories, projects, and events in the development history of artificial intelligence agents from the 1950s to the present, providing readers with a clear global overview as a consolidation of this chapter's knowledge.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-9.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.11 Timeline of agent development evolution (incomplete version)</p>
-</div>
+
+  
+  Figure 2.11 Timeline of agent development evolution (incomplete version)
+
 
 Thanks to breakthroughs in large language models, the agent technology stack presents unprecedented activity and diversity. Figure 2.12 shows a typical full view of the current AI Agent field technology stack, covering all aspects from underlying models to upper-layer applications.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/2-figures/1757246501849-10.png" alt="Figure description" width="90%"/>
-  <p>Figure 2.12 Overview of AI Agent technology stack</p>
-</div>
 
-This technology stack diagram was released by Letta in November 2024<sup>[10]</sup>. It layers and categorizes AI agent-related tools, platforms, and services, providing valuable reference for understanding current market landscape and technology selection.
+  
+  Figure 2.12 Overview of AI Agent technology stack
+
+
+This technology stack diagram was released by Letta in November 2024[10]. It layers and categorizes AI agent-related tools, platforms, and services, providing valuable reference for understanding current market landscape and technology selection.
 
 ## 2.5 Chapter Summary
 
@@ -490,13 +490,13 @@ Since the core of modern agents is large language models, deeply understanding t
 
 > **Note**: Some of the following exercises do not have standard answers, aiming to help learners establish systematic understanding of agent development history and cultivate "learning from history" technical insight.
 
-1. The Physical Symbol System Hypothesis<sup>[1]</sup> is the theoretical cornerstone of the symbolicism era. Please analyze:
+1. The Physical Symbol System Hypothesis[1] is the theoretical cornerstone of the symbolicism era. Please analyze:
 
    - What do the "sufficiency assertion" and "necessity assertion" of this hypothesis mean?
    - Combined with this chapter's content, explain which problems encountered by symbolic agents in practice challenged the "sufficiency" of this hypothesis?
    - Do large language model-driven agents conform to the Physical Symbol System Hypothesis?
 
-2. The expert system MYCIN<sup>[2]</sup> achieved significant success in the medical diagnosis field but was ultimately not widely applied in clinical practice. Please think:
+2. The expert system MYCIN[2] achieved significant success in the medical diagnosis field but was ultimately not widely applied in clinical practice. Please think:
 
    > **Hint**: Can analyze from multiple perspectives including technology, ethics, law, user acceptance, etc.
 
@@ -513,7 +513,7 @@ Since the core of modern agents is large language models, deeply understanding t
    - Compare your expanded ELIZA with [ChatGPT](https://chatgpt.com/), listing at least 3 dimensions of essential differences
    - Why does the rule-based approach encounter "combinatorial explosion" problems and difficulty in scaling and maintenance when handling open-domain conversations? Can you explain using mathematical methods?
 
-4. Marvin Minsky proposed a revolutionary viewpoint in the "society of mind" theory<sup>[7]</sup>: intelligence stems from collaboration of numerous simple agents, not a single perfect system.
+4. Marvin Minsky proposed a revolutionary viewpoint in the "society of mind" theory[7]: intelligence stems from collaboration of numerous simple agents, not a single perfect system.
 
    - In the Figure 2.6 "building a block tower" example, what would happen to the entire system if the `GRASP` agent suddenly failed? What are the advantages and disadvantages of this decentralized architecture?
    - Compare the "society of mind" theory with some current multi-agent systems (such as [CAMEL-Workforce](https://docs.camel-ai.org/key_modules/workforce), [MetaGPT](https://github.com/FoundationAgents/MetaGPT), [CrewAI](https://github.com/crewAIInc/crewAI)), what connections and differences exist between them?

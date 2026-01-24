@@ -143,10 +143,10 @@ jupyter lab
 2. Click the "Fork" button in the upper right corner, as shown in the red box in Figure 16.1
 3. Select your GitHub account and create the Fork
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-1.png" alt="" width="85%"/>
-  <p>Figure 16.1 Fork Repository Steps</p>
-</div>
+
+  
+  Figure 16.1 Fork Repository Steps
+
 
 **Step 2: Clone to Local**
 
@@ -164,10 +164,10 @@ git remote add upstream https://github.com/datawhalechina/Hello-Agents.git
 git remote -v
 ```
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-2.png" alt="" width="85%"/>
-  <p>Figure 16.2 Clone Repository to Local</p>
-</div>
+
+  
+  Figure 16.2 Clone Repository to Local
+
 
 **Step 3: Create Development Branch**
 
@@ -623,10 +623,10 @@ git push origin feature/your-project-name
 2. Click the "Pull requests" tab, as shown in Figure 16.3
 3. Click the "New pull request" button
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-3.png" alt="" width="85%"/>
-  <p>Figure 16.3 Creating Pull Request</p>
-</div>
+
+  
+  Figure 16.3 Creating Pull Request
+
 
 **Step 2: Select Branches**
 
@@ -696,10 +696,10 @@ Brief description of your project (2-3 sentences)
 
 As shown in Figure 16.4, click the "Create pull request" button to submit.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/16-figures/16-4.png" alt="" width="85%"/>
-  <p>Figure 16.4 Submit Pull Request</p>
-</div>
+
+  
+  Figure 16.4 Submit Pull Request
+
 
 ### 16.5.3 Responding to Review Comments
 
@@ -1001,7 +1001,7 @@ Now, start building your own agent application! We look forward to seeing your e
 If you find the Hello-Agents project helpful, please give us a ⭐Star!
 
 ---
-<div align="center">
-  <strong>🎓 Congratulations on completing the Hello-Agents tutorial! 🎉</strong>
-</div>
+
+  **🎓 Congratulations on completing the Hello-Agents tutorial! 🎉**
+
 

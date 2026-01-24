@@ -1,6 +1,6 @@
 # Hello-Agents-aicookbook 智能体学习平台
 
-<div align="center">
+
 
 ![Hello-Agents Logo](https://img.shields.io/badge/Hello--Agents-智能体学习平台-blue?style=for-the-badge&logo=robot)
 
@@ -12,7 +12,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/datawhalechina/Hello-Agents?style=social)](https://github.com/datawhalechina/Hello-Agents)
 [![Language](https://img.shields.io/badge/Language-中文-red)](README.md)
 
-</div>
+
 
 ## 📖 目录
 
@@ -204,7 +204,7 @@ hello-agents-aicookbook/
 
 ---
 
-<div align="center">
+
 
 **⭐ 如果这个项目对你有帮助，请给我们一个 Star！**
 
@@ -212,4 +212,3 @@ hello-agents-aicookbook/
 
 [🏠 返回首页](https://github.com/datawhalechina/Hello-Agents) | [📖 开始学习](http://localhost:8000) | [💬 加入讨论](https://github.com/datawhalechina/Hello-Agents/discussions)
 
-</div>

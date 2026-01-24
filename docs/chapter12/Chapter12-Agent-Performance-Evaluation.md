@@ -59,24 +59,24 @@ The agent evaluation field has seen the emergence of multiple influential benchm
 
 Tool invocation is one of the core capabilities of agents. Agents need to understand user intent, select appropriate tools, and correctly construct function calls. Related evaluation benchmarks include:
 
-- **BFCL (Berkeley Function Calling Leaderboard)**<sup>[1]</sup>: Launched by UC Berkeley, includes 1120+ test samples, covering four categories: simple, multiple, parallel, irrelevance, uses AST matching algorithm for evaluation, moderate dataset size, active community.
-- **ToolBench**<sup>[2]</sup>: Launched by Tsinghua University, includes 16000+ real API call scenarios, covering complex tool usage scenarios in the real world.
-- **API-Bank**<sup>[3]</sup>: Launched by Microsoft Research, includes 53 commonly used API tools, focuses on evaluating agent understanding and invocation of API documentation.
+- **BFCL (Berkeley Function Calling Leaderboard)**[1]: Launched by UC Berkeley, includes 1120+ test samples, covering four categories: simple, multiple, parallel, irrelevance, uses AST matching algorithm for evaluation, moderate dataset size, active community.
+- **ToolBench**[2]: Launched by Tsinghua University, includes 16000+ real API call scenarios, covering complex tool usage scenarios in the real world.
+- **API-Bank**[3]: Launched by Microsoft Research, includes 53 commonly used API tools, focuses on evaluating agent understanding and invocation of API documentation.
 
 **(2) General Capability Evaluation**
 
 Evaluates agent comprehensive performance in real-world tasks, including multi-step reasoning, knowledge application, multimodal understanding, etc.:
 
-- **GAIA (General AI Assistants)**<sup>[4]</sup>: Jointly launched by Meta AI and Hugging Face, includes 466 real-world problems, divided into Level 1/2/3 difficulty levels, evaluates multi-step reasoning, tool use, file processing, web browsing capabilities, uses Quasi Exact Match algorithm, tasks are realistic and comprehensive.
-- **AgentBench**<sup>[5]</sup>: Launched by Tsinghua University, includes 8 tasks in different domains, comprehensively evaluates agent general capabilities.
-- **WebArena**<sup>[6]</sup>: Launched by CMU, evaluates agent task completion and web interaction capabilities in real web environments.
+- **GAIA (General AI Assistants)**[4]: Jointly launched by Meta AI and Hugging Face, includes 466 real-world problems, divided into Level 1/2/3 difficulty levels, evaluates multi-step reasoning, tool use, file processing, web browsing capabilities, uses Quasi Exact Match algorithm, tasks are realistic and comprehensive.
+- **AgentBench**[5]: Launched by Tsinghua University, includes 8 tasks in different domains, comprehensively evaluates agent general capabilities.
+- **WebArena**[6]: Launched by CMU, evaluates agent task completion and web interaction capabilities in real web environments.
 
 **(3) Multi-Agent Collaboration Evaluation**
 
 Evaluates the ability of multiple agents to work collaboratively:
 
-- **ChatEval**<sup>[7]</sup>: Evaluates quality of multi-agent dialogue systems.
-- **SOTOPIA**<sup>[8]</sup>: Evaluates agent interaction capabilities in social scenarios.
+- **ChatEval**[7]: Evaluates quality of multi-agent dialogue systems.
+- **SOTOPIA**[8]: Evaluates agent interaction capabilities in social scenarios.
 - **Custom Collaboration Scenarios**: Evaluation tasks designed according to specific application scenarios.
 
 **(4) Common Evaluation Metrics**
@@ -107,10 +107,10 @@ Considering learning curve and practicality, this chapter will focus on the foll
 
 Through these three evaluation scenarios, we will build a complete evaluation system. Figure 12.1 shows our evaluation system construction approach.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-1.png" alt="" width="85%"/>
-  <p>Figure 12.1 HelloAgents Evaluation System Architecture</p>
-</div>
+
+  
+  Figure 12.1 HelloAgents Evaluation System Architecture
+
 
 
 
@@ -162,7 +162,7 @@ In the following sections, we will deeply learn the detailed usage and introduct
 
 ### 12.2.1 BFCL Benchmark Introduction
 
-BFCL (Berkeley Function Calling Leaderboard) is a function calling capability evaluation benchmark launched by UC Berkeley<sup>[1]</sup>. In agent systems, tool calling is one of the core capabilities. Agents need to complete the following tasks:
+BFCL (Berkeley Function Calling Leaderboard) is a function calling capability evaluation benchmark launched by UC Berkeley[1]. In agent systems, tool calling is one of the core capabilities. Agents need to complete the following tasks:
 
 1. **Understand Task Requirements**: Extract key information from user's natural language description
 2. **Select Appropriate Tools**: Choose the most suitable tool from available tool set
@@ -171,17 +171,17 @@ BFCL (Berkeley Function Calling Leaderboard) is a function calling capability ev
 
 The BFCL benchmark contains four evaluation categories with increasing difficulty. Starting from the most basic single function call (Simple), gradually increasing to scenarios requiring multiple function calls (Multiple), then to complex scenarios requiring parallel calls of multiple functions (Parallel), and finally to scenarios requiring judgment of whether function calls are needed (Irrelevance). These four categories cover various tool calling scenarios that agents may encounter in practical applications, as shown in Table 12.1:
 
-<div align="center">
-  <p>Table 12.1 Four Evaluation Categories in BFCL Benchmark</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-table-1.png" alt="" width="85%"/>
-</div>
+
+  Table 12.1 Four Evaluation Categories in BFCL Benchmark
+  
+
 
 The BFCL evaluation process follows standard benchmark testing procedures: first load dataset and select evaluation category, then run agent to obtain prediction results, next parse prediction results into Abstract Syntax Tree (AST), and finally judge whether predictions are correct through AST matching algorithm. The entire process traverses all test samples, ultimately calculating evaluation metrics like accuracy and generating evaluation reports. The complete evaluation process is shown in Figure 12.2:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-2.png" alt="" width="85%"/>
-  <p>Figure 12.2 BFCL Evaluation Process Diagram</p>
-</div>
+
+  
+  Figure 12.2 BFCL Evaluation Process Diagram
+
 
 **(1) BFCL Dataset Structure**
 
@@ -405,10 +405,10 @@ print(f"✅ Loaded {len(dataset.ground_truth)} ground truth")
 
 The working principle of this loader is: first load test data from `bfcl_eval/data/`, then load ground truth from `bfcl_eval/data/possible_answer/`, next automatically merge test data and ground truth, and finally preserve original BFCL data format. BFCL v4 dataset categories can be viewed in Table 12.2.
 
-<div align="center">
-  <p>Table 12.2 Four Evaluation Categories in BFCL Benchmark</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-table-2.png" alt="" width="85%"/>
-</div>
+
+  Table 12.2 Four Evaluation Categories in BFCL Benchmark
+  
+
 
 You can also view available categories through code:
 
@@ -620,10 +620,10 @@ Previously we learned how to use HelloAgents' built-in evaluation functionality.
 
 The entire evaluation process includes four steps: first load test data from BFCL v4 dataset, then use HelloAgents to run evaluation and obtain agent prediction results, next export results to BFCL official format (JSONL), and finally use official evaluation script to calculate final scores. This process ensures evaluation results are completely consistent with BFCL leaderboard, as shown in Figure 12.3:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-3.png" alt="" width="85%"/>
-  <p>Figure 12.3 HelloAgents Loading BFCL Evaluation Process</p>
-</div>
+
+  
+  Figure 12.3 HelloAgents Loading BFCL Evaluation Process
+
 
 When using `BFCLEvaluationTool`, official evaluation **runs automatically** (enabled by default):
 
@@ -994,7 +994,7 @@ BFCL team will review your submission and verify result accuracy. After approval
 
 ### 12.3.1 GAIA Benchmark Introduction
 
-GAIA (General AI Assistants) is an evaluation benchmark jointly launched by Meta AI and Hugging Face, focusing on evaluating AI assistants' **general capabilities**<sup>[2]</sup>. Unlike BFCL's focus on tool calling, GAIA evaluates agents' comprehensive performance in real-world tasks.
+GAIA (General AI Assistants) is an evaluation benchmark jointly launched by Meta AI and Hugging Face, focusing on evaluating AI assistants' **general capabilities**[2]. Unlike BFCL's focus on tool calling, GAIA evaluates agents' comprehensive performance in real-world tasks.
 
 GAIA's design philosophy is: **Real-world problems often require comprehensive application of multiple capabilities**. An excellent AI assistant not only needs to call tools, but also needs to:
 
@@ -1008,10 +1008,10 @@ GAIA's design philosophy is: **Real-world problems often require comprehensive a
 
 After understanding GAIA's evaluation philosophy, let's dive into the specific structure of GAIA dataset. GAIA contains 466 carefully designed real-world problems. These problems are divided into three difficulty levels based on complexity and required reasoning steps, from simple zero-step reasoning tasks to difficult tasks requiring multi-step complex reasoning, comprehensively covering various scenarios agents may encounter in practical applications, as shown in Table 12.3:
 
-<div align="center">
-  <p>Table 12.3 GAIA Dataset Difficulty Level Distribution</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-table-3.png" alt="" width="85%"/>
-</div>
+
+  Table 12.3 GAIA Dataset Difficulty Level Distribution
+  
+
 
 For GAIA dataset sample examples, refer to the code snippet below:
 
@@ -1136,10 +1136,10 @@ Where $N_{\text{correct}}$ is the number of correctly answered samples, $\text{s
 
 Suppose we evaluated 10 samples, results can be referenced in Table 12.4:
 
-<div align="center">
-  <p>Table 12.4 GAIA Dataset Difficulty Level Distribution</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-table-4.png" alt="" width="85%"/>
-</div>
+
+  Table 12.4 GAIA Dataset Difficulty Level Distribution
+  
+
 
 To calculate metrics for this case, refer to the Python script below:
 
@@ -1499,10 +1499,10 @@ https://huggingface.co/spaces/gaia-benchmark/leaderboard
 
 As shown in Figure 12.4, fill in information in submission form:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-4.png" alt="" width="85%"/>
-  <p>Figure 12.4 BFCL Evaluation Process Diagram</p>
-</div>
+
+  
+  Figure 12.4 BFCL Evaluation Process Diagram
+
 
 Before submission, you can manually check the generated JSONL file:
 
@@ -1842,7 +1842,7 @@ def generate_report(
 
 ## 12.4 Data Generation Quality Evaluation
 
-In AI system development, high-quality training data is the foundation of system performance. This section introduces how to use the HelloAgents framework to evaluate the quality of generated data, using AIME (American Invitational Mathematics Examination)<sup>[9]</sup> style mathematics problem generation as an example.
+In AI system development, high-quality training data is the foundation of system performance. This section introduces how to use the HelloAgents framework to evaluate the quality of generated data, using AIME (American Invitational Mathematics Examination)[9] style mathematics problem generation as an example.
 
 AIME is a medium-difficulty mathematics competition hosted by the Mathematical Association of America (MAA), positioned between AMC 10/12 and the USA Mathematical Olympiad (USAMO). AIME problems have distinctive characteristics: each problem's answer is an integer between 0 and 999, problems cover multiple mathematical domains including algebra, geometry, number theory, combinatorics, and probability, require multi-step reasoning but don't involve advanced theory, and have moderate difficulty (equivalent to AIME problems 6-9). These characteristics make AIME problems an ideal benchmark for evaluating mathematics problem generation quality: unified answer format facilitates automated evaluation, and moderate difficulty is suitable for large-scale generation. We use the `TianHongZXY/aime-1983-2025` dataset on HuggingFace as reference, which contains over 900 AIME real problems from 1983 to 2025, providing rich reference samples for our generation and evaluation.
 
@@ -1852,10 +1852,10 @@ In data generation quality evaluation, we adopt three complementary evaluation m
 
 Below we introduce the specific implementation of these three evaluation methods in detail. The implementation flow of the entire case is shown in Figure 12.5:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-5.png" alt="" width="85%"/>
-  <p>Figure 12.5 Data Generation Quality Evaluation Flow Diagram</p>
-</div>
+
+  
+  Figure 12.5 Data Generation Quality Evaluation Flow Diagram
+
 
 **(1) LLM Judge Evaluation**
 
@@ -1863,10 +1863,10 @@ Below we introduce the specific implementation of these three evaluation methods
 
 In our implementation, LLM Judge evaluates AIME problem quality from four key dimensions:
 
-<div align="center">
-  <p>Table 12.5 LLM Judge Evaluation Dimensions for AIME Problems</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-table-4.png" alt="" width="85%"/>
-</div>
+
+  Table 12.5 LLM Judge Evaluation Dimensions for AIME Problems
+  
+
 
 After obtaining scores from four dimensions, we need to aggregate these scores into overall evaluation metrics. We define three key metrics to measure the quality level of generated problems:
 
@@ -1902,10 +1902,10 @@ These three metrics reflect generation quality from different angles: average sc
 
 In our implementation, Win Rate evaluation is conducted through the flow shown in Figure 12.6:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-6.png" alt="" width="85%"/>
-  <p>Figure 12.6 Data Generation Quality Evaluation Flow Diagram</p>
-</div>
+
+  
+  Figure 12.6 Data Generation Quality Evaluation Flow Diagram
+
 
 In pairwise comparison evaluation, each comparison produces three possible results: generated problem wins (Win), real problem wins (Loss), or tie (Tie). We evaluate the quality of generated problems by counting the proportions of these three results:
 
@@ -2385,10 +2385,10 @@ http://127.0.0.1:7860
 
 The final effect can be referenced in Figure 12.7. For problem correctness, manual review is best:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/12-figures/12-7.png" alt="" width="85%"/>
-  <p>Figure 12.7 AIME Problem Manual Verification Page</p>
-</div>
+
+  
+  Figure 12.7 AIME Problem Manual Verification Page
+
 
 **Verification Process**:
 
@@ -2402,7 +2402,7 @@ The final effect can be referenced in Figure 12.7. For problem correctness, manu
 
 **Verification Result Saving**:
 
-Verification results are automatically saved as `<data_path>_verifications.json`:
+Verification results are automatically saved as `_verifications.json`:
 
 ```json
 {
@@ -2659,7 +2659,7 @@ Based on the results of LLM Judge and Win Rate evaluation methods:
 
 ## 7. Next Steps
 
-1. **Manual Verification**: Run `python data_generation/human_verification_ui.py <data_path>` for manual verification
+1. **Manual Verification**: Run `python data_generation/human_verification_ui.py ` for manual verification
 2. **View Detailed Results**:
    - LLM Judge detailed report
    - Win Rate detailed report

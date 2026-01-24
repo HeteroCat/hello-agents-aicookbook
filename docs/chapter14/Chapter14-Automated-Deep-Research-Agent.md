@@ -29,10 +29,10 @@ This is the problem that the deep research assistant needs to solve. It's not ju
 
 This system still adopts the classic **front-end and back-end separation architecture**, as shown in Figure 14.1.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-1.png" alt="" width="85%"/>
-  <p>Figure 14.1 Deep Research Assistant Technical Architecture</p>
-</div>
+
+  
+  Figure 14.1 Deep Research Assistant Technical Architecture
+
 
 The system is designed with a four-layer architecture:
 
@@ -46,10 +46,10 @@ The system is designed with a four-layer architecture:
 
 Let's see how a complete research request flows through the system, as shown in Figure 14.2:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-2.png" alt="" width="85%"/>
-  <p>Figure 14.2 Deep Research Assistant Data Flow Process</p>
-</div>
+
+  
+  Figure 14.2 Deep Research Assistant Data Flow Process
+
 
 1. **User Input**: User enters research topic on the front-end
 2. **Front-End Sends**: Front-end connects to `/research/stream` via SSE
@@ -171,17 +171,17 @@ If everything is normal, you'll see output similar to:
 
 Open your browser and visit `http://localhost:5174`. You'll see a centered input card, as shown in Figure 14.3. Enter a research topic, for example `What kind of organization is Datawhale?`, select a search engine (if multiple are configured), and click the "Start Research" button.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-3.png" alt="" width="85%"/>
-  <p>Figure 14.3 Deep Research Assistant Search Page</p>
-</div>
+
+  
+  Figure 14.3 Deep Research Assistant Search Page
+
 
 As shown in Figure 14.4, the system will automatically expand to full screen, with research information displayed on the left and research progress and results displayed in real-time on the right. The entire research process takes about 1-3 minutes, depending on the complexity of the topic and the response speed of the search engine.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-4.png" alt="" width="85%"/>
-  <p>Figure 14.4 Deep Research Assistant Expanded Research</p>
-</div>
+
+  
+  Figure 14.4 Deep Research Assistant Expanded Research
+
 
 After research is complete, you'll see:
 
@@ -248,10 +248,10 @@ A complete TODO-driven research system contains three core elements:
 
 In our case, the TODO-driven research process is shown in Figure 14.5:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-5.png" alt="" width="85%"/>
-  <p>Figure 14.5 TODO-Driven Research Process</p>
-</div>
+
+  
+  Figure 14.5 TODO-Driven Research Process
+
 
 The entire process is linear, but each stage has clear inputs and outputs. This design makes the system easy to understand and debug.
 
@@ -435,10 +435,10 @@ In Chapter 7, we learned how to use `SimpleAgent` to build agents. The design ph
 
 As shown in Table 14.1, the three Agents are respectively responsible for planning, summarization, and report generation.
 
-<div align="center">
-  <p>Table 14.1 Responsibility Division of Three Agents</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-table-1.png" alt="" width="85%"/>
-</div>
+
+  Table 14.1 Responsibility Division of Three Agents
+  
+
 
 Let's introduce the design of each Agent in detail.
 
@@ -837,10 +837,10 @@ This way, all Agent tool calls are recorded and pushed to the front-end via SSE,
 
 The three Agents have a **sequential collaboration** relationship, as shown in Figure 14.6.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-6.png" alt="" width="85%"/>
-  <p>Figure 14.6 Agent Collaboration Process</p>
-</div>
+
+  
+  Figure 14.6 Agent Collaboration Process
+
 
 The characteristics of the sequential collaboration mode are:
 
@@ -894,10 +894,10 @@ In Chapter 7, we implemented the basic version of `SearchTool`, integrating Tavi
 
 As shown in Table 14.2, the search engines added this time have different characteristics and applicable scenarios.
 
-<div align="center">
-  <p>Table 14.2 Multi-Search Engine Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-table-2.png" alt="" width="85%"/>
-</div>
+
+  Table 14.2 Multi-Search Engine Comparison
+  
+
 
 We will no longer discuss how to extend separately. You can refer to the source code and the extension cases in Chapter 7 for implementation. `SearchTool` provides a unified search interface. No matter which search engine is used, the calling method is the same.
 
@@ -1075,10 +1075,10 @@ agent = ToolAwareSimpleAgent(
 
 When an Agent needs to call a tool, it generates a tool call instruction, as shown in Figure 14.7.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-7.png" alt="" width="85%"/>
-  <p>Figure 14.7 Tool Call Process</p>
-</div>
+
+  
+  Figure 14.7 Tool Call Process
+
 
 **Tool Call Process**:
 
@@ -1614,10 +1614,10 @@ class SearchService:
 
 Select search engine based on configuration, as shown in Figure 14.8:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-8.png" alt="" width="85%"/>
-  <p>Figure 14.8 Search Engine Scheduling Process</p>
-</div>
+
+  
+  Figure 14.8 Search Engine Scheduling Process
+
 
 **Scheduling Logic**:
 
@@ -1694,10 +1694,10 @@ The deep research assistant adopts a full-screen modal dialog UI design, which h
 
 As shown in Figure 14.9, the full-screen modal dialog contains the following parts:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-9.png" alt="" width="85%"/>
-  <p>Figure 14.9 Full-Screen Modal Dialog UI</p>
-</div>
+
+  
+  Figure 14.9 Full-Screen Modal Dialog UI
+
 
 **UI Components**:
 
@@ -1709,47 +1709,47 @@ As shown in Figure 14.9, the full-screen modal dialog contains the following par
 The corresponding Vue implementation is as follows (ResearchModal.vue):
 
 ```vue
-<template>
-  <div v-if="isOpen" class="modal-overlay" @click.self="close">
-    <div class="modal-container">
-      <!-- Top bar -->
-      <div class="modal-header">
-        <h2>{{ researchTopic }}</h2>
-        <button @click="close" class="close-button">
-          <svg><!-- Close icon --></svg>
-        </button>
-      </div>
 
-      <!-- Progress area -->
-      <div class="progress-section">
-        <div class="progress-bar">
+  
+    
+      
+      
+        {{ researchTopic }}
+        
+          
+        
+      
+
+      
+      
+        
           <div
             class="progress-fill"
             :style="{ width: progressPercentage + '%' }"
-          ></div>
-        </div>
-        <div class="progress-text">{{ progressText }}</div>
-      </div>
+          >
+        
+        {{ progressText }}
+      
 
-      <!-- Content area -->
-      <div class="content-section">
-        <div v-if="isLoading" class="loading-spinner">
-          <div class="spinner"></div>
-          <p>Researching, please wait...</p>
-        </div>
+      
+      
+        
+          
+          Researching, please wait...
+        
 
-        <div v-else class="markdown-content" v-html="renderedMarkdown"></div>
-      </div>
+        
+      
 
-      <!-- Bottom bar -->
-      <div class="modal-footer">
-        <span class="status-text">{{ statusText }}</span>
-      </div>
-    </div>
-  </div>
-</template>
+      
+      
+        {{ statusText }}
+      
+    
+  
 
-<script setup lang="ts">
+
+
 import { ref, computed, watch } from 'vue'
 import { marked } from 'marked'
 
@@ -1758,7 +1758,7 @@ interface Props {
   researchTopic: string
 }
 
-const props = defineProps<Props>()
+const props = defineProps()
 const emit = defineEmits<{
   close: []
 }>()
@@ -1795,9 +1795,9 @@ watch(() => props.isOpen, (isOpen) => {
     document.removeEventListener('keydown', handleKeydown)
   }
 })
-</script>
 
-<style scoped>
+
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1811,7 +1811,7 @@ watch(() => props.isOpen, (isOpen) => {
   z-index: 1000;
 }
 ...
-</style>
+
 ```
 
 To adapt to different screen sizes, we add media queries:
@@ -1852,10 +1852,10 @@ The deep research assistant uses SSE to implement real-time progress display. SS
 
 As shown in Figure 14.10, the SSE process includes the following steps:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/14-figures/14-10.png" alt="" width="85%"/>
-  <p>Figure 14.10 SSE Process</p>
-</div>
+
+  
+  Figure 14.10 SSE Process
+
 
 **Process Description**:
 
@@ -1952,7 +1952,7 @@ export function useResearch() {
   const progressPercentage = ref(0)
   const progressText = ref('')
   const markdownContent = ref('')
-  const error = ref<string | null>(null)
+  const error = ref(null)
 
   const startResearch = (topic: string) => {
     isLoading.value = true
@@ -2022,7 +2022,7 @@ export function useResearch() {
 **Using in Component**:
 
 ```vue
-<script setup lang="ts">
+
 import { useResearch } from '@/composables/useResearch'
 
 const {
@@ -2037,7 +2037,7 @@ const {
 const handleStartResearch = (topic: string) => {
   startResearch(topic)
 }
-</script>
+
 ```
 
 ### 14.6.3 Research Result Visualization

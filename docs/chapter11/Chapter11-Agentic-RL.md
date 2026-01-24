@@ -29,16 +29,16 @@ This problem requires multi-step reasoning: first calculate the number of eggs J
 
 Traditional supervised learning methods have three core limitations: first, data quality completely determines training quality, and models can only imitate training data, making it difficult to surpass; second, lack of exploration ability, only passively learning paths provided by humans; third, difficulty optimizing long-term goals, unable to precisely optimize intermediate processes of multi-step reasoning.
 
-Reinforcement learning provides new possibilities. By allowing agents to autonomously generate multiple candidate answers and receive rewards based on correctness, they can learn which reasoning paths are better, which steps are critical, and even discover better problem-solving methods than human annotations<sup>[8]</sup>. This is the core idea of Agentic RL: treating LLM as a learnable policy, embedding it in the agent's perception-decision-execution loop, and optimizing multi-step task performance through reinforcement learning.
+Reinforcement learning provides new possibilities. By allowing agents to autonomously generate multiple candidate answers and receive rewards based on correctness, they can learn which reasoning paths are better, which steps are critical, and even discover better problem-solving methods than human annotations[8]. This is the core idea of Agentic RL: treating LLM as a learnable policy, embedding it in the agent's perception-decision-execution loop, and optimizing multi-step task performance through reinforcement learning.
 
 ### 11.1.2 LLM Training Landscape
 
 Before diving into Agentic RL, we need to first understand the complete process of LLM training. The birth of a powerful LLM (such as GPT, Claude, Qwen) typically goes through two main stages: Pretraining and Post-training. As shown in Figure 11.1, these two stages constitute the complete evolutionary path of LLM from "language model" to "conversational assistant".
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-1.png" alt="" width="85%"/>
-  <p>Figure 11.1 LLM Training Landscape</p>
-</div>
+
+  
+  Figure 11.1 LLM Training Landscape
+
 
 **Pretraining Stage** is the first stage of LLM training, with the goal of making the model learn basic language patterns and world knowledge. This stage uses massive amounts of text data (usually TB-level) and trains the model through self-supervised learning. The most common pretraining task is Causal Language Modeling, also known as Next Token Prediction.
 
@@ -54,7 +54,7 @@ The characteristics of the pretraining stage are: massive data volume, high comp
 
 **Post-training Stage** aims to address the shortcomings of pretrained models. Although pretrained models have powerful language capabilities, they are just "next word prediction" models and don't know how to follow human instructions, generate helpful, harmless, and honest answers, refuse inappropriate requests, and interact with humans in a conversational manner. The post-training stage aims to solve these problems and align the model with human preferences and values.
 
-Post-training typically includes three steps. The first step is **Supervised Fine-Tuning (SFT)**<sup>[15]</sup>, with the goal of making the model learn to follow instructions and dialogue formats. Training data consists of (prompt, completion) pairs, and the training objective is similar to pretraining, still maximizing the probability of correct output:
+Post-training typically includes three steps. The first step is **Supervised Fine-Tuning (SFT)**[15], with the goal of making the model learn to follow instructions and dialogue formats. Training data consists of (prompt, completion) pairs, and the training objective is similar to pretraining, still maximizing the probability of correct output:
 
 $$
 \mathcal{L}_{\text{SFT}} = -\sum_{i=1}^{N} \log P(y_i | x_i; \theta)
@@ -62,7 +62,7 @@ $$
 
 Where $x_i$ is the input prompt, $y_i$ is the expected output, and $N$ is the number of training samples. SFT characteristics are: smaller data volume, requires manual annotation, quick results, mainly learning task formats and basic capabilities.
 
-The second step is **Reward Modeling (RM)**. Although SFT models can follow instructions, the quality of generated answers varies. We need a way to evaluate answer quality, which is the role of the reward model<sup>[13,14]</sup>. Reward model training data consists of preference comparison data, containing two answers to the same question, one better (chosen) and one worse (rejected). The reward model training objective is to learn human preferences:
+The second step is **Reward Modeling (RM)**. Although SFT models can follow instructions, the quality of generated answers varies. We need a way to evaluate answer quality, which is the role of the reward model[13,14]. Reward model training data consists of preference comparison data, containing two answers to the same question, one better (chosen) and one worse (rejected). The reward model training objective is to learn human preferences:
 
 $$
 \mathcal{L}_{\text{RM}} = -\mathbb{E}_{(x, y_w, y_l)} [\log \sigma(r_\phi(x, y_w) - r_\phi(x, y_l))]
@@ -70,7 +70,7 @@ $$
 
 Where $r_\phi(x, y)$ is the reward model, input is (prompt, answer) pair, output is quality score; $y_w$ is the better answer (chosen), $y_l$ is the worse answer (rejected), $\sigma$ is the sigmoid function, and the goal is to make the reward model give higher scores to better answers.
 
-The third step is **Reinforcement Learning Fine-tuning**. With the reward model, we can use reinforcement learning to optimize the language model to generate higher quality answers. The most classic algorithm is PPO (Proximal Policy Optimization)<sup>[1]</sup>, with the training objective:
+The third step is **Reinforcement Learning Fine-tuning**. With the reward model, we can use reinforcement learning to optimize the language model to generate higher quality answers. The most classic algorithm is PPO (Proximal Policy Optimization)[1], with the training objective:
 
 $$
 \mathcal{L}_{\text{PPO}} = \mathbb{E}_{x, y \sim \pi_\theta} [r_\phi(x, y)] - \beta \cdot D_{KL}(\pi_\theta || \pi_{\text{ref}})
@@ -78,7 +78,7 @@ $$
 
 Where $\pi_\theta$ is the current policy, i.e., the language model, $\pi_{\text{ref}}$ is the reference policy, which in this scenario can be the SFT model, $r_\phi(x, y)$ is the reward model score, $D_{KL}$ is KL divergence, aimed at preventing the model from deviating too far, and $\beta$ is the balance coefficient. The meaning of this objective function is: maximize reward while not deviating too far from the original model.
 
-Traditional RLHF (Reinforcement Learning from Human Feedback)<sup>[5]</sup> requires a large amount of manual preference data annotation, which is costly. To reduce costs, researchers proposed RLAIF (Reinforcement Learning from AI Feedback)<sup>[7]</sup>, using powerful AI models (such as GPT-4) to replace human annotators. The RLAIF workflow is: use SFT model to generate multiple candidate answers, use powerful AI model to score and rank answers, use AI scores to train reward model, use reward model for reinforcement learning. Experiments show that RLAIF's effectiveness is close to or even exceeds RLHF, while costs are significantly reduced<sup>[11]</sup>.
+Traditional RLHF (Reinforcement Learning from Human Feedback)[5] requires a large amount of manual preference data annotation, which is costly. To reduce costs, researchers proposed RLAIF (Reinforcement Learning from AI Feedback)[7], using powerful AI models (such as GPT-4) to replace human annotators. The RLAIF workflow is: use SFT model to generate multiple candidate answers, use powerful AI model to score and rank answers, use AI scores to train reward model, use reward model for reinforcement learning. Experiments show that RLAIF's effectiveness is close to or even exceeds RLHF, while costs are significantly reduced[11].
 
 ### 11.1.3 Core Philosophy of Agentic RL
 
@@ -92,10 +92,10 @@ As can be seen, key features of Agentic RL are multi-step interaction, each acti
 
 Reinforcement learning is formalized based on the Markov Decision Process (MDP) framework. MDP is defined by a five-tuple $(S, A, P, R, \gamma)$: state space $S$, action space $A$, state transition function $P(s'|s,a)$, reward function $R(s,a)$, discount factor $\gamma$. Let's compare PBRFT and Agentic RL from the MDP perspective, as shown in Table 11.1.
 
-<div align="center">
-  <p>Table 11.1 Comparison of PBRFT and Agentic RL</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-1.png" alt="" width="85%"/>
-</div>
+
+  Table 11.1 Comparison of PBRFT and Agentic RL
+  
+
 
 In terms of state, PBRFT's state $s_0$ consists only of user prompts, time span $T=1$ (single step), state doesn't change, can be represented as $s_0 = \text{prompt}$. While Agentic RL's state $s_t$ contains historical observations and context, time span $T \gg 1$ (multi-step), state evolves with actions, can be represented as $s_t = (\text{prompt}, o_1, o_2, ..., o_t)$, where $o_t$ is the observation at step $t$ (such as tool return results, environment feedback, etc.).
 
@@ -129,10 +129,10 @@ This transformation is not just a difference in technical details, but a fundame
 
 Agentic RL aims to endow LLM agents with six core capabilities, as shown in Figure 11.2.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-2.png" alt="" width="85%"/>
-  <p>Figure 11.2 Six Core Capabilities of Agentic RL</p>
-</div>
+
+  
+  Figure 11.2 Six Core Capabilities of Agentic RL
+
 
 **Reasoning** refers to the process of logically deriving conclusions from given information, which is the core capability of agents. Traditional CoT prompting methods rely on few-shot examples with limited generalization ability; SFT can only imitate reasoning patterns in training data, making it difficult to innovate. The advantage of reinforcement learning is learning effective reasoning strategies through trial and error, discovering reasoning paths not in training data, learning when deep thinking is needed and when quick answers are possible. Reasoning tasks can be modeled as sequential decision problems. Given question $q$, the agent needs to generate reasoning chain $c = (c_1, c_2, ..., c_n)$ and final answer $a$. The reward function is typically designed as $r(q, c, a) = 1$ if $a = a^*$ else $0$, with training objective $\max_\theta \mathbb{E}_{q, (c,a) \sim \pi_\theta} [r(q, c, a)]$. Through this approach, the model learns to generate high-quality reasoning chains, not just memorize answers.
 
@@ -150,14 +150,14 @@ Agentic RL aims to endow LLM agents with six core capabilities, as shown in Figu
 
 After understanding the core philosophy of Agentic RL, let's see how to implement these capabilities in the HelloAgents framework.
 
-In terms of technology selection, we integrated the TRL (Transformer Reinforcement Learning) framework<sup>[9]</sup> and chose the Qwen3-0.6B model<sup>[10]</sup>. TRL is Hugging Face's reinforcement learning library, mature and stable, feature-complete, and easy to integrate. Qwen3-0.6B is Alibaba Cloud's small language model, with 0.6B parameters suitable for ordinary GPU training, excellent performance, and open source and free.
+In terms of technology selection, we integrated the TRL (Transformer Reinforcement Learning) framework[9] and chose the Qwen3-0.6B model[10]. TRL is Hugging Face's reinforcement learning library, mature and stable, feature-complete, and easy to integrate. Qwen3-0.6B is Alibaba Cloud's small language model, with 0.6B parameters suitable for ordinary GPU training, excellent performance, and open source and free.
 
 HelloAgents' Agentic RL module adopts a four-layer architecture design, as shown in Figure 11.3.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-3.png" alt="" width="85%"/>
-  <p>Figure 11.3 HelloAgents Agentic RL Architecture</p>
-</div>
+
+  
+  Figure 11.3 HelloAgents Agentic RL Architecture
+
 
 The bottom layer is the **Dataset Layer**, containing the `GSM8KDataset` class, `create_sft_dataset()` function, and `create_rl_dataset()` function, responsible for data loading and format conversion. The second layer is the **Reward Function Layer**, containing the `MathRewardFunction` base class, `AccuracyReward` accuracy reward, `LengthPenaltyReward` length penalty, `StepReward` step reward, and convenient creation functions `create_*_reward()`, responsible for defining what good behavior is. The third layer is the **Trainer Layer**, containing `SFTTrainerWrapper` and `GRPOTrainerWrapper`, responsible for specific training logic and LoRA support. The top layer is the **Unified Interface Layer**, providing `RLTrainingTool` unified training tool, supporting four operations: `action="train"` (train model), `action="load_dataset"` (load dataset), `action="create_reward"` (create reward function), `action="evaluate"` (evaluate model).
 
@@ -247,12 +247,12 @@ Datasets and reward functions are the two cornerstones of reinforcement learning
 
 Mathematical reasoning is an ideal task for evaluating LLM reasoning capabilities. First, math problems have clear correct answers that can be automatically evaluated without manual annotation or complex reward models. Second, solving math problems requires decomposing problems and step-by-step derivation, which is a typical scenario for multi-step reasoning. Finally, learned reasoning capabilities can transfer to other domains with strong generalization. In contrast, open-ended Q&A tasks (such as "How to learn programming?") have answer quality that is difficult to objectively evaluate and requires extensive manual annotation.
 
-GSM8K (Grade School Math 8K)<sup>[4]</sup> is a high-quality elementary school math word problem dataset. As shown in Table 11.2, the dataset contains 7,473 training samples and 1,319 test samples, with difficulty at elementary school math level (grades 2-8), problem types are word problems, requiring 2-8 steps of reasoning to arrive at answers.
+GSM8K (Grade School Math 8K)[4] is a high-quality elementary school math word problem dataset. As shown in Table 11.2, the dataset contains 7,473 training samples and 1,319 test samples, with difficulty at elementary school math level (grades 2-8), problem types are word problems, requiring 2-8 steps of reasoning to arrive at answers.
 
-<div align="center">
-  <p>Table 11.2 GSM8K Dataset Statistics</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-2.png" alt="" width="85%"/>
-</div>
+
+  Table 11.2 GSM8K Dataset Statistics
+  
+
 
 Let's look at a typical GSM8K problem:
 
@@ -261,39 +261,39 @@ Question: Natalia sold clips to 48 of her friends in April, and then she sold ha
       as many clips in May. How many clips did Natalia sell altogether in April
       and May?
 
-Answer: Natalia sold 48/2 = <<48/2=24>>24 clips in May.
-      Natalia sold 48+24 = <<48+24=72>>72 clips altogether in April and May.
+Answer: Natalia sold 48/2 = >24 clips in May.
+      Natalia sold 48+24 = >72 clips altogether in April and May.
       #### 72
 
 Final Answer: 72
 ```
 
-This problem requires two steps of reasoning: first calculate the quantity sold in May (half of 48), then calculate the total (April + May). The `<<48/2=24>>` in the answer is a marker for intermediate calculation steps, and `#### 72` marks the final answer.
+This problem requires two steps of reasoning: first calculate the quantity sold in May (half of 48), then calculate the total (April + May). The `>` in the answer is a marker for intermediate calculation steps, and `#### 72` marks the final answer.
 
 The GSM8K dataset needs to be converted to different formats to adapt to different training methods, as shown in Figure 11.4.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-4.png" alt="" width="85%"/>
-  <p>Figure 11.4 GSM8K Data Format Conversion</p>
-</div>
+
+  
+  Figure 11.4 GSM8K Data Format Conversion
+
 
 
 The original format comes directly from the dataset, containing question and answer (with solution steps), suitable for human reading. SFT format is used for supervised fine-tuning, converting questions to dialogue format prompts, with complete solutions as completion. For example:
 
 ```python
 {
-    "prompt": "<|im_start|>user\nNatalia sold clips to 48 of her friends...<|im_end|>\n<|im_start|>assistant\n",
-    "completion": "Let me solve this step by step.\n\nStep 1: ...\n\nFinal Answer: 72<|im_end|>"
+    "prompt": "user\nNatalia sold clips to 48 of her friends...\nassistant\n",
+    "completion": "Let me solve this step by step.\n\nStep 1: ...\n\nFinal Answer: 72"
 }
 ```
 
-Key points are using the model's dialogue template (such as Qwen's `<|im_start|>` marker), prompt contains user question, completion contains complete solution process and answer. This way the model can learn how to format output and how to reason step by step.
+Key points are using the model's dialogue template (such as Qwen's `` marker), prompt contains user question, completion contains complete solution process and answer. This way the model can learn how to format output and how to reason step by step.
 
 RL format is used for reinforcement learning, only providing questions and correct answers, not solution processes. For example:
 
 ```python
 {
-    "prompt": "<|im_start|>user\nNatalia sold clips to 48 of her friends...<|im_end|>\n<|im_start|>assistant\n",
+    "prompt": "user\nNatalia sold clips to 48 of her friends...\nassistant\n",
     "ground_truth": "72"
 }
 ```
@@ -302,10 +302,10 @@ Key points are prompt is the same as SFT, but ground_truth only contains the fin
 
 As shown in Table 11.3, the three formats each have their uses.
 
-<div align="center">
-  <p>Table 11.3 Data Format Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-3.png" alt="" width="85%"/>
-</div>
+
+  Table 11.3 Data Format Comparison
+  
+
 
 HelloAgents provides convenient dataset loading functions. Let's load and view the dataset through code:
 
@@ -365,10 +365,10 @@ Reward function design directly affects training effectiveness. Good reward func
 
 HelloAgents provides three built-in reward functions that can be used individually or in combination, as shown in Figure 11.5.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-5.png" alt="" width="85%"/>
-  <p>Figure 11.5 Reward Function Design</p>
-</div>
+
+  
+  Figure 11.5 Reward Function Design
+
 
 **(1) Accuracy Reward**
 
@@ -562,10 +562,10 @@ Combined reward: 1.200
 
 As shown in Table 11.4, different reward functions are suitable for different application scenarios.
 
-<div align="center">
-  <p>Table 11.4 Reward Function Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-4.png" alt="" width="85%"/>
-</div>
+
+  Table 11.4 Reward Function Comparison
+  
+
 
 ### 11.2.3 Custom Datasets and Reward Functions
 
@@ -861,7 +861,7 @@ model = AutoModelForCausalLM.from_pretrained(model_name)
 question = """Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?"""
 
 # Construct input
-prompt = f"<|im_start|>user\n{question}<|im_end|>\n<|im_start|>assistant\n"
+prompt = f"user\n{question}\nassistant\n"
 inputs = tokenizer(prompt, return_tensors="pt")
 
 # Generate answer
@@ -875,9 +875,9 @@ print(response)
 The pretrained model's output might be:
 
 ```bash
-<|im_start|>user
-Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?<|im_end|>
-<|im_start|>assistant
+user
+Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?
+assistant
 I can help you with that. Let me think about this problem. Natalia sold clips to her friends. In April she sold 48 clips. In May she sold half as many. So we need to find out how many she sold in May and then add them together. But I'm not sure how to calculate half of 48. Maybe I should use a calculator? Or maybe I can just estimate...
 ```
 
@@ -901,9 +901,9 @@ print(response)
 SFT model's output:
 
 ```bash
-<|im_start|>user
-Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?<|im_end|>
-<|im_start|>assistant
+user
+Natalia sold clips to 48 of her friends in April, and then she sold half as many clips in May. How many clips did Natalia sell altogether in April and May?
+assistant
 Let me solve this step by step.
 
 Step 1: Calculate clips sold in May
@@ -913,23 +913,23 @@ Clips in May = 48 / 2 = 24
 Step 2: Calculate total clips
 Total = April + May = 48 + 24 = 72
 
-Final Answer: 72<|im_end|>
+Final Answer: 72
 ```
 
 As can be seen, the SFT model's output has clear structure (using "Step 1", "Step 2", "Final Answer" markers), correct reasoning, clear answer, and unified format. Such output can be used for reinforcement learning because we can extract answers, calculate rewards, and optimize strategies.
 
 As shown in Figure 11.6, SFT is the bridge from pretrained models to reinforcement learning.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-6.png" alt="" width="85%"/>
-  <p>Figure 11.6 Role of SFT in Training Pipeline</p>
-</div>
+
+  
+  Figure 11.6 Role of SFT in Training Pipeline
+
 
 ### 11.3.2 LoRA: Parameter-Efficient Fine-Tuning
 
 Directly fine-tuning the entire model requires substantial computational resources and memory. For Qwen3-0.6B (0.6B parameters), full fine-tuning requires about 12GB memory (FP16) or 24GB memory (FP32). For larger models (such as 7B, 13B), full fine-tuning is almost impossible on consumer-grade GPUs.
 
-LoRA (Low-Rank Adaptation)<sup>[3]</sup> is a parameter-efficient fine-tuning method that only trains a small number of additional parameters while keeping the original model parameters frozen. The core idea of LoRA is: parameter changes during model fine-tuning can be represented by low-rank matrices.
+LoRA (Low-Rank Adaptation)[3] is a parameter-efficient fine-tuning method that only trains a small number of additional parameters while keeping the original model parameters frozen. The core idea of LoRA is: parameter changes during model fine-tuning can be represented by low-rank matrices.
 
 Assume the original model's weight matrix is $W \in \mathbb{R}^{d \times k}$, and the fine-tuned weight is $W' = W + \Delta W$. LoRA assumes $\Delta W$ can be decomposed into the product of two low-rank matrices:
 
@@ -953,10 +953,10 @@ Therefore, we can summarize LoRA's advantages: significantly reduced memory usag
 
 As shown in Table 11.5, comparison of LoRA effects at different model scales.
 
-<div align="center">
-  <p>Table 11.5 LoRA vs Full Fine-Tuning Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-5.png" alt="" width="85%"/>
-</div>
+
+  Table 11.5 LoRA vs Full Fine-Tuning Comparison
+  
+
 
 LoRA's key hyperparameters include: rank (r), controlling the rank of LoRA matrices, larger means stronger expressiveness but more parameters, typical values 4-64, default 8; Alpha ($\alpha$), LoRA scaling factor, actual update is $\Delta W = \frac{\alpha}{r} BA$, controls LoRA's influence strength, typical value equals rank; target_modules, specifying which layers to apply LoRA, usually choosing attention layers (q_proj, k_proj, v_proj, o_proj), can also include MLP layers (gate_proj, up_proj, down_proj).
 
@@ -1152,9 +1152,9 @@ After completing SFT training, we have obtained a model capable of generating st
 
 ### 11.4.1 From PPO to GRPO
 
-In the field of reinforcement learning, PPO (Proximal Policy Optimization)<sup>[1]</sup> is one of the most classic algorithms. PPO ensures training stability by limiting the magnitude of policy updates. However, PPO has some problems in LLM training: it requires training a Value Model, increasing training complexity and memory usage; it requires maintaining four models simultaneously (Policy Model, Reference Model, Value Model, Reward Model), making engineering implementation complex; training is unstable, prone to reward collapse or policy degradation.
+In the field of reinforcement learning, PPO (Proximal Policy Optimization)[1] is one of the most classic algorithms. PPO ensures training stability by limiting the magnitude of policy updates. However, PPO has some problems in LLM training: it requires training a Value Model, increasing training complexity and memory usage; it requires maintaining four models simultaneously (Policy Model, Reference Model, Value Model, Reward Model), making engineering implementation complex; training is unstable, prone to reward collapse or policy degradation.
 
-GRPO (Group Relative Policy Optimization)<sup>[2]</sup> is a simplified PPO variant specifically designed for LLMs. GRPO's core idea is: no need for Value Model, using group-relative rewards instead of absolute rewards; simplified training process, only requiring Policy Model and Reference Model; improved training stability, reducing risk of reward collapse.
+GRPO (Group Relative Policy Optimization)[2] is a simplified PPO variant specifically designed for LLMs. GRPO's core idea is: no need for Value Model, using group-relative rewards instead of absolute rewards; simplified training process, only requiring Policy Model and Reference Model; improved training stability, reducing risk of reward collapse.
 
 Let's understand GRPO's principles through mathematical formulas. PPO's objective function is:
 
@@ -1178,19 +1178,19 @@ Where $\bar{r}_{\text{group}}$ is the group average reward and $\beta$ is the KL
 
 As shown in Figure 11.7, comparison of PPO and GRPO training processes.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-7.png" alt="" width="85%"/>
-  <p>Figure 11.7 PPO vs GRPO Training Process</p>
-</div>
+
+  
+  Figure 11.7 PPO vs GRPO Training Process
+
 
 As can be seen, GRPO eliminates Value Model training, greatly simplifying the process.
 
 As shown in Table 11.6, detailed comparison of PPO and GRPO.
 
-<div align="center">
-  <p>Table 11.6 PPO vs GRPO Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-6.png" alt="" width="85%"/>
-</div>
+
+  Table 11.6 PPO vs GRPO Comparison
+  
+
 
 
 
@@ -1567,10 +1567,10 @@ Correct format is a basic requirement; answers with confused format are difficul
 
 As shown in Table 11.7, comparison of different metrics.
 
-<div align="center">
-  <p>Table 11.7 Evaluation Metric Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-7.png" alt="" width="85%"/>
-</div>
+
+  Table 11.7 Evaluation Metric Comparison
+  
+
 
 
 ### 11.5.2 Evaluation Practice
@@ -1755,10 +1755,10 @@ As can be seen, the model performs well on easy problems (78.5%) but poorly on h
 
 Based on evaluation and analysis results, we can determine improvement directions for the model, as shown in Figure 11.8.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-8.png" alt="" width="85%"/>
-  <p>Figure 11.8 Model Improvement Iteration Process</p>
-</div>
+
+  
+  Figure 11.8 Model Improvement Iteration Process
+
 
 This is a continuous iteration process: train model → evaluate performance → analyze errors → identify problems → select improvement direction → retrain. Through multiple iterations, model performance will continuously improve.
 
@@ -1770,10 +1770,10 @@ In previous sections, we learned about data preparation, SFT training, GRPO trai
 
 A complete Agentic RL training pipeline includes the following stages: data preparation, SFT training, SFT evaluation, GRPO training, GRPO evaluation, and model deployment. As shown in Figure 11.9.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-9.png" alt="" width="85%"/>
-  <p>Figure 11.9 End-to-End Training Pipeline</p>
-</div>
+
+  
+  Figure 11.9 End-to-End Training Pipeline
+
 
 Let's implement this pipeline through a complete script:
 
@@ -2207,10 +2207,10 @@ Bayesian optimization advantages are high sample efficiency, can quickly find go
 
 As shown in Table 11.8, comparison of different tuning methods.
 
-<div align="center">
-  <p>Table 11.8 Hyperparameter Tuning Method Comparison</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-8.png" alt="" width="85%"/>
-</div>
+
+  Table 11.8 Hyperparameter Tuning Method Comparison
+  
+
 
 ### 11.6.3 Distributed Training
 
@@ -2356,10 +2356,10 @@ accelerate launch --config_file deepspeed_zero3.yaml train_script.py
 
 As shown in Table 11.9, this is a memory comparison for training Qwen3-0.6B model with different methods:
 
-<div align="center">
-  <p>Table 11.9 Memory Comparison (Qwen3-0.6B Model)</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/11-figures/11-table-9.png" alt="" width="85%"/>
-</div>
+
+  Table 11.9 Memory Comparison (Qwen3-0.6B Model)
+  
+
 
 **(4) Multi-Node Training**
 
@@ -2489,7 +2489,7 @@ tokenizer = AutoTokenizer.from_pretrained("./models/merged_model")
 
 # Inference
 def generate_answer(question):
-    prompt = f"<|im_start|>user\n{question}<|im_end|>\n<|im_start|>assistant\n"
+    prompt = f"user\n{question}\nassistant\n"
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
 
     outputs = model.generate(
@@ -2534,7 +2534,7 @@ class Answer(BaseModel):
 @app.post("/generate", response_model=Answer)
 def generate(question: Question):
     """Generate answer"""
-    prompt = f"<|im_start|>user\n{question.text}<|im_end|>\n<|im_start|>assistant\n"
+    prompt = f"user\n{question.text}\nassistant\n"
     inputs = tokenizer(prompt, return_tensors="pt")
 
     outputs = model.generate(

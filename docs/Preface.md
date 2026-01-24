@@ -1,6 +1,4 @@
-<div align="right">
-  English | <a href="./前言.md">中文</a>
-</div>
+English | [中文](./前言.md)
 
 # Preface
 

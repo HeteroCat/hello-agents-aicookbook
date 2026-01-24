@@ -30,16 +30,16 @@ The ecosystem of agent frameworks is developing at an unprecedented speed. If La
 
 In the subsequent practical work of this chapter, we will focus on four frameworks that are highly representative in these cutting-edge fields: AutoGen, AgentScope, CAMEL, and LangGraph. Their design philosophies are different, representing different technical paths for implementing complex agent systems, as shown in Figure 6.1.
 
-<div align="center">
-  <p>Table 6.1 Comparison of Four Agent Frameworks</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/6-figures/01.png" alt="" width="90%"/>
-</div>
+
+  Table 6.1 Comparison of Four Agent Frameworks
+  
 
 
-- **AutoGen**: The core idea of AutoGen is to achieve collaboration through conversation<sup>[1]</sup>. It abstracts multi-agent systems as a group chat composed of multiple "conversable" agents. Developers can define different roles (such as `Coder`, `ProductManager`, `Tester`) and set interaction rules between them (for example, after `Coder` finishes writing code, `Tester` automatically takes over). The task-solving process is the process where these agents continuously converse, collaborate, and iterate in the group chat through automated message passing until the final goal is achieved.
-- **AgentScope**: AgentScope is a fully functional development platform designed specifically for multi-agent applications<sup>[2]</sup>. Its core features are **ease of use** and **engineering**. It provides a very friendly programming interface that allows developers to easily define agents, build communication networks, and manage the entire application lifecycle. Its built-in **message passing mechanism** and support for distributed deployment make it very suitable for building and operating complex, large-scale multi-agent systems.
-- **CAMEL**: CAMEL provides a novel collaboration method called **Role-Playing**<sup>[3]</sup>. Its core concept is that we only need to set the respective roles and common task goals for two agents (for example, `AI Researcher` and `Python Programmer`), and they can autonomously conduct multiple rounds of dialogue under the guidance of "**Inception Prompting**," inspiring and cooperating with each other to complete tasks together. It greatly reduces the complexity of designing multi-agent dialogue processes.
-- **LangGraph**: As an extension of the LangChain ecosystem, LangGraph takes a different approach by modeling the agent's execution process as a **Graph**<sup>[4]</sup>. In traditional chain structures, information can only flow in one direction. LangGraph defines each operation (such as calling LLM, executing tools) as a **Node** in the graph and uses **Edges** to define the jump logic between nodes. This design naturally supports **Cycles**, making it exceptionally simple and intuitive to implement complex workflows such as Reflection that involve iteration, correction, and self-reflection.
+
+- **AutoGen**: The core idea of AutoGen is to achieve collaboration through conversation[1]. It abstracts multi-agent systems as a group chat composed of multiple "conversable" agents. Developers can define different roles (such as `Coder`, `ProductManager`, `Tester`) and set interaction rules between them (for example, after `Coder` finishes writing code, `Tester` automatically takes over). The task-solving process is the process where these agents continuously converse, collaborate, and iterate in the group chat through automated message passing until the final goal is achieved.
+- **AgentScope**: AgentScope is a fully functional development platform designed specifically for multi-agent applications[2]. Its core features are **ease of use** and **engineering**. It provides a very friendly programming interface that allows developers to easily define agents, build communication networks, and manage the entire application lifecycle. Its built-in **message passing mechanism** and support for distributed deployment make it very suitable for building and operating complex, large-scale multi-agent systems.
+- **CAMEL**: CAMEL provides a novel collaboration method called **Role-Playing**[3]. Its core concept is that we only need to set the respective roles and common task goals for two agents (for example, `AI Researcher` and `Python Programmer`), and they can autonomously conduct multiple rounds of dialogue under the guidance of "**Inception Prompting**," inspiring and cooperating with each other to complete tasks together. It greatly reduces the complexity of designing multi-agent dialogue processes.
+- **LangGraph**: As an extension of the LangChain ecosystem, LangGraph takes a different approach by modeling the agent's execution process as a **Graph**[4]. In traditional chain structures, information can only flow in one direction. LangGraph defines each operation (such as calling LLM, executing tools) as a **Node** in the graph and uses **Edges** to define the jump logic between nodes. This design naturally supports **Cycles**, making it exceptionally simple and intuitive to implement complex workflows such as Reflection that involve iteration, correction, and self-reflection.
 
 In the following sections, we will deeply experience the framework-driven development model through a complete practical case for each of these four frameworks. **Please note** that all demonstrated project source files will be placed in the `code` folder, and only the principle part will be explained in the main text.
 
@@ -51,10 +51,10 @@ As mentioned earlier, AutoGen's design philosophy is rooted in "driving collabor
 
 The release of version `0.7.4` is an important milestone in AutoGen's development, marking a fundamental innovation in the framework's underlying design. This update is not a simple addition of features but a rethinking of the overall architecture, aimed at improving the framework's modularity, concurrency performance, and developer experience.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/6-figures/02.png" alt="" width="90%"/>
-  <p>Figure 6.1 AutoGen Architecture Diagram</p>
-</div>
+
+  
+  Figure 6.1 AutoGen Architecture Diagram
+
 
 (1) Evolution of Framework Structure
 
@@ -404,10 +404,10 @@ Compared with AutoGen, the core difference of AgentScope lies in its **message-d
 
 As shown in Figure 6.2, AgentScope adopts a clear layered modular design, forming a complete agent development ecosystem from bottom-level basic components to top-level application orchestration.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/6-figures/03.png" alt="" width="90%"/>
-  <p>Figure 6.2 AgentScope Architecture Diagram</p>
-</div>
+
+  
+  Figure 6.2 AgentScope Architecture Diagram
+
 
 In this architecture, the bottom layer is the **Foundational Components** layer, which provides core building blocks for the entire framework. The `Message` component defines a unified message format, supporting everything from simple text interaction to complex multimodal content; the `Memory` component provides short-term and long-term memory management; the `Model API` layer abstracts calls to different large language models; and the `Tool` component encapsulates the agent's ability to interact with the external world.
 
@@ -724,14 +724,14 @@ Simply setting roles is not enough. How can we ensure that two AIs can always "s
 - **Clarify own role**: For example, "You are a senior stock trader..."
 - **Inform collaborator's role**: For example, "You are working with an excellent Python programmer..."
 - **Define common goal**: For example, "Your common goal is to develop a stock trading strategy analysis tool."
-- **Set behavioral constraints and communication protocols**: This is the most critical part. For example, the instruction will require the AI user to "propose only one clear, specific step at a time" and require the AI assistant to "not ask for more details before completing the previous step," while also specifying that both parties need to use specific markers (such as `<SOLUTION>`) at the end of their replies to identify task completion.
+- **Set behavioral constraints and communication protocols**: This is the most critical part. For example, the instruction will require the AI user to "propose only one clear, specific step at a time" and require the AI assistant to "not ask for more details before completing the previous step," while also specifying that both parties need to use specific markers (such as ``) at the end of their replies to identify task completion.
 
 These constraints ensure that the conversation does not deviate from the topic or fall into ineffective loops but advances in a highly structured, task-driven manner, as shown in Figure 6.3.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/6-figures/04.png" alt="" width="90%"/>
-  <p>Figure 6.3 CAMEL Creating Stock Trading Robot</p>
-</div>
+
+  
+  Figure 6.3 CAMEL Creating Stock Trading Robot
+
 
 In the next section, we will experience this process through a specific example.
 
@@ -816,7 +816,7 @@ while n < chat_turn_limit:
     print_text_animated(Fore.GREEN + f"Psychologist (AI Assistant):\n\n{assistant_response.msg.content}\n")
 
     # Check task completion flag
-    if "<CAMEL_TASK_DONE>" in user_response.msg.content or "<CAMEL_TASK_DONE>" in assistant_response.msg.content:
+    if "" in user_response.msg.content or "" in assistant_response.msg.content:
         print(Fore.MAGENTA + "✅ E-book creation completed!")
         break
 
@@ -826,7 +826,7 @@ while n < chat_turn_limit:
 print(Fore.YELLOW + f"Total of {n} rounds of collaborative conversation")
 ```
 
-This `while` loop is the core of automated collaboration. The conversation is automatically initiated by the `init_chat()` method based on the task and roles, without the need to manually write an opening. Each step of the loop drives a complete round of interaction by calling `step()` (writer proposes requirements, psychologist provides content), and uses the psychologist's output from the previous round as input for the next round, forming a chain of creation. The entire process will continue until the preset conversation turn limit is reached, or automatically terminates after either agent outputs the task completion flag `<CAMEL_TASK_DONE>`.
+This `while` loop is the core of automated collaboration. The conversation is automatically initiated by the `init_chat()` method based on the task and roles, without the need to manually write an opening. Each step of the loop drives a complete round of interaction by calling `step()` (writer proposes requirements, psychologist provides content), and uses the psychologist's output from the previous round as input for the next round, forming a chain of creation. The entire process will continue until the preset conversation turn limit is reached, or automatically terminates after either agent outputs the task completion flag ``.
 
 (5) Collaboration Process Demonstration
 
@@ -1307,7 +1307,7 @@ In the next chapter, we will enter the core content of this tutorial, building o
 
 4. In the `CAMEL` case in Section 6.4, we had a psychologist and writer collaborate to create an e-book.
 
-   - In the case, collaboration is forcibly terminated when the `<CAMEL_TASK_DONE>` flag is detected. But what if the two agents disagree (one thinks it can be terminated, one thinks it shouldn't) and cannot reach consensus? Please design a "conflict resolution" compatibility mechanism.
+   - In the case, collaboration is forcibly terminated when the `` flag is detected. But what if the two agents disagree (one thinks it can be terminated, one thinks it shouldn't) and cannot reach consensus? Please design a "conflict resolution" compatibility mechanism.
    - `CAMEL` was originally designed for two-agent collaboration but has now been extended to support multi-agent. Please consult `CAMEL`'s latest documentation to understand its multi-agent collaboration module [`workforce`](https://docs.camel-ai.org/key_modules/workforce), and explain how it differs from `AutoGen`'s group chat mode in combination with the architecture diagram.
 
 5. In the `LangGraph` case in Section 6.5, we built a "three-step Q&A assistant." Please analyze:

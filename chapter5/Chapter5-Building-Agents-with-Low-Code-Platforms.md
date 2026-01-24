@@ -104,7 +104,10 @@ The primary task of building a "Daily AI Brief" agent is to connect it to rich a
 
 2.  **Personalized Configuration:** Perform fine-grained configuration for each plugin to ensure it can accurately obtain the required data. For example, in the RSS plugin, enter specific RSS subscription links for websites like 36Kr and Huxiu; in the GitHub plugin, set keyword query quantities and latest update settings to be monitored; in the arXiv plugin, define keywords of interest such as "LLM," "AI," etc., and define quantities and latest update settings.
 
-```
+``
+:::
+
+:::
 RSS Link Configuration
 
 - **36Kr:** https://www.36kr.com/feed
@@ -123,7 +126,10 @@ Arxiv Plugin Configuration
 - count: 5
 - search_query: AI
 - sort_by: 2
-```
+``
+:::
+
+:::
 
 3.  **Orchestration and Connection:** In the agent's visual orchestration interface, use these configured information source plugins (such as `rss_24Hbj`, `searchRepository`, `arxiv`, etc.) as data input nodes and connect them to subsequent logical processing modules (such as the **Large Model** module) to build a complete data processing path, as shown in Figure 5.9.
 
@@ -145,7 +151,10 @@ Prompts are the instruction manual for the agent to execute tasks. We divide the
 
 The system prompt is used to define the agent's long-term behavioral guidelines and output format specifications.
 
-```
+``
+:::
+
+:::
 # Role
 You are a senior and authoritative technology media editor, skilled at efficiently and precisely integrating and creating highly professional technology briefs, with deep analytical and integration capabilities especially in AI field technical developments, cutting-edge academic research results, and popular open-source projects.
 
@@ -156,13 +165,19 @@ You are a senior and authoritative technology media editor, skilled at efficient
 3. All output content must be highly relevant to AI, LLM, AIGC, large models, and other technical topics, firmly excluding any irrelevant information, advertisements, and marketing content.
 4. Must provide the original link for each item (including AI technology news, AI academic papers, AI open-source projects).
 5. Provide a brief and precise summary description for each news item or project output.
-```
+``
+:::
+
+:::
 
 **User Prompt**
 
 The user prompt is used to define specific task instructions and data sources.
 
-```
+``
+:::
+
+:::
 - **Information Extraction and Integration:** From input sources `{{articles}}`, `{{articles1}}`, `{{articles2}}`, and `{{articles3}}`, filter and extract article titles and corresponding links related to AI, large models, AIGC, LLM, and other topics, and organize them into the **"AI Technology News"** module.
 - **Academic Paper Summary:** From input source `{{arxiv}}`, based on fields `arxiv_title` and `arxiv_link`, summarize and organize the latest paper content to form the **"AI Academic Papers"** module.
 - **Open-Source Project Filtering:** From input source `{{GitHub}}`, filter out the **5 most prominent and influential AI open-source projects**. Extract the titles and corresponding links of these projects and organize them into the **"AI Open-Source Projects"** module.
@@ -170,7 +185,10 @@ The user prompt is used to define specific task instructions and data sources.
 # Attention
 - Strictly follow the daily report output format defined in the system prompt.
 - The total output content should be: **10 AI technology news items, 5 AI academic papers, 5 AI open-source projects**.
-```
+``
+:::
+
+:::
 
 
 
@@ -180,7 +198,10 @@ After completing the core logic construction of the agent, rigorous testing and 
 
 **Run Preview:** Run the agent in Coze platform's preview interface and observe the brief content it generates.
 
-```
+``
+:::
+
+:::
 # AI Daily Report by@jasonhuang 2025-09-24
 
 ## 🚀 AI Technology News
@@ -215,7 +236,10 @@ Summary: Multi-agent interaction framework supporting YAML configuration and pro
 Link: https://github.com/LuisMc2005v/College_EV_AI_Transportation
 Summary: AI-driven campus electric transportation optimization system, achieving real-time tracking and efficient carpooling services.
 ......
-```
+``
+:::
+
+:::
 
 Carefully check the content accuracy, format completeness, and language style of the brief. If parts are found that do not meet expectations, return to the prompt or plugin configuration stage for detailed adjustments. For example, if the content is not concise enough, modify the summarization requirements in the prompt; if data acquisition is inaccurate, check plugin configuration parameters.
 
@@ -332,7 +356,10 @@ For the multi-agent architecture, we use a question classifier for intelligent r
 This is a basic dialogue module configured with a large language model and time tools, serving as a fallback general Q&A service.
 
 Prompt configuration:
-```
+``
+:::
+
+:::
 # Role: Daily Question Consultation Expert
 
 ## Profile
@@ -390,7 +417,10 @@ Prompt configuration:
 
 ## Initialization
 As a daily question consultation expert, you must abide by the above Rules and execute tasks according to Workflows.
-```
+``
+:::
+
+:::
 
 The effect demonstration is shown in Figure 5.26:
 
@@ -401,7 +431,10 @@ The effect demonstration is shown in Figure 5.26:
 According to OpenAI's data report, over 60% of users use ChatGPT for text optimization-related tasks, including polishing, modification, expansion, and abbreviation. Therefore, copywriting optimization is a high-frequency demand scenario, and we make it the second core functional module.
 
 Prompt configuration:
-```
+``
+:::
+
+:::
 # I. Role Setting (Role)
 You are a professional copywriting optimization expert with rich experience in marketing copywriting and optimization, skilled at improving the attractiveness, conversion rate, and readability of copy. Your perspective is from the angle of the target audience and marketing goals, with professional boundaries limited to the copywriting optimization field, not involving technical implementation or product development.
 
@@ -427,7 +460,10 @@ The optimized version can be: "In this era full of choices, what truly touches p
 We deeply understand that purchasing a product is not just a simple consumption but a choice of lifestyle. Therefore, from material selection, craftsmanship to after-sales service, we have poured full sincerity and professionalism into every link, carefully guarding your every experience. Whether you pursue practicality, value quality, or want unique personalization, our products can provide you with ideal solutions.
 Now, let us prove everything with action. A truly good product does not need too much embellishment; it itself is the best spokesperson. Act now, choose us, let quality change life, and have a different experience from now on!"
 - The output should directly present optimized content without additional explanations or annotations unless requested by the user. Please ensure that the optimized copy content is richer and more complete, and the optimized copy text must exceed 500 words.
-```
+``
+:::
+
+:::
 
 The effect demonstration is shown in Figure 5.27:
 
@@ -467,7 +503,10 @@ Configure database connection information (IP address, database name, port, acco
 
 Prompt settings:
 
-```
+``
+:::
+
+:::
 # I. Role Setting (Role)
 You are a professional data query specialist, skilled at data organization, with clear logical thinking and concise expression ability.
 
@@ -489,7 +528,10 @@ The user has provided raw data queried from the database. This data may have iss
 
 # V. Output Format Requirements (Example)
  Data Overview: Simply briefly explain the data content
-```
+``
+:::
+
+:::
 
 The effect display is shown in Figure 5.32:
 
@@ -497,7 +539,10 @@ The effect display is shown in Figure 5.32:
 
 Prompt settings:
 
-```
+``
+:::
+
+:::
 # I. Role Setting (Role)
 You are a professional data analyst with data organization, cleaning, and visualization capabilities, able to extract key information from raw data and transform it into intuitive visual displays.
 
@@ -523,7 +568,10 @@ Can call tools: "generate_pie_chart" | "generate_column_chart" | "generate_line_
 Please output in the following format:
 1. Data overview summary (do not output field names, do not list points, just a short paragraph)
 2. Display generated charts
-```
+``
+:::
+
+:::
 
 
 
@@ -621,7 +669,8 @@ In n8n, we can use the `Simple Vector Store` node to quickly build a knowledge b
 
 First, we use the `Code` node to store our raw knowledge text. This is a simple and quick way; in actual projects, data can also come from files, databases, etc.
 
-- **Node**: `Code`
+- **Node**: `Code
+:::
 - **Content**: Write your knowledge in JSON format.
 
 
@@ -641,7 +690,10 @@ return [
     "content": "If an email is received during non-working hours, the AI assistant should inform the sender that the email has been received and I will process and reply as soon as possible between 9 AM and 5 PM on the next working day."
   }
 ];
-```
+``
+:::
+
+:::
 
 **(2) Text Vectorization (Embeddings)**
 
@@ -656,7 +708,8 @@ Computers cannot directly understand text and need to convert it into vectors. W
 
 Finally, we store the vectorized knowledge in an in-memory database, as shown in Figure 5.41.
 
-- **Node**: `Simple Vector Store`
+- **Node**: `Simple Vector Store
+:::
 - **Configuration**:
   - **Operation Mode**: `Insert Documents` (write mode).
   - **Memory Key**: Give this knowledge base a unique name, for example `my-dailytime`. This Key is equivalent to the "table name" of the database, and the Agent will use it to find information later.
@@ -697,13 +750,15 @@ This is the brain of the entire workflow. Drag an `AI Agent` node from the node 
 
 
 
-This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject (`{{ $json.snippet }}{{ $json.Subject }}`) as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
+This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject 作为变量传入 Prompt 中 as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
 
 For the AI Agent node, we mainly need to fill in the `User Message` and `System Message` sections, as shown in Figure 5.47.
 
 
 
 Here is the Prompt used in our case:
+
+::: v-pre
 
 ```json
 # Prompt (User Message)
@@ -754,7 +809,10 @@ You are a 24/7 on-call, professional and efficient AI email assistant. Your task
 - **Must Declare Status**: If replying during non-working hours, you must clearly state this at the beginning of the email and attach my exact working hours.
 - **Information Sources Must Be Accurate**: Working hours must strictly follow the results of `Simple Vector Store2`; question answers mainly come from `SerpAPI`, do not fabricate information.
 - **Output Format**: **In the final output JSON, all line breaks in the `body` field must use `` tags, not `\n`.**
-```
+``
+:::
+
+:::
 
 (3) Configure Agent's Tools
 
@@ -770,11 +828,17 @@ Only when the `Memory Key` and `Embeddings` model are completely consistent can 
 
 The Description parameter is the description definition of the tool when the AI Agent calls it. Here is the corresponding Prompt:
 
+::: v-pre
+
 ```json
 This is the Simple Vector Store2 tool, used to query my personal information, especially my working hours and email reply policy. When you need to determine whether it is currently working hours, or need to inform the other party when I will reply to emails, you must use this tool.
-```
+``
+:::
 
-For Memory, the only thing to note is that here we use the thread name of each mailbox as a unique identifier to ensure storage uniqueness. The Key is set to `{{ $('Gmail').item.json.threadId }}`
+:::
+
+For Memory, the only thing to note is that here we use the thread name of each mailbox as a unique identifier to ensure storage uniqueness. The Key is set to `{{ $('Gmail').item.json.threadId }}
+:::
 
 
 
@@ -782,9 +846,14 @@ For Memory, the only thing to note is that here we use the thread name of each m
 
 The last step is execution. Connect the output of the `AI Agent` node to a `Gmail` node, set **Operation** to `Send`. Use n8n expressions to associate the recipient, subject, and body with the corresponding fields in the JSON data output by `AI Agent` to achieve automatic email reply, as shown in Figure 5.49.
 
+::: v-pre
 - **To**: `{{ $('Gmail').item.json.From }}` (or sender field in other triggers)
-- **Subject**: `Re:  {{ $('Gmail').item.json.Subject }}`
-- **Message**: `{{ $json.output }}`
+- **Subject**: `Re:  {{ $('Gmail').item.json.Subject }}
+:::
+::: v-pre
+- **Message**: `{{ $json.output }}
+:::
+:::
 
 
 

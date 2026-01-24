@@ -30,10 +30,10 @@ This is the intelligent travel assistant we want to build. It's not just a techn
 
 The system adopts the classic **front-end and back-end separation architecture**, divided into four layers, as shown in Figure 13.1:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-1.png" alt="" width="85%"/>
-  <p>Figure 13.1 Intelligent Travel Assistant Technical Architecture</p>
-</div>
+
+  
+  Figure 13.1 Intelligent Travel Assistant Technical Architecture
+
 
 **(1) Front-end Layer (Vue3+TypeScript)**: Responsible for user interaction and data display, including form input, result display, and map visualization.
 
@@ -128,29 +128,29 @@ Experience core functions:
 
 First, fill in the destination city, travel dates, preferences, budget, transportation and accommodation types in the homepage form. After clicking the "Start Planning" button, the system will display a loading progress bar and quickly generate a result page, as shown in Figure 13.2.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-2.png" alt="" width="85%"/>
-  <p>Figure 13.2 Travel Assistant Planning Progress Page</p>
-</div>
+
+  
+  Figure 13.2 Travel Assistant Planning Progress Page
+
 
 After successful loading, the page will clearly display itinerary overview, budget details, attraction map, daily itinerary details and weather information, as shown in Figures 13.3 and 13.4.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-3.png" alt="" width="85%"/>
-  <p>Figure 13.3 Travel Assistant Planning Completion Page</p>
-</div>
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-4.png" alt="" width="85%"/>
-  <p>Figure 13.4 Travel Assistant Planning Completion Page</p>
-</div>
+  
+  Figure 13.3 Travel Assistant Planning Completion Page
+
+
+
+  
+  Figure 13.4 Travel Assistant Planning Completion Page
+
 
 If users need personalized adjustments, they can click the "Edit Itinerary" button to freely adjust the order of attractions or delete certain attractions, as shown in Figure 13.5. After planning is complete, through the "Export Itinerary" dropdown menu, the final plan can be easily saved as an image or PDF file for convenient reference at any time.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-5.png" alt="" width="85%"/>
-  <p>Figure 13.5 Travel Assistant Planning Completion Page</p>
-</div>
+
+  
+  Figure 13.5 Travel Assistant Planning Completion Page
+
 
 ## 13.2 Data Model Design
 
@@ -469,10 +469,10 @@ Imagine a travel agency in the real world. When you go to a travel agency to con
 
 Based on the task decomposition principle, we designed four specialized Agents, as shown in Figure 13.6:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-6.png" alt="" width="85%"/>
-  <p>Figure 13.6 Multi-Agent Collaboration Flow</p>
-</div>
+
+  
+  Figure 13.6 Multi-Agent Collaboration Flow
+
 
 - **AttractionSearchAgent (Attraction Search Expert)** focuses on searching for attraction information. It only needs to understand user preferences (such as "history and culture", "natural scenery"), then call Amap's POI search tool and return a list of related attractions. Its prompt is very simple, only needing to explain how to choose keywords based on preferences and how to call tools.
 
@@ -674,17 +674,17 @@ Finally is **chaotic tool management**. Amap provides more than a dozen differen
 
 MCP (Model Context Protocol) is a standardized protocol proposed by Anthropic for connecting LLMs and external tools. This section will introduce how to integrate the Amap MCP server in the project. Our project uses `amap-mcp-server`, which is an MCP server implemented in Node.js:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-7.png" alt="" width="85%"/>
-  <p>Figure 13.7 amap-mcp-server Tools</p>
-</div>
+
+  
+  Figure 13.7 amap-mcp-server Tools
+
 
 The Amap MCP server provides various tools, mainly divided into the following categories, as shown in Table 13.1:
 
-<div align="center">
-  <p>Table 13.1 Amap MCP Tool Categories</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-table-1.png" alt="" width="85%"/>
-</div>
+
+  Table 13.1 Amap MCP Tool Categories
+  
+
 
 Through the MCP protocol, we can easily integrate in HelloAgents:
 
@@ -724,10 +724,10 @@ print(list(agent.tools.keys()))
 
 As shown in Figure 13.8, suppose the user wants to search for attractions in Beijing. AttractionSearchAgent receives the query "Please search for historical and cultural attractions in Beijing". The Agent analyzes this query and decides to call the `amap_maps_text_search` tool with parameters `keywords=attraction, city=Beijing`.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-8.png" alt="" width="85%"/>
-  <p>Figure 13.8 MCP Tool Call Flow</p>
-</div>
+
+  
+  Figure 13.8 MCP Tool Call Flow
+
 
 The Agent generates a tool call marker: `[TOOL_CALL:amap_maps_text_search:keywords=attraction,city=Beijing]`. The HelloAgents framework parses this marker, extracts the tool name and parameters, and then calls the corresponding Tool object.
 
@@ -916,10 +916,10 @@ In our intelligent travel assistant project, the back-end is implemented with Py
 
 The choice of front-end technology stack needs to consider several factors: development efficiency, performance, ecosystem, and learning curve. As shown in Table 13.2, the project chose the following technology stack:
 
-<div align="center">
-  <p>Table 13.2 Front-End Technology Stack</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/13-figures/13-table-2.png" alt="" width="85%"/>
-</div>
+
+  Table 13.2 Front-End Technology Stack
+  
+
 
 The project's directory structure is as follows:
 
@@ -1057,20 +1057,20 @@ Finally, we define the API function, which is the only entry point for the front
 
 ```typescript
 // Generate travel plan
-export const generateTripPlan = async (request: TripPlanRequest): Promise<TripPlan> => {
-  const response = await api.post<TripPlan>('/trip/plan', request)
+export const generateTripPlan = async (request: TripPlanRequest): Promise => {
+  const response = await api.post('/trip/plan', request)
   return response.data
 }
 ```
 
-Note the type signature of this function: the parameter is of type `TripPlanRequest`, and the return value is of type `Promise<TripPlan>`. This means TypeScript will check whether the parameters passed by the caller meet the requirements, and will also check whether the use of the return value is correct.
+Note the type signature of this function: the parameter is of type `TripPlanRequest`, and the return value is of type `Promise`. This means TypeScript will check whether the parameters passed by the caller meet the requirements, and will also check whether the use of the return value is correct.
 
 ### 13.5.4 Home Form Design
 
 The Home page is the user's entry point, containing a form for users to fill in travel requirements. We use Vue 3's Composition API to organize the code:
 
 ```vue
-<script setup lang="ts">
+
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { message } from 'ant-design-vue'
@@ -1082,7 +1082,7 @@ const loading = ref(false)
 const loadingProgress = ref(0)
 const loadingStatus = ref('')
 
-const formData = ref<TripPlanRequest>({
+const formData = ref({
   city: '',
   start_date: '',
   end_date: '',
@@ -1092,7 +1092,7 @@ const formData = ref<TripPlanRequest>({
   transportation: 'Public Transportation',
   accommodation: 'Budget Hotel'
 })
-</script>
+
 ```
 
 Here we use `ref` to create reactive variables. `formData` is the form data, of type `TripPlanRequest`. `loading` indicates whether it's loading, `loadingProgress` indicates the loading progress, and `loadingStatus` indicates the loading status text.
@@ -1136,36 +1136,36 @@ Next, it calls the `generateTripPlan` function to send the API request. This is 
 The template part uses Ant Design Vue components:
 
 ```vue
-<template>
-  <div class="home-container">
-    <div class="page-header">
-      <h1 class="page-title">✈️ Intelligent Travel Assistant</h1>
-      <p class="page-subtitle">AI-Powered Personalized Travel Planning</p>
-    </div>
 
-    <a-card class="form-card">
-      <a-form :model="formData" @finish="handleSubmit">
-        <a-form-item label="Destination City" name="city" :rules="[{ required: true }]">
-          <a-input v-model:value="formData.city" placeholder="e.g., Beijing" />
-        </a-form-item>
+  
+    
+      ✈️ Intelligent Travel Assistant
+      AI-Powered Personalized Travel Planning
+    
 
-        <!-- More form items... -->
+    
+      
+        
+          
+        
 
-        <a-form-item>
-          <a-button type="primary" html-type="submit" size="large" :loading="loading">
+        
+
+        
+          
             Start Planning
-          </a-button>
-        </a-form-item>
+          
+        
 
-        <!-- Loading progress bar -->
-        <a-form-item v-if="loading">
-          <a-progress :percent="loadingProgress" status="active" />
-          <p>{{ loadingStatus }}</p>
-        </a-form-item>
-      </a-form>
-    </a-card>
-  </div>
-</template>
+        
+        
+          
+          {{ loadingStatus }}
+        
+      
+    
+  
+
 ```
 
 Note the `v-model:value` directive, which implements two-way data binding. When users type in the input box, `formData.city` automatically updates. When the value of `formData.city` changes, the input box content also automatically updates.
@@ -1278,32 +1278,32 @@ On the front-end, we use Ant Design Vue's Statistic component to display budget 
 
 ```vue
 <a-card v-if="tripPlan.budget" title="💰 Budget Details">
-  <a-row :gutter="16">
-    <a-col :span="6">
-      <a-statistic title="Attraction Tickets" :value="tripPlan.budget.total_attractions" suffix="yuan" />
-    </a-col>
-    <a-col :span="6">
-      <a-statistic title="Hotel Accommodation" :value="tripPlan.budget.total_hotels" suffix="yuan" />
-    </a-col>
-    <a-col :span="6">
-      <a-statistic title="Dining Expenses" :value="tripPlan.budget.total_meals" suffix="yuan" />
-    </a-col>
-    <a-col :span="6">
-      <a-statistic title="Transportation" :value="tripPlan.budget.total_transportation" suffix="yuan" />
-    </a-col>
-  </a-row>
-  <a-divider />
-  <a-row>
-    <a-col :span="24" style="text-align: center;">
+  
+    
+      
+    
+    
+      
+    
+    
+      
+    
+    
+      
+    
+  
+  
+  
+    
       <a-statistic
         title="Estimated Total Cost"
         :value="tripPlan.budget.total"
         suffix="yuan"
         :value-style="{ color: '#cf1322', fontSize: '32px', fontWeight: 'bold' }"
       />
-    </a-col>
-  </a-row>
-</a-card>
+    
+  
+
 ```
 
 This code uses grid layout (`a-row` and `a-col`) to display the four expense items side by side. Each expense item uses an `a-statistic` component to display the title and value. Finally, a divider (`a-divider`) separates them, and below displays the total cost in large red font for emphasis.
@@ -1359,7 +1359,7 @@ The core of the editing feature is **state management**. We need to maintain two
 
 ```typescript
 const editMode = ref(false)
-const originalPlan = ref<TripPlan | null>(null)
+const originalPlan = ref(null)
 
 // Enter edit mode
 const toggleEditMode = () => {
@@ -1418,11 +1418,11 @@ const cancelEdit = () => {
 In the template, we display different UI based on the value of `editMode`. In edit mode, up, down, and delete buttons are displayed next to each attraction:
 
 ```vue
-<div v-if="editMode" class="edit-buttons">
-  <a-button size="small" @click="moveAttraction(dayIndex, index, 'up')">Up</a-button>
-  <a-button size="small" @click="moveAttraction(dayIndex, index, 'down')">Down</a-button>
-  <a-button size="small" danger @click="deleteAttraction(dayIndex, index)">Delete</a-button>
-</div>
+
+  Up
+  Down
+  Delete
+
 ```
 
 ### 13.6.4 Export Functionality
@@ -1512,12 +1512,12 @@ Side navigation uses Ant Design Vue's Menu component:
   mode="inline"
   @click="scrollToSection"
 >
-  <a-menu-item key="overview">📋 Itinerary Overview</a-menu-item>
-  <a-menu-item key="budget">💰 Budget Details</a-menu-item>
-  <a-menu-item key="map">🗺️ Map</a-menu-item>
-  <a-menu-item key="days">📅 Daily Itinerary</a-menu-item>
-  <a-menu-item key="weather">🌤️ Weather</a-menu-item>
-</a-menu>
+  📋 Itinerary Overview
+  💰 Budget Details
+  🗺️ Map
+  📅 Daily Itinerary
+  🌤️ Weather
+
 ```
 
 When clicking a menu item, call the `scrollToSection` function:
@@ -1540,17 +1540,17 @@ const scrollToSection = ({ key }: { key: string }) => {
 In various parts of the page, we need to add corresponding ids:
 
 ```vue
-<div id="overview">
-  <!-- Itinerary overview content -->
-</div>
 
-<div id="budget">
-  <!-- Budget details content -->
-</div>
+  
 
-<div id="map">
-  <!-- Map content -->
-</div>
+
+
+  
+
+
+
+  
+
 ```
 
 This way, when users click a menu item in the side navigation, the page will smoothly scroll to the corresponding section.

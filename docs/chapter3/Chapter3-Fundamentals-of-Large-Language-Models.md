@@ -16,10 +16,10 @@ $$P(S)=P(w_1,w_2,…,w_m)=P(w_1)⋅P(w_2∣w_1)⋅P(w_3∣w_1,w_2)⋯P(w_m∣w_1
 
 This formula is called the chain rule of probability. However, directly calculating this formula is almost impossible because conditional probabilities like $P(w_m∣w_1,\cdots,w_{m−1})$ are too difficult to estimate from a corpus, as the word sequence $w_1,\cdots,w_{m−1}$ may have never appeared in the training data.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-0.png" alt="Figure description" width="90%"/>
-  <p>Figure 3.1 Schematic diagram of Markov assumption</p>
-</div>
+
+  
+  Figure 3.1 Schematic diagram of Markov assumption
+
 
 To solve this problem, researchers introduced the **Markov Assumption**. Its core idea is: we don't need to trace back a word's entire history; we can approximately assume that a word's probability of appearing is only related to the limited $n−1$ words before it, as shown in Figure 3.1. Language models built on this assumption are called **N-gram models**. Here, "N" represents the context window size we consider. Let's look at some of the most common examples to understand this concept:
 
@@ -106,17 +106,17 @@ N-gram models, although simple and effective, have two fatal flaws:
 
 **(2) Neural Network Language Models and Word Embeddings**
 
-The fundamental flaw of N-gram models is that they treat words as isolated, discrete symbols. To overcome this problem, researchers turned to neural networks and proposed an idea: represent words with continuous vectors. In 2003, the **Feedforward Neural Network Language Model** proposed by Bengio et al. was a milestone in this field<sup>[1]</sup>.
+The fundamental flaw of N-gram models is that they treat words as isolated, discrete symbols. To overcome this problem, researchers turned to neural networks and proposed an idea: represent words with continuous vectors. In 2003, the **Feedforward Neural Network Language Model** proposed by Bengio et al. was a milestone in this field[1].
 
 Its core idea can be divided into two steps:
 
 1. **Build a semantic space**: Create a high-dimensional continuous vector space, then map each word in the vocabulary to a point in that space. This point (i.e., vector) is called a **Word Embedding** or word vector. In this space, semantically similar words have vectors that are close together in position. For example, the vectors of `agent` and `robot` will be very close, while the vectors of `agent` and `apple` will be far apart.
 2. **Learn the mapping from context to the next word**: Utilize the powerful fitting ability of neural networks to learn a function. The input of this function is the word vectors of the previous $n−1$ words, and the output is the probability distribution of each word in the vocabulary appearing after the current context.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-1.png" alt="Figure description" width="90%"/>
-  <p>Figure 3.2 Schematic diagram of neural network language model architecture</p>
-</div>
+
+  
+  Figure 3.2 Schematic diagram of neural network language model architecture
+
 
 As shown in Figure 3.2, in this architecture, word embeddings are automatically learned during model training. To complete the task of "predicting the next word," the model continuously adjusts the vector position of each word, ultimately making these vectors contain rich semantic information. Once we convert words into vectors, we can use mathematical tools to measure the relationships between them. The most commonly used method is **Cosine Similarity**, which measures their similarity by calculating the cosine of the angle between two vectors.
 
@@ -166,18 +166,18 @@ Neural network language models successfully solved the poor generalization probl
 
 **(3) Recurrent Neural Networks (RNN) and Long Short-Term Memory Networks (LSTM)**
 
-Although the neural network language model in the previous section introduced word embeddings to solve the generalization problem, like N-gram models, its context window is of fixed size. To predict the next word, it can only see the previous n−1 words, and earlier historical information is discarded. This obviously does not conform to how we humans understand language. To break the limitation of fixed windows, **Recurrent Neural Networks (RNN)** emerged, with a very intuitive core idea: add "memory" capability to the network<sup>[2]</sup>.
+Although the neural network language model in the previous section introduced word embeddings to solve the generalization problem, like N-gram models, its context window is of fixed size. To predict the next word, it can only see the previous n−1 words, and earlier historical information is discarded. This obviously does not conform to how we humans understand language. To break the limitation of fixed windows, **Recurrent Neural Networks (RNN)** emerged, with a very intuitive core idea: add "memory" capability to the network[2].
 
 As shown in Figure 3.3, RNN's design introduces a **hidden state** vector, which we can understand as the network's short-term memory. At each step of processing the sequence, the network reads the current input word and combines it with its memory from the previous moment (i.e., the hidden state from the previous time step), then generates a new memory (i.e., the hidden state of the current time step) to pass to the next moment. This cyclical process allows information to continuously propagate backward through the sequence.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-2.png" alt="Figure description" width="90%"/>
-  <p>Figure 3.3 Schematic diagram of RNN structure</p>
-</div>
+
+  
+  Figure 3.3 Schematic diagram of RNN structure
+
 
 However, standard RNNs have a serious problem in practice: the **Long-term Dependency Problem**. During training, the model needs to adjust weights deep in the network based on errors at the output end through the backpropagation algorithm. For RNNs, the length of the sequence is the depth of the network. When the sequence is very long, gradients undergo multiple multiplications during backward propagation, which causes gradient values to rapidly approach zero (**gradient vanishing**) or become extremely large (**gradient explosion**). Gradient vanishing prevents the model from effectively learning the impact of early sequence information on later outputs, making it difficult to capture long-distance dependencies.
 
-To solve the long-term dependency problem, **Long Short-Term Memory (LSTM)** was designed<sup>[3]</sup>. LSTM is a special type of RNN, and its core innovation lies in introducing **Cell State** and a sophisticated **Gating Mechanism**. The cell state can be seen as an information pathway independent of the hidden state, allowing information to pass more smoothly between time steps. The gating mechanism consists of several small neural networks that can learn how to selectively let information through, thereby controlling the addition and removal of information in the cell state. These gates include:
+To solve the long-term dependency problem, **Long Short-Term Memory (LSTM)** was designed[3]. LSTM is a special type of RNN, and its core innovation lies in introducing **Cell State** and a sophisticated **Gating Mechanism**. The cell state can be seen as an information pathway independent of the hidden state, allowing information to pass more smoothly between time steps. The gating mechanism consists of several small neural networks that can learn how to selectively let information through, thereby controlling the addition and removal of information in the cell state. These gates include:
 
 - **Forget Gate**: Decides which information to discard from the cell state of the previous moment.
 - **Input Gate**: Decides which new information from the current input to store in the cell state.
@@ -185,16 +185,16 @@ To solve the long-term dependency problem, **Long Short-Term Memory (LSTM)** was
 
 ### 3.1.2 Transformer Architecture Analysis
 
-In the previous section, we saw that RNNs and LSTMs process sequential data by introducing recurrent structures, which to some extent solved the problem of capturing long-distance dependencies. However, this recurrent computation method also brought new bottlenecks: it must process data sequentially. The computation at time step t must wait for time step t−1 to complete before it can begin. This means RNNs cannot perform large-scale parallel computation and are inefficient when processing long sequences, which greatly limits the improvement of model scale and training speed. Transformer was proposed by the Google team in 2017<sup>[4]</sup>. It completely abandoned the recurrent structure and instead relied entirely on a mechanism called **Attention** to capture dependencies within sequences, thereby achieving truly parallel computation.
+In the previous section, we saw that RNNs and LSTMs process sequential data by introducing recurrent structures, which to some extent solved the problem of capturing long-distance dependencies. However, this recurrent computation method also brought new bottlenecks: it must process data sequentially. The computation at time step t must wait for time step t−1 to complete before it can begin. This means RNNs cannot perform large-scale parallel computation and are inefficient when processing long sequences, which greatly limits the improvement of model scale and training speed. Transformer was proposed by the Google team in 2017[4]. It completely abandoned the recurrent structure and instead relied entirely on a mechanism called **Attention** to capture dependencies within sequences, thereby achieving truly parallel computation.
 
 **(1) Overall Encoder-Decoder Structure**
 
 The original Transformer model was designed for the end-to-end task of machine translation. As shown in Figure 3.4, it follows a classic **Encoder-Decoder** architecture at the macro level.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-3.png" alt="Figure description" width="50%"/>
-  <p>Figure 3.4 Overall Transformer architecture diagram</p>
-</div>
+
+  
+  Figure 3.4 Overall Transformer architecture diagram
+
 
 We can understand this structure as a team with clear division of labor:
 
@@ -310,10 +310,10 @@ If only one attention calculation is performed (i.e., single-head), the model ma
 
 It splits the original Q, K, V vectors into h parts along the dimension (h is the number of "heads"), and each part independently performs a single-head attention calculation. This is like having h different "experts" examine the sentence from different perspectives, with each expert capturing a different feature relationship. Finally, the "opinions" (i.e., output vectors) of these h experts are concatenated, then integrated through a linear transformation to obtain the final output.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-4.png" alt="Figure description" width="50%"/>
-  <p>Figure 3.5 Multi-head attention mechanism</p>
-</div>
+
+  
+  Figure 3.5 Multi-head attention mechanism
+
 
 As shown in Figure 3.5, this design allows the model to jointly attend to information from different positions and different representation subspaces, greatly enhancing the model's expressive power. Below is a simple implementation of multi-head attention for reference.
 
@@ -475,7 +475,7 @@ This subsection mainly helps understand the macro structure of Transformer and t
 
 In the previous section, we built a complete Transformer model by hand, which performs excellently in many end-to-end scenarios. But when the task shifts to building a general model that can converse with people, create, and serve as an agent's brain, perhaps we don't need such a complex structure.
 
-Transformer's design philosophy is "understand first, then generate." The encoder is responsible for deeply understanding the entire input sentence, forming a contextual memory containing global information, then the decoder generates translation based on this memory. But when OpenAI developed **GPT (Generative Pre-trained Transformer)**, they proposed a simpler idea<sup>[5]</sup>: **Isn't the core task of language to predict the next most likely word?**
+Transformer's design philosophy is "understand first, then generate." The encoder is responsible for deeply understanding the entire input sentence, forming a contextual memory containing global information, then the decoder generates translation based on this memory. But when OpenAI developed **GPT (Generative Pre-trained Transformer)**, they proposed a simpler idea[5]: **Isn't the core task of language to predict the next most likely word?**
 
 Whether answering questions, writing stories, or generating code, essentially it's adding the most reasonable content word by word after an existing text sequence. Based on this idea, GPT made a bold simplification: **It completely abandoned the encoder and only kept the decoder part.** This is the origin of the **Decoder-Only** architecture.
 
@@ -672,7 +672,7 @@ To balance vocabulary size and semantic expression, modern large language models
 
 **3.2.2.2 Byte-Pair Encoding Algorithm Analysis**
 
-Byte-Pair Encoding (BPE) is one of the most mainstream subword tokenization algorithms<sup>[6]</sup>, adopted by the GPT series models. Its core idea is very concise and can be understood as a "greedy" merging process:
+Byte-Pair Encoding (BPE) is one of the most mainstream subword tokenization algorithms[6], adopted by the GPT series models. Its core idea is very concise and can be understood as a "greedy" merging process:
 
 1. **Initialization**: Initialize the vocabulary to all basic characters appearing in the corpus.
 2. **Iterative Merging**: In the corpus, count the frequency of all adjacent token pairs, find the pair with the highest frequency, merge them into a new token, and add it to the vocabulary.
@@ -680,10 +680,10 @@ Byte-Pair Encoding (BPE) is one of the most mainstream subword tokenization algo
 
 **Case Demonstration:** Suppose our mini corpus is `{"hug": 1, "pug": 1, "pun": 1, "bun": 1}`, and we want to build a vocabulary of size 10. The BPE training process can be represented by Table 3.1:
 
-<div align="center">
-  <p>Table 3.1 Example of BPE Algorithm Merging Process</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/3-figures/1757249275674-5.png" alt="Figure description" width="90%"/>
-</div>
+
+  Table 3.1 Example of BPE Algorithm Merging Process
+  
+
 
 After training ends, when the vocabulary size reaches 10, we get new tokenization rules. Now, for an unseen word "bug," the tokenizer will first check if "bug" is in the vocabulary and find it's not; then check "bu" and find it's not; finally check "b" and "ug," find both are in, and thus split it into `['b', 'ug']`.
 
@@ -711,8 +711,8 @@ def merge_vocab(pair, v_in):
         v_out[w_out] = v_in[word]
     return v_out
 
-# Prepare corpus, add </w> at the end of each word to indicate ending, and split characters
-vocab = {'h u g </w>': 1, 'p u g </w>': 1, 'p u n </w>': 1, 'b u n </w>': 1}
+# Prepare corpus, add  at the end of each word to indicate ending, and split characters
+vocab = {'h u g ': 1, 'p u g ': 1, 'p u n ': 1, 'b u n ': 1}
 num_merges = 4 # Set number of merges
 
 for i in range(num_merges):
@@ -727,16 +727,16 @@ for i in range(num_merges):
 
 >>>
 Merge 1: ('u', 'g') -> ug
-New vocabulary (partial): ['h ug </w>', 'p ug </w>', 'p u n </w>', 'b u n </w>']
+New vocabulary (partial): ['h ug ', 'p ug ', 'p u n ', 'b u n ']
 --------------------
-Merge 2: ('ug', '</w>') -> ug</w>
-New vocabulary (partial): ['h ug</w>', 'p ug</w>', 'p u n </w>', 'b u n </w>']
+Merge 2: ('ug', '') -> ug
+New vocabulary (partial): ['h ug', 'p ug', 'p u n ', 'b u n ']
 --------------------
 Merge 3: ('u', 'n') -> un
-New vocabulary (partial): ['h ug</w>', 'p ug</w>', 'p un </w>', 'b un </w>']
+New vocabulary (partial): ['h ug', 'p ug', 'p un ', 'b un ']
 --------------------
-Merge 4: ('un', '</w>') -> un</w>
-New vocabulary (partial): ['h ug</w>', 'p ug</w>', 'p un</w>', 'b un</w>']
+Merge 4: ('un', '') -> un
+New vocabulary (partial): ['h ug', 'p ug', 'p un', 'b un']
 --------------------
 ```
 
@@ -744,8 +744,8 @@ This code clearly demonstrates how the BPE algorithm gradually builds and expand
 
 Many subsequent algorithms are optimizations based on BPE. Among them, WordPiece and SentencePiece developed by Google are the two most influential.
 
-- **WordPiece**: The algorithm adopted by Google's BERT model<sup>[7]</sup>. It is very similar to BPE, but the criterion for merging tokens is not "highest frequency" but "maximizing the improvement of the corpus's language model probability." Simply put, it prioritizes merging token pairs that can maximize the "fluency" improvement of the entire corpus.
-- **SentencePiece**: An open-source tokenization tool by Google<sup>[8]</sup>, adopted by the Llama series models. Its biggest feature is treating spaces as ordinary characters (usually represented by underscore `_`). This makes the tokenization and decoding process completely reversible and independent of specific languages (for example, it doesn't need to know that Chinese doesn't use spaces for word segmentation).
+- **WordPiece**: The algorithm adopted by Google's BERT model[7]. It is very similar to BPE, but the criterion for merging tokens is not "highest frequency" but "maximizing the improvement of the corpus's language model probability." Simply put, it prioritizes merging token pairs that can maximize the "fluency" improvement of the entire corpus.
+- **SentencePiece**: An open-source tokenization tool by Google[8], adopted by the Llama series models. Its biggest feature is treating spaces as ordinary characters (usually represented by underscore `_`). This makes the tokenization and decoding process completely reversible and independent of specific languages (for example, it doesn't need to know that Chinese doesn't use spaces for word segmentation).
 
 **3.2.2.3 Significance of Tokenizers for Developers**
 
@@ -896,15 +896,15 @@ Large Language Models (LLMs) have made remarkable progress in recent years, with
 
 **Scaling Laws** are one of the most important discoveries in the large language model field in recent years. They reveal that there are predictable power-law relationships between model performance and model parameter count, training data volume, and computational resources. This discovery provides theoretical guidance for the continuous development of large language models, clarifying the underlying logic that increasing resource investment can systematically improve model performance.
 
-Research found that in log-log coordinate systems, model performance (usually measured by Loss) shows smooth power-law relationships with all three factors: parameter count, data volume, and computation<sup>[9]</sup>. Simply put, as long as we continuously and proportionally increase these three elements, model performance will predictably and smoothly improve without obvious bottlenecks. This discovery provides clear guidance for large model design and training: within resource constraints, maximize model scale and training data volume as much as possible.
+Research found that in log-log coordinate systems, model performance (usually measured by Loss) shows smooth power-law relationships with all three factors: parameter count, data volume, and computation[9]. Simply put, as long as we continuously and proportionally increase these three elements, model performance will predictably and smoothly improve without obvious bottlenecks. This discovery provides clear guidance for large model design and training: within resource constraints, maximize model scale and training data volume as much as possible.
 
-Early research focused more on increasing model parameter count, but DeepMind's "Chinchilla Law" proposed in 2022 made important corrections<sup>[10]</sup>. This law points out that under a given computational budget, to achieve optimal performance, **there is an optimal ratio between model parameter count and training data volume**. Specifically, optimal models should be smaller than previously commonly believed but need to be trained with much more data. For example, a 70 billion parameter Chinchilla model, because it was trained with 4 times more data than GPT-3 (175 billion parameters), actually outperforms the latter. This discovery corrected the one-sided perception of "bigger is better," emphasized the importance of data efficiency, and guided the design of many subsequent efficient large models (such as the Llama series).
+Early research focused more on increasing model parameter count, but DeepMind's "Chinchilla Law" proposed in 2022 made important corrections[10]. This law points out that under a given computational budget, to achieve optimal performance, **there is an optimal ratio between model parameter count and training data volume**. Specifically, optimal models should be smaller than previously commonly believed but need to be trained with much more data. For example, a 70 billion parameter Chinchilla model, because it was trained with 4 times more data than GPT-3 (175 billion parameters), actually outperforms the latter. This discovery corrected the one-sided perception of "bigger is better," emphasized the importance of data efficiency, and guided the design of many subsequent efficient large models (such as the Llama series).
 
 The most surprising product of scaling laws is "capability emergence." So-called capability emergence refers to when model scale reaches a certain threshold, it suddenly exhibits completely new capabilities that don't exist or perform poorly in small-scale models. For example, **Chain-of-Thought**, **Instruction Following**, multi-step reasoning, code generation, and other capabilities all significantly appeared only after model parameter counts reached tens or even hundreds of billions. This phenomenon indicates that large language models are not simply memorizing and reciting; they may have formed some deeper level of abstraction and reasoning capabilities during learning. For agent developers, capability emergence means choosing a sufficiently large-scale model is a prerequisite for achieving complex autonomous decision-making and planning capabilities.
 
 ### 3.3.2 Model Hallucination
 
-**Model Hallucination** usually refers to content generated by large language models that contradicts objective facts, user input, or contextual information, or generates non-existent facts, entities, or events. The essence of hallucination is that models over-confidently "fabricate" information during generation rather than accurately retrieving or reasoning. According to manifestation forms, hallucinations can be divided into multiple types<sup>[11]</sup>, such as:
+**Model Hallucination** usually refers to content generated by large language models that contradicts objective facts, user input, or contextual information, or generates non-existent facts, entities, or events. The essence of hallucination is that models over-confidently "fabricate" information during generation rather than accurately retrieving or reasoning. According to manifestation forms, hallucinations can be divided into multiple types[11], such as:
 
 - **Factual Hallucinations**: Models generate information inconsistent with real-world facts.
 - **Faithfulness Hallucinations**: In tasks like text summarization and translation, generated content fails to faithfully reflect source text meaning.
@@ -912,14 +912,14 @@ The most surprising product of scaling laws is "capability emergence." So-called
 
 Hallucination production results from multiple factors working together. First, training data may contain erroneous or contradictory information. Second, the model's autoregressive generation mechanism determines it only predicts the next most likely token without a built-in fact-checking module. Finally, when facing tasks requiring complex reasoning, models may make errors in logical chains, thus "fabricating" wrong conclusions. For example: a travel planning Agent might recommend a non-existent scenic spot or book a ticket with an incorrect flight number.
 
-Additionally, large language models face challenges such as insufficient knowledge timeliness and biases in training data. Large language model capabilities come from their training data. This means the knowledge the model possesses is the latest material when its training data was collected. For events occurring after this date, newly emerged concepts, or latest facts, the model will be unable to perceive or correctly answer. Meanwhile, training data often contains various biases and stereotypes from human society. When models learn on this data, they inevitably absorb and reflect these biases<sup>[12]</sup>.
+Additionally, large language models face challenges such as insufficient knowledge timeliness and biases in training data. Large language model capabilities come from their training data. This means the knowledge the model possesses is the latest material when its training data was collected. For events occurring after this date, newly emerged concepts, or latest facts, the model will be unable to perceive or correctly answer. Meanwhile, training data often contains various biases and stereotypes from human society. When models learn on this data, they inevitably absorb and reflect these biases[12].
 
 To improve large language model reliability, researchers and developers are actively exploring multiple methods to detect and mitigate hallucinations:
 
-1. **Data Level**: Reduce hallucinations from the source through high-quality data cleaning, introducing factual knowledge, and Reinforcement Learning from Human Feedback (RLHF)<sup>[13]</sup>.
+1. **Data Level**: Reduce hallucinations from the source through high-quality data cleaning, introducing factual knowledge, and Reinforcement Learning from Human Feedback (RLHF)[13].
 2. **Model Level**: Explore new model architectures or enable models to express uncertainty about generated content.
 3. **Inference and Generation Level**:
-   1. **Retrieval-Augmented Generation (RAG)**<sup>[14]</sup>: This is currently one of the effective methods to mitigate hallucinations. RAG systems retrieve relevant information from external knowledge bases (such as document databases, web pages) before generation, then use retrieved information as context to guide models to generate fact-based answers.
+   1. **Retrieval-Augmented Generation (RAG)**[14]: This is currently one of the effective methods to mitigate hallucinations. RAG systems retrieve relevant information from external knowledge bases (such as document databases, web pages) before generation, then use retrieved information as context to guide models to generate fact-based answers.
    2. **Multi-step Reasoning and Verification**: Guide models to perform multi-step reasoning and conduct self-checking or external verification at each step.
    3. **Introducing External Tools**: Allow models to call external tools (such as search engines, calculators, code interpreters) to obtain real-time information or perform precise calculations.
 
@@ -948,7 +948,7 @@ This chapter's LLM foundations mainly help everyone better understand large mode
    - The core assumption of N-gram models is the Markov assumption. Please explain the meaning of this assumption and what fundamental limitations N-gram models have?
    - How do neural network language models (RNN/LSTM) and Transformer overcome N-gram model limitations respectively? What are their respective advantages?
 
-2. The Transformer architecture<sup>[4]</sup> is the foundation of modern large language models. Among them:
+2. The Transformer architecture[4] is the foundation of modern large language models. Among them:
 
    > **Hint**: Can combine code implementation in Section 3.1.2 of this chapter to aid understanding
 
@@ -967,7 +967,7 @@ This chapter's LLM foundations mainly help everyone better understand large mode
    - Compare closed-source models and open-source models from dimensions of performance, cost, controllability, privacy, etc.
    - If you want to build an enterprise-level customer service agent, which type of model would you choose? What factors need to be considered?
 
-5. Model Hallucination<sup>[11]</sup> is one of the key limitations of current large language models. This chapter introduced methods to mitigate hallucinations (such as retrieval-augmented generation, multi-step reasoning, external tool invocation)
+5. Model Hallucination[11] is one of the key limitations of current large language models. This chapter introduced methods to mitigate hallucinations (such as retrieval-augmented generation, multi-step reasoning, external tool invocation)
 
    - Please choose one and explain its working principle and applicable scenarios
    - Research cutting-edge studies and papers—are there other methods to mitigate model hallucinations, and what improvements and advantages do they have?

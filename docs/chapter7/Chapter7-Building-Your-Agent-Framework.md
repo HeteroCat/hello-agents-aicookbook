@@ -445,10 +445,10 @@ In this process, the `_auto_detect_provider` method successfully infers the `pro
 
 Compared to the basic implementation in Section 4.1.3, the current HelloAgentsLLM has the following significant advantages:
 
-<div align="center">
-  <p>Table 7.1 Comparison of HelloAgentLLM Different Version Features</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/table-01.png" alt="" width="90%"/>
-</div>
+
+  Table 7.1 Comparison of HelloAgentLLM Different Version Features
+  
+
 
 As shown in Table 7.1 above, this evolution embodies an important principle of framework design: **start simple, gradually improve**. We enhanced functional completeness while maintaining interface simplicity.
 
@@ -1271,10 +1271,10 @@ print(f"Math-specific Agent result: {math_result}")
 
 As shown in Table 7.2, through this framework refactoring, we not only maintained the core functionality of various Agent paradigms from Chapter 4 but also significantly improved code organization, maintainability, and extensibility. All Agents now share a unified infrastructure while maintaining their respective characteristics and advantages.
 
-<div align="center">
-  <p>Table 7.2 Comparison of Agent Implementations Across Chapters</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/table-02.png" alt="" width="90%"/>
-</div>
+
+  Table 7.2 Comparison of Agent Implementations Across Chapters
+  
+
 
 ## 7.5 Tool System
 
@@ -1534,10 +1534,10 @@ if __name__ == "__main__":
 
 Through this simplified mathematical calculation tool case, we learned how to quickly develop custom tools: write a simple calculation function, register it through ToolRegistry, and then integrate it with SimpleAgent. For more intuitive observation, Figure 7.1 is provided here to clearly understand the code's running logic.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/01.png" alt="" width="90%"/>
-  <p>Figure 7.1 SimpleAgent Workflow Based on HelloAgents</p>
-</div>
+
+  
+  Figure 7.1 SimpleAgent Workflow Based on HelloAgents
+
 
 ### 7.5.3 Multi-Source Search Tool
 
@@ -2045,7 +2045,7 @@ Next, we will explore together how to add RAG systems and Memory mechanisms to t
 
 2. In Section 7.2, we extended `HelloAgentsLLM` to support multiple model providers and local model invocation.
 
-   > <strong>Hint</strong>: This is a practical exercise, hands-on operation is recommended
+   > **Hint**: This is a practical exercise, hands-on operation is recommended
 
    - Referring to the example in Section 7.2.1, try adding support for a new model provider to `HelloAgentsLLM` (such as `Gemini`, `Anthropic`, `Kim`). Implement it through inheritance and enable automatic detection of that provider's environment variables.
    - Section 7.2.3 introduced three priorities of the automatic detection mechanism. Please analyze: If both `OPENAI_API_KEY` and `LLM_BASE_URL="http://localhost:11434/v1"` are set, which provider will the framework ultimately choose? Is this priority design reasonable?
@@ -2059,7 +2059,7 @@ Next, we will explore together how to add RAG systems and Memory mechanisms to t
 
 4. In Section 7.4, we implemented four `Agent` paradigms in a framework manner.
 
-   > <strong>Hint</strong>: This is a practical exercise, hands-on operation is recommended
+   > **Hint**: This is a practical exercise, hands-on operation is recommended
 
    - Comparing the `ReActAgent` implemented from scratch in Chapter 4 with the framework-based `ReActAgent` in this chapter, list 3 specific improvements and explain how these improvements enhance code maintainability and extensibility.
    - `ReflectionAgent` implements an "execute-reflect-optimize" loop. Please extend this implementation by adding a "quality scoring" mechanism: After each reflection, have the `LLM` score the current version's output, and only continue optimization if the score is below a threshold; otherwise, terminate early.

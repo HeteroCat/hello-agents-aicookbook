@@ -28,19 +28,19 @@ This is the new possibility that AI technology brings to games. By combining lar
 
 Cyber Town adopts a **game engine + back-end service** separation architecture, divided into four layers, as shown in Figure 15.1.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-1.png" alt="" width="85%"/>
-  <p>Figure 15.1 Cyber Town Technical Architecture</p>
-</div>
+
+  
+  Figure 15.1 Cyber Town Technical Architecture
+
 
 The front-end layer uses the Godot 4.5 game engine, responsible for game rendering, player control, NPC display, and dialogue UI. Godot is an open-source 2D/3D game engine, very suitable for quickly developing pixel-style games. The back-end layer uses the FastAPI framework, responsible for API routing, NPC state management, dialogue processing, and logging. FastAPI is a modern Python web framework with excellent performance and easy development. The agent layer uses our own HelloAgents framework, responsible for NPC intelligence, memory management, and affection calculation. Each NPC is a SimpleAgent instance with independent memory and state. The external service layer provides LLM capabilities, vector storage, and data persistence, including LLM API, Qdrant vector database, and SQLite relational database.
 
 The data flow process is shown in Figure 15.2:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-2.png" alt="" width="85%"/>
-  <p>Figure 15.2 Data Flow Process</p>
-</div>
+
+  
+  Figure 15.2 Data Flow Process
+
 
 Players press the E key in Godot to interact with NPCs, and Godot sends dialogue requests to the FastAPI back-end via HTTP API. The back-end calls HelloAgents' SimpleAgent to process the dialogue, the Agent retrieves relevant history from the memory system, and then calls the LLM to generate a reply. The back-end updates NPC state and affection, records logs to console and file, and finally returns the reply to the Godot front-end. Godot displays the NPC reply and updates the UI, completing a complete interaction loop.
 
@@ -135,17 +135,17 @@ Open the Godot engine, click the "Import" button, browse to `Helloagents-AI-Town
 
 After the game starts, you will see a pixel-style Datawhale office scene, as shown in Figure 15.3.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-3.png" alt="" width="85%"/>
-  <p>Figure 15.3 Cyber Town Game Scene</p>
-</div>
+
+  
+  Figure 15.3 Cyber Town Game Scene
+
 
 Use WASD keys to move the player character. When you walk near an NPC, the screen will display a "Press E to interact" prompt. After pressing the E key, a dialogue box will pop up, and you can enter anything you want to say, as shown in Figure 15.4.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-4.png" alt="" width="85%"/>
-  <p>Figure 15.4 Dialogue Interface with NPC</p>
-</div>
+
+  
+  Figure 15.4 Dialogue Interface with NPC
+
 
 NPCs will respond based on their role settings (Python engineer, product manager, UI designer) and your interaction history. As the conversation progresses, the NPC's affection towards you will gradually increase, from "stranger" to "familiar", then to "friendly", "intimate", and even "close friend".
 
@@ -212,10 +212,10 @@ This code demonstrates how to create an NPC Agent. The system prompt defines the
 
 The workflow of NPC Agent is shown in Figure 15.5:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-5.png" alt="" width="85%"/>
-  <p>Figure 15.5 NPC Agent Workflow</p>
-</div>
+
+  
+  Figure 15.5 NPC Agent Workflow
+
 
 ### 15.2.2 NPC Role Settings and Prompt Design
 
@@ -272,10 +272,10 @@ Long-term memory stores all conversation history, using vector databases for sem
 
 The architecture of the memory system is shown in Figure 15.6:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-6.png" alt="" width="85%"/>
-  <p>Figure 15.6 Memory System Architecture</p>
-</div>
+
+  
+  Figure 15.6 Memory System Architecture
+
 
 In actual use, the Agent first obtains recent conversations from short-term memory, then retrieves relevant historical conversations from long-term memory, sends this information together to the LLM, and generates more accurate and personalized replies.
 
@@ -316,10 +316,10 @@ To solve this problem, we designed a **batch dialogue generation system**. The c
 
 The workflow of batch generation is shown in Figure 15.7:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-7.png" alt="" width="85%"/>
-  <p>Figure 15.7 Batch Generation vs Traditional Mode</p>
-</div>
+
+  
+  Figure 15.7 Batch Generation vs Traditional Mode
+
 
 The implementation of the batch generator is very clever. We build a special prompt requiring the LLM to generate all NPC dialogues at once and return them in JSON format. This way, one API call can obtain all NPC replies, reducing costs to 1/3 of the original and significantly reducing latency.
 
@@ -482,10 +482,10 @@ The core idea of the affection system is: by quantifying the relationship betwee
 
 We divide affection into five levels, each corresponding to a score range, as shown in Figure 15.8:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-8.png" alt="" width="85%"/>
-  <p>Figure 15.8 Affection Level Classification</p>
-</div>
+
+  
+  Figure 15.8 Affection Level Classification
+
 
 - **Stranger (0-20 points)**: NPC just met the player, attitude is polite but maintains distance. Replies are brief, won't actively share personal information.
 
@@ -507,10 +507,10 @@ In Cyber Town, we use LLM to analyze conversation content, judging whether the p
 
 The affection calculation process is shown in Figure 15.9:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-9.png" alt="" width="85%"/>
-  <p>Figure 15.9 Affection Calculation Process</p>
-</div>
+
+  
+  Figure 15.9 Affection Calculation Process
+
 
 ```python
 class RelationshipManager:
@@ -639,10 +639,10 @@ The back-end of Cyber Town is built using the FastAPI framework, responsible for
 
 Our FastAPI application adopts a modular design, separating different functions into different files, as shown in Figure 15.10:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-10.png" alt="" width="85%"/>
-  <p>Figure 15.10 Back-End Application Structure</p>
-</div>
+
+  
+  Figure 15.10 Back-End Application Structure
+
 
 Let's start with `main.py`, the entry file for the FastAPI application:
 
@@ -827,10 +827,10 @@ async def get_affinity(npc_id: str, player_name: str):
 
 The API route call flow is shown in Figure 15.11:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-11.png" alt="" width="85%"/>
-  <p>Figure 15.11 API Call Flow</p>
-</div>
+
+  
+  Figure 15.11 API Call Flow
+
 
 ### 15.4.3 State Management and Logging System
 
@@ -1036,10 +1036,10 @@ Cyber Town's scene organization adopts a modular design. We first create three b
 
 Let's first look at the structure of the four core scenes, as shown in Figure 15.12:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-12.png" alt="" width="85%"/>
-  <p>Figure 15.12 Four Core Scenes of Cyber Town</p>
-</div>
+
+  
+  Figure 15.12 Four Core Scenes of Cyber Town
+
 
 This diagram shows four independent scenes and their internal structures. **Scene 1 (Main)** is the main scene, containing background image (Sprite2D), player instance, NPCs organization node (with three NPC instances below), dialogue interface instance, walls organization node, and background music. Note that Player, NPC_Zhang, NPC_Li, NPC_Wang, and DialogueUI here are scene instances, not ordinary nodes. **Scene 2 (Player)** defines the player character structure, including animation, collision, camera, and two sound effect nodes. **Scene 3 (NPC)** is a generic template - Zhang San, Li Si, and Wang Wu are all instances of this scene, containing collision, animation, interaction area, and two labels. **Scene 4 (DialogueUI)** is a CanvasLayer node containing Panel and various UI elements.
 
@@ -1587,10 +1587,10 @@ The dialogue UI is the interface for player-NPC interaction. We need to design a
 
 The dialogue UI structure is shown in Figure 15.13:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-13.png" alt="" width="85%"/>
-  <p>Figure 15.13 Dialogue UI Structure</p>
-</div>
+
+  
+  Figure 15.13 Dialogue UI Structure
+
 
 The dialogue UI design is very simple. DialogueUI is a CanvasLayer node, meaning it will always display on top of the game screen and won't be obscured by other game objects. Panel is the dialogue box background, anchored at the bottom of the screen. Under Panel are 6 UI elements placed directly: NPCName displays the NPC's name, NPCTitle displays the title, DialogueText uses RichTextLabel to display dialogue content (supports rich text format), PlayerInput is a LineEdit for player input, and SendButton and CloseButton are used to send messages and close the dialogue box respectively.
 
@@ -1798,10 +1798,10 @@ The core function of the main scene script is to periodically obtain NPC status 
 
 The complete front-end and back-end communication process is shown in Figure 15.14:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-14.png" alt="" width="85%"/>
-  <p>Figure 15.14 Complete Front-End and Back-End Communication Process</p>
-</div>
+
+  
+  Figure 15.14 Complete Front-End and Back-End Communication Process
+
 
 At this point, all front-end and back-end communication functions have been implemented. Players can move freely in the game, interact with NPCs, and have natural language conversations. Meanwhile, the main scene periodically obtains NPC status from the back-end, updates NPC dialogue bubbles, and displays autonomous dialogue between NPCs. The entire system uses a signal mechanism for communication, with loose coupling between components, making it easy to maintain and extend.
 
@@ -1833,10 +1833,10 @@ We used HTTP REST API to implement communication between the Godot front-end and
 
 The project's technology stack is shown in Figure 15.15:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/15-figures/15-15.png" alt="" width="85%"/>
-  <p>Figure 15.15 Cyber Town Technology Stack</p>
-</div>
+
+  
+  Figure 15.15 Cyber Town Technology Stack
+
 
 ### 15.7.2 Extension Directions
 

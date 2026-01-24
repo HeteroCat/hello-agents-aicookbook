@@ -158,6 +158,15 @@ export default defineConfig({
     }
   },
 
+  // 构建配置
+  build: {
+    outDir: '.vitepress/dist',
+    assetsDir: 'assets'
+  },
+
+  // 忽略死链接
+  ignoreDeadLinks: true,
+
   // 多语言配置
   locales: {
     root: {

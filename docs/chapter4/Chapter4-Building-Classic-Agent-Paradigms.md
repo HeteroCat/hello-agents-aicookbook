@@ -133,7 +133,7 @@ Quicksort is a very efficient sorting algorithm...
 
 ## 4.2 ReAct
 
-After preparing the LLM client, we will build the first and most classic agent paradigm: **ReAct (Reason + Act)**. ReAct was proposed by Shunyu Yao in 2022<sup>[1]</sup>. Its core idea is to mimic how humans solve problems by explicitly combining **Reasoning** and **Acting** to form a "think-act-observe" loop.
+After preparing the LLM client, we will build the first and most classic agent paradigm: **ReAct (Reason + Act)**. ReAct was proposed by Shunyu Yao in 2022[1]. Its core idea is to mimic how humans solve problems by explicitly combining **Reasoning** and **Acting** to form a "think-act-observe" loop.
 
 ### 4.2.1 ReAct Workflow
 
@@ -157,10 +157,10 @@ $$o_t = T(a_t)$$
 
 This loop continues, appending new $(a_t,o_t)$ pairs to the history until the model determines in thought $th_t$ that the task is complete.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/4-figures/4-1.png" alt="Think-Act-Observe synergistic loop in ReAct paradigm" width="90%"/>
-  <p>Figure 4.1 Think-Act-Observe Synergistic Loop in ReAct Paradigm</p>
-</div>
+
+  
+  Figure 4.1 Think-Act-Observe Synergistic Loop in ReAct Paradigm
+
 
 This mechanism is particularly suitable for the following scenarios:
 
@@ -583,7 +583,7 @@ If ReAct is like an experienced detective who reasons step by step based on clue
 
 ### 4.3.1 Working Principle of Plan-and-Solve
 
-Plan-and-Solve Prompting was proposed by Lei Wang in 2023<sup>[2]</sup>. Its core motivation is to solve the problem that chain-of-thought easily "goes off track" when handling multi-step, complex problems.
+Plan-and-Solve Prompting was proposed by Lei Wang in 2023[2]. Its core motivation is to solve the problem that chain-of-thought easily "goes off track" when handling multi-step, complex problems.
 
 Unlike ReAct, which integrates thinking and acting at each step, Plan-and-Solve decouples the entire process into two core stages, as shown in Figure 4.2:
 
@@ -606,10 +606,10 @@ $$
 
 The final answer is the execution result of the last step $s_n$.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/4-figures/4-2.png" alt="Two-stage workflow of Plan-and-Solve paradigm" width="90%"/>
-  <p>Figure 4.2 Two-Stage Workflow of Plan-and-Solve Paradigm</p>
-</div>
+
+  
+  Figure 4.2 Two-Stage Workflow of Plan-and-Solve Paradigm
+
 
 Plan-and-Solve is especially suitable for complex tasks with strong structure that can be clearly decomposed, such as:
 
@@ -859,7 +859,7 @@ In the ReAct and Plan-and-Solve paradigms we have already implemented, once the 
 
 ### 4.4.1 Core Idea of Reflection Mechanism
 
-The inspiration for the Reflection mechanism comes from the human learning process: we proofread after completing a first draft and verify after solving a math problem. This idea is embodied in multiple studies, such as the Reflexion framework proposed by Shinn, Noah in 2023<sup>[3]</sup>. Its core workflow can be summarized as a concise three-step loop: **Execute -> Reflect -> Refine**.
+The inspiration for the Reflection mechanism comes from the human learning process: we proofread after completing a first draft and verify after solving a math problem. This idea is embodied in multiple studies, such as the Reflexion framework proposed by Shinn, Noah in 2023[3]. Its core workflow can be summarized as a concise three-step loop: **Execute -> Reflect -> Refine**.
 
 1. **Execution**: First, the agent attempts to complete the task using familiar methods (such as ReAct or Plan-and-Solve), generating a preliminary solution or action trajectory. This can be seen as a "first draft."
 2. **Reflection**: Next, the agent enters the reflection phase. It calls an independent large language model instance, or one with special prompts, to play the role of a "reviewer." This "reviewer" examines the "first draft" generated in the first step and evaluates it from multiple dimensions, such as:
@@ -880,10 +880,10 @@ $$
 
 
 
-<div align="center">
-<img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/4-figures/4-3.png" alt="Execute-Reflect-Refine iterative loop in Reflection mechanism" width="70%"/>
-<p>Figure 4.3 Execute-Reflect-Refine Iterative Loop in Reflection Mechanism</p>
-</div>
+
+
+Figure 4.3 Execute-Reflect-Refine Iterative Loop in Reflection Mechanism
+
 
 
 
@@ -992,7 +992,7 @@ Please output the code directly without any additional explanations.
 ````bash
 REFLECT_PROMPT_TEMPLATE = """
 You are an extremely strict code review expert and senior algorithm engineer with ultimate requirements for code performance.
-Your task is to review the following Python code and focus on finding its main bottlenecks in <strong>algorithm efficiency</strong>.
+Your task is to review the following Python code and focus on finding its main bottlenecks in **algorithm efficiency**.
 
 # Original Task:
 {task}
@@ -1002,7 +1002,7 @@ Your task is to review the following Python code and focus on finding its main b
 {code}
 ```
 
-Please analyze the time complexity of this code and consider whether there is an <strong>algorithmically superior</strong> solution to significantly improve performance.
+Please analyze the time complexity of this code and consider whether there is an **algorithmically superior** solution to significantly improve performance.
 If one exists, please clearly point out the deficiencies of the current algorithm and propose specific, feasible algorithm improvement suggestions (e.g., using sieve method instead of trial division).
 Only if the code has reached optimality at the algorithm level can you answer "no improvement needed."
 
@@ -1146,10 +1146,10 @@ def find_primes(n):
 ✅ Large language model response successful:
 The current code uses the Sieve of Eratosthenes with time complexity O(n log log n) and space complexity O(n). This algorithm is already very efficient for finding all prime numbers between 1 and n, and usually requires no further optimization. However, in some specific scenarios, the following improvements can be considered:
 
-1. <strong>Segmented Sieve</strong>: Suitable for cases where n is very large but memory is limited. Divide the interval into multiple small segments, process each segment separately with the sieve method, reducing memory usage.
-2. <strong>Odd Number Sieve</strong>: Except for 2, all prime numbers are odd. When initializing the `is_prime` array, only mark odd numbers, which can reduce space complexity by half while reducing some unnecessary calculations.
+1. **Segmented Sieve**: Suitable for cases where n is very large but memory is limited. Divide the interval into multiple small segments, process each segment separately with the sieve method, reducing memory usage.
+2. **Odd Number Sieve**: Except for 2, all prime numbers are odd. When initializing the `is_prime` array, only mark odd numbers, which can reduce space complexity by half while reducing some unnecessary calculations.
 
-However, these improvements are not necessary for most application scenarios because the standard Sieve of Eratosthenes is already efficient enough. Therefore, in general cases, <strong>no improvement needed</strong>.
+However, these improvements are not necessary for most application scenarios because the standard Sieve of Eratosthenes is already efficient enough. Therefore, in general cases, **no improvement needed**.
 📝 Memory updated, added a 'reflection' record.
 
 ✅ Reflection considers code needs no improvement, task completed.
@@ -1228,10 +1228,10 @@ In this chapter, building on the large language model knowledge mastered in Chap
 
 The three paradigms explored in this chapter represent three different strategies for agents to solve problems, as shown in Table 4.1. In practical applications, which one to choose depends on the core requirements of the task:
 
-<div align="center">
-<p>Table 4.1 Selection Strategy for Different Agent Loops</p>
-<img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/4-figures/4-4.png" alt="" width="70%"/>
-</div>
+
+Table 4.1 Selection Strategy for Different Agent Loops
+
+
 
 At this point, we have mastered the core technologies for building individual agents. To transition knowledge and gain deeper insights into practical applications, in the next section we will explore how to use different low-code platforms and lightweight code solutions for building agents.
 

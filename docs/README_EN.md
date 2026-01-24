@@ -1,14 +1,14 @@
-<div align='center'>
-  <img src="./images/hello-agents.png" alt="alt text" width="100%">
-  <h1>Hello-Agents</h1>
-  <h3>🤖 Building Agent Systems from Scratch: Principles and Practice Tutorial</h3>
-  <p><em>From fundamental theory to practical applications, comprehensively master the design and implementation of agent systems</em></p>
-  <img src="https://img.shields.io/github/stars/datawhalechina/Hello-Agents?style=flat&logo=github" alt="GitHub stars"/>
-  <img src="https://img.shields.io/github/forks/datawhalechina/Hello-Agents?style=flat&logo=github" alt="GitHub forks"/>
-  <img src="https://img.shields.io/badge/language-English-blue?style=flat" alt="Language"/>
-  <a href="https://github.com/datawhalechina/Hello-Agents"><img src="https://img.shields.io/badge/GitHub-Project-blue?style=flat&logo=github" alt="GitHub Project"></a>
-  <a href="https://datawhalechina.github.io/hello-agents/"><img src="https://img.shields.io/badge/Online%20Reading-在线阅读-green?style=flat&logo=gitbook" alt="Online Reading"></a>
-</div>
+
+  
+  Hello-Agents
+  🤖 Building Agent Systems from Scratch: Principles and Practice Tutorial
+  From fundamental theory to practical applications, comprehensively master the design and implementation of agent systems
+  
+  
+  
+  
+  
+
 
 ---
 
@@ -75,7 +75,7 @@
 
 ### PDF Version Download
 
-&emsp;&emsp; *<strong>This Hello-Agents PDF tutorial is completely open source and free. To prevent various marketing accounts from adding watermarks and selling it to multi-agent system beginners, we have pre-added Datawhale open-source logo watermarks that do not affect reading in the PDF file. Please understand~</strong>*
+&emsp;&emsp; ***This Hello-Agents PDF tutorial is completely open source and free. To prevent various marketing accounts from adding watermarks and selling it to multi-agent system beginners, we have pre-added Datawhale open-source logo watermarks that do not affect reading in the PDF file. Please understand~***
 
 > *Hello-Agents PDF: https://github.com/datawhalechina/hello-agents/releases/tag/V1.0.0*  
 > *Hello-Agents PDF domestic download address: https://www.datawhale.cn/learn/summary/239* 
@@ -130,28 +130,28 @@ We are an open-source community and welcome any form of contribution!
 - Thanks to [@Sm1les](https://github.com/Sm1les) for help and support for this project
 - Thanks to all developers who have contributed to this project ❤️
 
-<div align=center style="margin-top: 30px;">
-  <a href="https://github.com/datawhalechina/Hello-Agents/graphs/contributors">
-    <img src="https://contrib.rocks/image?repo=datawhalechina/Hello-Agents" />
-  </a>
-</div>
+
+  
+    
+  
+
 
 ## Star History
 
-<div align='center'>
-    <img src="./images/star-history-2025114.png" alt="Datawhale" width="90%">
-</div>
 
-<div align="center">
-  <p>⭐ If this project helps you, please give us a Star!</p>
-</div>
+    
+
+
+
+  ⭐ If this project helps you, please give us a Star!
+
 
 ## About Datawhale
 
-<div align='center'>
-    <img src="./images/datawhale.png" alt="Datawhale" width="30%">
-    <p>Scan the QR code to follow the Datawhale official account and get more quality open-source content</p>
-</div>
+
+    
+    Scan the QR code to follow the Datawhale official account and get more quality open-source content
+
 
 ---
 

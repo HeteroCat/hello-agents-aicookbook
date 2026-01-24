@@ -25,19 +25,19 @@ Currently, the low-code platform market for agents and LLM applications presents
 
 **Coze**
 
-- **Core Positioning**: Launched by ByteDance, Coze<sup>[1]</sup> focuses on zero-code/low-code Agent building experience, allowing users without programming backgrounds to easily create.
+- **Core Positioning**: Launched by ByteDance, Coze[1] focuses on zero-code/low-code Agent building experience, allowing users without programming backgrounds to easily create.
 - **Feature Analysis**: Coze has an extremely friendly visual interface. Users can create agents by dragging and dropping plugins, configuring knowledge bases, and setting workflows, just like building LEGO blocks. It has a very rich plugin library built in and supports one-click publishing to mainstream platforms such as Douyin, Feishu, and WeChat Official Accounts, greatly simplifying the distribution process.
 - **Target Audience**: Entry-level users of AI applications, product managers, operations personnel, and individual creators who want to quickly turn ideas into interactive products.
 
 **Dify**
 
-- **Core Positioning**: Dify is an open-source, full-featured LLM application development and operation platform<sup>[2]</sup>, aiming to provide developers with a one-stop solution from prototype construction to production deployment.
+- **Core Positioning**: Dify is an open-source, full-featured LLM application development and operation platform[2], aiming to provide developers with a one-stop solution from prototype construction to production deployment.
 - **Feature Analysis**: It integrates the concepts of backend services and model operations, supporting multiple capabilities such as Agent workflows, RAG Pipeline, data annotation, and fine-tuning. For enterprise-level applications pursuing professionalism, stability, and scalability, Dify provides a solid foundation.
 - **Target Audience**: Developers with some technical background, teams that need to build scalable enterprise-level AI applications.
 
 **n8n**
 
-- **Core Positioning**: n8n is essentially an open-source workflow automation tool<sup>[3]</sup>, not a pure LLM platform. In recent years, it has actively integrated AI capabilities.
+- **Core Positioning**: n8n is essentially an open-source workflow automation tool[3], not a pure LLM platform. In recent years, it has actively integrated AI capabilities.
 
 - **Feature Analysis**: n8n's strength lies in "connection." It has hundreds of preset nodes that can easily connect various SaaS services, databases, and APIs into complex automated business processes. You can embed LLM nodes in this process, making it part of the entire automation chain. Although it is not as specialized in LLM functionality as the first three, its general automation capability is unique. However, its learning curve is also relatively steep.
 
@@ -52,33 +52,33 @@ Coze is a super cool AI agent creation tool! It is also currently the most widel
 
 Overall layout introduction: Recently, Coze has updated its UI interface again, as shown in Figure 5.1. Now the leftmost sidebar is the development workspace of the Coze platform homepage, including core project development, resource library, effect evaluation, and space configuration. The area below is the supporting material space for Coze development, including official templates for one-click copying, Coze's biggest advantage - a rich and diverse plugin store, the largest agent community with a dazzling array, API management for API testing, as well as detailed tutorial documentation and general management for enterprises. On the right side, there are four templates. At the top is Coze's latest update announcement, telling you about Coze's latest progress so you can learn about the latest tools and features. Below that is the beginner tutorial. Click on it and you'll find the beginner tutorial documentation, and you can start building agents in minutes. Next are your follows and agent recommendations. Here you can also follow your favorite AI developers and bookmark their agents for your own use.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-01.png" alt="Image description" width="90%"/>
-  <p>Figure 5.1 Overall Schematic of Coze Agent Platform</p>
-</div>
+
+  
+  Figure 5.1 Overall Schematic of Coze Agent Platform
+
 
 (2) Core Function Introduction
 
 First, we click the plus sign on the left sidebar to see the entry point for creating agents. Currently, there are two types of AI applications: one is to create agents, and the other is called applications. Among them, agents are divided into single-agent autonomous planning mode, single-agent dialogue flow mode, and multi-agent mode. AI applications are also divided into two types: not only can you design user interfaces for desktop and web, but you can also easily build interfaces for mini-programs and H5, as shown in Figure 5.2.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-02.png" alt="Image description" width="90%"/>
-  <p>Figure 5.2 Coze Agent Creation Entry</p>
-</div>
+
+  
+  Figure 5.2 Coze Agent Creation Entry
+
 The project space is your agent repository, where all the agents or applications you have developed or copied are stored. It is also the place you will visit most often when developing agents in Coze, as shown in Figure 5.3.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-03.png" alt="Image description" width="90%"/>
-  <p>Figure 5.3 Coze Agent Project Space</p>
-</div>
+
+  
+  Figure 5.3 Coze Agent Project Space
+
 The resource library is your core arsenal for developing Coze agents. The resource library stores your workflows, knowledge bases, cards, prompt libraries, and a series of other tools for developing agents. What kind of agent you can make depends first on the model's capabilities, but most importantly, it depends on how you equip the agent with "equipment and skills." The model determines the lower limit of the agent, but the Coze resource library gives you infinite upper limits for the agent's capabilities, allowing you to develop according to your own ideas, imagination, and creativity, as shown in Figure 5.4.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-04.png" alt="Image description" width="90%"/>
-  <p>Figure 5.4 Coze Agent Resource Library</p>
-</div>
+
+  
+  Figure 5.4 Coze Agent Resource Library
+
 Space configuration includes a unified management channel for agents, plugins, workflows, and publishing channels, as well as model management where you can see the various large models you call, as shown in Figure 5.5.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-05.png" alt="Image description" width="90%"/>
-  <p>Figure 5.5 Coze Agent Publishing Channels</p>
-</div>
+
+  
+  Figure 5.5 Coze Agent Publishing Channels
+
 If I were to make a simple summary of Coze's agent development, I would compare it to the various components of a game. The combination of each part to create wonderful agents is very much like playing a "game." Every time you complete an agent, it's like defeating a boss and gaining a lot, whether it's "experience" or "equipment."
 
 - Workflow: Level clearance route map
@@ -113,18 +113,18 @@ The primary task of building a "Daily AI Brief" agent is to connect it to rich a
 
 1.  **Plugin Integration:** In Coze's plugin library, search for and add the required plugins. For example, subscribe to RSS feeds from media platforms through the **RSS** plugin (as shown in Figure 5.6), track open-source projects through the **GitHub** plugin (as shown in Figure 5.7), and obtain the latest academic research results through the **arXiv** plugin (as shown in Figure 5.8).
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-06.png" alt="Image description" width="90%"/>
-  <p>Figure 5.6 RSS Source Plugin for Media Platforms</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-07.png" alt="Image description" width="90%"/>
-  <p>Figure 5.7 GitHub Plugin</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-08.png" alt="Image description" width="90%"/>
-  <p>Figure 5.8 Arxiv Plugin</p>
-</div>
+
+  
+  Figure 5.6 RSS Source Plugin for Media Platforms
+
+
+  
+  Figure 5.7 GitHub Plugin
+
+
+  
+  Figure 5.8 Arxiv Plugin
+
 
 2.  **Personalized Configuration:** Perform fine-grained configuration for each plugin to ensure it can accurately obtain the required data. For example, in the RSS plugin, enter specific RSS subscription links for websites like 36Kr and Huxiu; in the GitHub plugin, set keyword query quantities and latest update settings to be monitored; in the arXiv plugin, define keywords of interest such as "LLM," "AI," etc., and define quantities and latest update settings.
 
@@ -150,10 +150,10 @@ Arxiv Plugin Configuration
 ```
 
 3.  **Orchestration and Connection:** In the agent's visual orchestration interface, use these configured information source plugins (such as `rss_24Hbj`, `searchRepository`, `arxiv`, etc.) as data input nodes and connect them to subsequent logical processing modules (such as the **Large Model** module) to build a complete data processing path, as shown in Figure 5.9.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-09.png" alt="Image description" width="90%"/>
-  <p>Figure 5.9 Daily AI Brief Orchestration Flowchart</p>
-</div>
+
+  
+  Figure 5.9 Daily AI Brief Orchestration Flowchart
+
 
 
 **Step 2: Set Agent Role and Prompts**
@@ -179,7 +179,7 @@ You are a senior and authoritative technology media editor, skilled at efficient
 ## Workflow
 ### Daily Report Output Format
 1. The daily report should prominently display "AI Daily Report", "by@jasonhuang", and the current date at the beginning, for example: "AI Daily Report | September 24, 2025 | by@jasonhuang".
-2. <!!!important!!!> Add a unique Emoji symbol at the beginning of each title based on the different content of each AI technology news, each AI academic paper, and each AI open-source project.
+2.  Add a unique Emoji symbol at the beginning of each title based on the different content of each AI technology news, each AI academic paper, and each AI open-source project.
 3. All output content must be highly relevant to AI, LLM, AIGC, large models, and other technical topics, firmly excluding any irrelevant information, advertisements, and marketing content.
 4. Must provide the original link for each item (including AI technology news, AI academic papers, AI open-source projects).
 5. Provide a brief and precise summary description for each news item or project output.
@@ -248,33 +248,33 @@ Carefully check the content accuracy, format completeness, and language style of
 
 Multi-Channel Publishing: Coze provides the ability to publish agents to multiple mainstream application platforms (such as WeChat, Doubao, Feishu, etc.) with one click, greatly expanding the application scenarios of agents, as shown in Figure 5.10.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-10.png" alt="Image description" width="90%"/>
-  <p>Figure 5.10 Diverse Publishing Channels of Coze Platform</p>
-</div>
+
+  
+  Figure 5.10 Diverse Publishing Channels of Coze Platform
+
 
 After the agent is published, we can see the AI agent we created in the Coze store, and it can also be integrated into AI applications to provide services to users, as shown in Figures 5.11 and 5.12. Here is also the [Daily AI News Agent Experience Link](https://www.coze.cn/store/agent/7506052197071962153?bot_id=true&bid=6hkt3je8o2g16)
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-11.png" alt="Image description" width="90%"/>
-  <p>Figure 5.11 AI Agent - Daily AI News</p>
-</div>
+
+  
+  Figure 5.11 AI Agent - Daily AI News
+
 
 Furthermore, we can click this [experience link](https://www.coze.cn/store/project/7458678213078777893?from=store_search_suggestion&bid=6gu3cmr7k5g1i) to view Daily AI News in the AI application.
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-12.png" alt="Image description" width="90%"/>
-  <p>Figure 5.12 Daily AI News in AI Application</p>
-</div>
+
+  
+  Figure 5.12 Daily AI News in AI Application
+
 **Publishing Configuration:** If you want to publish your own agent, you also need to configure an appropriate name, avatar, and welcome message for the agent before publishing to provide a more friendly user experience, as shown in Figures 5.13 and 5.14.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-13.png" alt="Image description" width="90%"/>
-  <p>Figure 5.13 Configure Basic Information for Agent</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/coze-14.png" alt="Image description" width="90%"/>
-  <p>Figure 5.14 Configure Opening Remarks and Preset Questions for Agent</p>
-</div>
+
+  
+  Figure 5.13 Configure Basic Information for Agent
+
+
+  
+  Figure 5.14 Configure Opening Remarks and Preset Questions for Agent
+
 
 
 ### 5.2.3 Analysis of Coze's Advantages and Limitations
@@ -303,17 +303,17 @@ Dify is highly model-neutral and compatible: whether open-source or commercial m
 
 At the same time, Dify supports local deployment (official Docker Compose one-click startup) and cloud deployment. Users can choose to self-deploy Dify in local/private environments (ensuring data privacy) or use the official SaaS cloud service (detailed in the business model section below). This deployment flexibility makes it suitable for enterprise intranet environments with security requirements or developer groups with operational convenience requirements.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-01.png" alt="Image description" width="90%"/>
-  <p>Figure 5.15 Dify Official Website</p>
-</div>
+
+  
+  Figure 5.15 Dify Official Website
+
 
 Marketplace Plugin Ecosystem: Dify Marketplace provides one-stop plugin management and one-click deployment functionality, enabling developers to discover, extend, or submit plugins, bringing more possibilities to the community, as shown in Figure 5.16.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-02.png" alt="Image description" width="90%"/>
-  <p>Figure 5.16 Dify Marketplace Plugin Ecosystem</p>
-</div>
+
+  
+  Figure 5.16 Dify Marketplace Plugin Ecosystem
+
 Marketplace includes:
 
 
@@ -337,51 +337,51 @@ Dify provides powerful development support for plugin developers, including remo
 
 In the previous Coze case, we built a daily AI brief agent. Although its function is clear, its single brief generation capability is somewhat limited. This section will use Dify to build a fully functional super agent personal assistant, covering multiple scenarios such as daily Q&A, copywriting optimization, multimodal generation, and data analysis. Before starting, let's briefly understand Dify's main interface and functional modules.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-14.png" alt="Image description" width="90%"/>
-  <p>Figure 5.17 Dify Agent Building Homepage</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-18.png" alt="Image description" width="90%"/>
-  <p>Figure 5.18 Dify Official Template Library</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-15.png" alt="Image description" width="90%"/>
-  <p>Figure 5.19 Dify Knowledge Base</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-16.png" alt="Image description" width="90%"/>
-  <p>Figure 5.20 Dify Plugin Market</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-17.png" alt="Image description" width="90%"/>
-  <p>Figure 5.21 Dify Large Model Configuration</p>
-</div>
+
+  
+  Figure 5.17 Dify Agent Building Homepage
+
+
+  
+  Figure 5.18 Dify Official Template Library
+
+
+  
+  Figure 5.19 Dify Knowledge Base
+
+
+  
+  Figure 5.20 Dify Plugin Market
+
+
+  
+  Figure 5.21 Dify Large Model Configuration
+
 
 **(1) Creating Plugins and Configuring MCP**
 
 Before building the agent, necessary plugin installation and MCP configuration must be completed first. As shown in Figure 5.22, these are the core plugins required for this case.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-19.png" alt="Image description" width="90%"/>
-  <p>Figure 5.22 Dify Plugin Installation Configuration</p>
-</div>
+
+  
+  Figure 5.22 Dify Plugin Installation Configuration
+
 
 The plugins marked with red boxes in the figure need to be searched for and installed from the Dify plugin market. Users can click to view details to understand the specific functions of each plugin.
 
 Next, configure MCP (Model Context Protocol). We won't expand on the detailed principles of MCP here; we'll focus on demonstrating how to use cloud-deployed MCP services. This case uses the domestic ModelScope community MCP market for demonstration, as shown in Figure 5.23.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-20.png" alt="Image description" width="90%"/>
-  <p>Figure 5.23 ModelScope Community MCP Market</p>
-</div>
+
+  
+  Figure 5.23 ModelScope Community MCP Market
+
 
 Open the ModelScope community MCP market and select the hosted type. Taking Amap MCP as an example, after entering its homepage, select SSE mode on the right side and click connection configuration to generate a dedicated MCP configuration JSON, as shown in Figure 5.24. MCP supports multiple communication modes, but using SSE mode communication in Dify is smoother and more stable, so SSE mode is recommended.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-21.png" alt="Image description" width="90%"/>
-  <p>Figure 5.24 Amap MCP Configuration Example</p>
-</div>
+
+  
+  Figure 5.24 Amap MCP Configuration Example
+
 
 **(2) Agent Design and Effect Display**
 
@@ -395,10 +395,10 @@ This case will create a comprehensive personal assistant covering the following 
 
 The overall agent orchestration architecture is shown in Figure 5.25.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-12.png" alt="Image description" width="90%"/>
-  <p>Figure 5.25 Agent Orchestration</p>
-</div>
+
+  
+  Figure 5.25 Agent Orchestration
+
 
 For the multi-agent architecture, we use a question classifier for intelligent routing. In the classifier, define the core functions and task scope for each agent to ensure user requests can be accurately distributed to the corresponding processing modules.
 
@@ -469,10 +469,10 @@ As a daily question consultation expert, you must abide by the above Rules and e
 
 The effect demonstration is shown in Figure 5.26:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-03.png" alt="Image description" width="90%"/>
-  <p>Figure 5.26 Daily Assistant</p>
-</div>
+
+  
+  Figure 5.26 Daily Assistant
+
 
 **Copywriting Optimization Module**
 
@@ -509,10 +509,10 @@ Now, let us prove everything with action. A truly good product does not need too
 
 The effect demonstration is shown in Figure 5.27:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-04.png" alt="Image description" width="90%"/>
-  <p>Figure 5.27 Copywriting Assistant</p>
-</div>
+
+  
+  Figure 5.27 Copywriting Assistant
+
 
 **Multimodal Generation Module**
 
@@ -526,21 +526,21 @@ This case uses the Doubao plugin to implement image and video generation. Config
 
 Image generation configuration and effects are shown in Figures 5.28 and 5.29.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-13.png" alt="Image description" width="90%"/>
-  <p>Figure 5.28 Image Generation Settings</p>
-</div>
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-05.png" alt="Image description" width="90%"/>
-  <p>Figure 5.29 Image Generation Assistant</p>
-</div>
+
+  
+  Figure 5.28 Image Generation Settings
+
+
+  
+  Figure 5.29 Image Generation Assistant
+
 
 The video generation effect is shown in Figure 5.30.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-06.png" alt="Image description" width="90%"/>
-  <p>Figure 5.30 Video Assistant</p>
-</div>
+
+  
+  Figure 5.30 Video Assistant
+
 
 **Data Query and Analysis Module**
 
@@ -553,10 +553,10 @@ First, install the data query tool plugin; this case uses the `rookie-text2data`
 
 Configure database connection information (IP address, database name, port, account, password, etc.), as shown in Figure 5.31. Query results need to be organized through a large model node and converted into easy-to-understand natural language output.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-22.png" alt="Image description" width="90%"/>
-  <p>Figure 5.31 Database Configuration</p>
-</div>
+
+  
+  Figure 5.31 Database Configuration
+
 
 Prompt settings:
 
@@ -586,10 +586,10 @@ The user has provided raw data queried from the database. This data may have iss
 
 The effect display is shown in Figure 5.32:
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-07.png" alt="Image description" width="90%"/>
-  <p>Figure 5.32 Data Query Assistant</p>
-</div>
+
+  
+  Figure 5.32 Data Query Assistant
+
 
 Prompt settings:
 
@@ -621,10 +621,10 @@ Please output in the following format:
 2. Display generated charts
 ```
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-08.png" alt="Image description" width="90%"/>
-  <p>Figure 5.33 Data Analysis Assistant</p>
-</div>
+
+  
+  Figure 5.33 Data Analysis Assistant
+
 
 The only difference in the data analysis assistant is that we added data visualization tools, namely the "generate_pie_chart" | "generate_column_chart" | "generate_line_chart" BI chart generation tool plugins. If you have installed these as required earlier, you can directly add and use them, and add corresponding descriptions like in the prompt above.
 
@@ -639,27 +639,27 @@ Finally, the integration application of MCP tools. We have already completed the
 
 The configuration interface is shown in Figure 5.34.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-23.png" alt="Image description" width="90%"/>
-  <p>Figure 5.34 Agent MCP Configuration</p>
-</div>
+
+  
+  Figure 5.34 Agent MCP Configuration
+
 
 The effects of Amap assistant, dietary assistant, and news assistant are shown in Figures 5.35, 5.36, and 5.37 respectively.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-09.png" alt="Image description" width="90%"/>
-  <p>Figure 5.35 Amap Assistant</p>
-</div>
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-10.png" alt="Image description" width="90%"/>
-  <p>Figure 5.36 Dietary Assistant</p>
-</div>
+  
+  Figure 5.35 Amap Assistant
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/dify-11.png" alt="Image description" width="90%"/>
-  <p>Figure 5.37 News Assistant</p>
-</div>
+
+
+  
+  Figure 5.36 Dietary Assistant
+
+
+
+  
+  Figure 5.37 News Assistant
+
 
 At this point, we have completed a fully functional super agent personal assistant. This assistant covers multiple aspects of life: when you need new clothes, you can have Doubao generate designs; before going out, you can have the Amap assistant plan routes; when you don't know what to eat, you can get dietary recommendations; when you want to understand learning situations, you can perform data analysis. This agent can handle various work and life tasks, and we look forward to seeing everyone build more creative personal agent assistants.
 
@@ -713,10 +713,10 @@ Regarding n8n's environment configuration and most basic usage, documentation ha
 
 The entire process simulates a more advanced decision logic: `Receive -> AI Agent (Think -> Decide -> Tool Call) -> Reply`, as shown in Figure 5.38.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-01.png" alt="Image description" width="90%"/>
-  <p>Figure 5.38 Integrated Intelligent Email Agent Architecture Diagram</p>
-</div>
+
+  
+  Figure 5.38 Integrated Intelligent Email Agent Architecture Diagram
+
 
 Unlike the traditional method of splitting tools into multiple sub-workflows, n8n's `AI Agent` node allows us to integrate components such as large language models (LLM), memory, and tools in a unified interface, greatly simplifying the construction process.
 
@@ -738,10 +738,10 @@ First, we use the `Code` node to store our raw knowledge text. This is a simple 
 - **Node**: `Code`
 - **Content**: Write your knowledge in JSON format.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-02.png" alt="Screenshot of knowledge base JSON text filled in Code node" width="90%"/>
-  <p>Figure 5.39 Defining Knowledge Source in Code Node</p>
-</div>
+
+  
+  Figure 5.39 Defining Knowledge Source in Code Node
+
 
 ```javascript
 return [
@@ -767,10 +767,10 @@ Computers cannot directly understand text and need to convert it into vectors. W
 - **Node**: `Embeddings Google Gemini`, select model as `gemini-embedding-exp-03-07`. Here we use Google API for demonstration; if you don't know how to obtain Google API, you can refer to Section 5.5.3.
 - **Configuration**: Connect it after the `Code` node, and it will automatically convert the text passed from upstream into vector data.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-03.png" alt="" width="90%"/>
-  <p>Figure 5.40 Vectorizing Data in Code</p>
-</div>
+
+  
+  Figure 5.40 Vectorizing Data in Code
+
 
 **(3) Store in Vector Storage**
 
@@ -781,17 +781,17 @@ Finally, we store the vectorized knowledge in an in-memory database, as shown in
   - **Operation Mode**: `Insert Documents` (write mode).
   - **Memory Key**: Give this knowledge base a unique name, for example `my-dailytime`. This Key is equivalent to the "table name" of the database, and the Agent will use it to find information later.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-04.png" alt="" width="90%"/>
-  <p>Figure 5.41 Storing Data from Code into Vector Storage</p>
-</div>
+
+  
+  Figure 5.41 Storing Data from Code into Vector Storage
+
 
 After completing the configuration, **manually execute this process once**. After success, your private knowledge is loaded into n8n's memory, as shown in Figure 5.42.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-05.png" alt="" width="90%"/>
-  <p>Figure 5.42 Complete Knowledge Base Loading Workflow</p>
-</div>
+
+  
+  Figure 5.42 Complete Knowledge Base Loading Workflow
+
 
 ### 5.4.4 Creating Agent Main Workflow
 
@@ -801,24 +801,24 @@ With the tools ready, we now start building the Agent's main process. It will be
 
 Create a new workflow named `Agent: Customer Support`. Use the `Gmail` node as a trigger, set its **Event** to `Message Received`, and configure your email account. This way, whenever a new email enters the inbox, the workflow will be automatically triggered, as shown in Figure 5.43.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-06.png" alt="" width="90%"/>
-  <p>Figure 5.43 Creating Gmail Node</p>
-</div>
+
+  
+  Figure 5.43 Creating Gmail Node
+
 
 The configuration process can refer to [n8n official documentation](https://docs.n8n.io/integrations/builtin/credentials/google/oauth-single-service/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#enable-apis). Gmail's API is configured [here](https://console.cloud.google.com/apis/library/gmail.googleapis.com?project=apt-entropy-471905-b9). You need to create credentials, select Web application type, and finally get the required client ID and client secret. You also need to add the OAuth Redirect URL given by n8n to the authorized redirect URIs. At the same time, you also need to add your own email address in Add users in [Audience](https://console.cloud.google.com/auth/audience?project=apt-entropy-471905-b9). The final configured page is shown in Figure 5.44.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-07.png" alt="" width="90%"/>
-  <p>Figure 5.44 Gmail Account Successfully Loaded</p>
-</div>
+
+  
+  Figure 5.44 Gmail Account Successfully Loaded
+
 
 Now we can click `Fetch Test Event` to get emails, as shown in Figure 5.45!
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-08.png" alt="" width="90%"/>
-  <p>Figure 5.45 Getting Real-time Emails</p>
-</div>
+
+  
+  Figure 5.45 Getting Real-time Emails
+
 
 (2) Configure AI Agent Node
 
@@ -830,19 +830,19 @@ This is the brain of the entire workflow. Drag an `AI Agent` node from the node 
   1. `SerpAPI`: This is the API we used in the Chapter 4 case, giving the Agent the ability to search for public information online.
   2. `Simple Vector Store`: Gives the Agent the ability to query the private knowledge base we created in the first part.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-09.png" alt="" width="90%"/>
-  <p>Figure 5.46 AI Agent Node Settings</p>
-</div>
+
+  
+  Figure 5.46 AI Agent Node Settings
+
 
 This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject (`&#123;&#123; $json.snippet &#125;&#125;&#123;&#123; $json.Subject &#125;&#125;`) as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
 
 For the AI Agent node, we mainly need to fill in the `User Message` and `System Message` sections, as shown in Figure 5.47.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-10.png" alt="" width="90%"/>
-  <p>Figure 5.47 AI Agent Node Details</p>
-</div>
+
+  
+  Figure 5.47 AI Agent Node Details
+
 
 Here is the Prompt used in our case:
 
@@ -878,23 +878,23 @@ You are a 24/7 on-call, professional and efficient AI email assistant. Your task
 4.  **Add Status Prefix and Integrate**:
     a. Compare "Current Time" with the working hours I obtained from the tool.
     b. **If currently "Non-working Hours"**: Create a status reminder prefix. This prefix **must include** the specific working hours obtained from `Simple Vector Store2`.
-        * **Prefix Example**: "Hello, thank you for your email. You have contacted me during my non-working hours (my working hours are: [insert queried working hours here]). I will personally review this email on the next working day. In the meantime, here is a preliminary reply found for you based on public information:**<br><br>---<br><br>**"
+        * **Prefix Example**: "Hello, thank you for your email. You have contacted me during my non-working hours (my working hours are: [insert queried working hours here]). I will personally review this email on the next working day. In the meantime, here is a preliminary reply found for you based on public information:**---**"
     c. **If currently "Working Hours"**: Just use a simple greeting.
-        * **Prefix Example**: "Hello, regarding your question, the reply is as follows:**<br><br>---<br><br>**"
+        * **Prefix Example**: "Hello, regarding your question, the reply is as follows:**---**"
     d. Concatenate the generated prefix and the core reply you drafted (result of step 3) to form the final email body.
 
 5.  **Formatted Output**: You must output the finally generated email content in a strict JSON format. The format is as follows, do not add any additional explanations or text:
     {
       "shouldReply": true,
       "subject": "Re: [Original Email Subject]",
-      "body": "[Here is the concatenated, complete email reply body, **all line breaks must use HTML <br> tags**]"
+      "body": "[Here is the concatenated, complete email reply body, **all line breaks must use HTML  tags**]"
     }
 
 # Rules and Restrictions
 - **Always Try to Answer First**: At any time, your primary task is to use `SerpAPI` to provide valuable replies to users.
 - **Must Declare Status**: If replying during non-working hours, you must clearly state this at the beginning of the email and attach my exact working hours.
 - **Information Sources Must Be Accurate**: Working hours must strictly follow the results of `Simple Vector Store2`; question answers mainly come from `SerpAPI`, do not fabricate information.
-- **Output Format**: **In the final output JSON, all line breaks in the `body` field must use `<br>` tags, not `\n`.**
+- **Output Format**: **In the final output JSON, all line breaks in the `body` field must use `` tags, not `\n`.**
 ```
 
 (3) Configure Agent's Tools
@@ -907,10 +907,10 @@ For the `Simple Vector Store` tool, we need to perform key configurations to ens
 
 Only when the `Memory Key` and `Embeddings` model are completely consistent can the Agent use the correct "key" and "language" to access the knowledge base, as shown in Figure 5.48.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-11.png" alt="" width="90%"/>
-  <p>Figure 5.48 Simple Vector Store Tool Configuration</p>
-</div>
+
+  
+  Figure 5.48 Simple Vector Store Tool Configuration
+
 
 The Description parameter is the description definition of the tool when the AI Agent calls it. Here is the corresponding Prompt:
 
@@ -930,17 +930,17 @@ The last step is execution. Connect the output of the `AI Agent` node to a `Gmai
 - **Subject**: `Re:  &#123;&#123; $('Gmail').item.json.Subject &#125;&#125;`
 - **Message**: `&#123;&#123; $json.output &#125;&#125;`
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-12.png" alt="" width="90%"/>
-  <p>Figure 5.49 Final Reply Tool Diagram</p>
-</div>
+
+  
+  Figure 5.49 Final Reply Tool Diagram
+
 
 And when the sending is successful, you can also receive real return email information in your personal mailbox, as shown in Figure 5.50.
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-13.png" alt="" width="90%"/>
-  <p>Figure 5.50 Personal Mailbox Return Email Format</p>
-</div>
+
+  
+  Figure 5.50 Personal Mailbox Return Email Format
+
 
 At this point, an integrated intelligent customer service based on the `AI Agent` node is completed. You can send a test email to verify its work results. This architecture has extremely strong extensibility. In the future, you can directly add more tools (such as calendars, databases, CRM, etc.) to the `AI Agent` node. You only need to teach the Agent how to use them in the Prompt to continuously empower your Agent with more powerful capabilities.
 
@@ -948,10 +948,10 @@ At this point, an integrated intelligent customer service based on the `AI Agent
 
 Through the practice of building an intelligent email assistant from scratch, we have gained an intuitive understanding of n8n's working mode. As a powerful low-code automation platform, n8n performs excellently in empowering Agent application development, but it is not omnipotent. As shown in Table 5.1, we will objectively analyze its advantages and potential limitations.
 
-<div align="center">
-  <p>Table 5.1 Summary of n8n Platform's Advantages and Limitations</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/5-figures/n8n-14.png" alt="" width="90%"/>
-</div>
+
+  Table 5.1 Summary of n8n Platform's Advantages and Limitations
+  
+
 
 First, n8n's most significant advantage lies in its **development efficiency**. It abstracts complex logic into intuitive visual workflows. Whether it's email reception, AI decision-making, tool invocation, or final reply, the entire data flow and processing chain are clear at a glance on the canvas. This low-code characteristic greatly lowers the technical threshold, allowing developers to quickly build and verify the core logic of Agents, greatly shortening the distance from idea to prototype.
 

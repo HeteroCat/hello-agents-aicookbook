@@ -445,10 +445,10 @@ for chunk in llm.think(messages):
 
 相比于4.1.3节的基础实现，现在的HelloAgentsLLM具有以下显著优势：
 
-<div align="center">
-  <p>表 7.1 HelloAgentLLM不同版本特性对比</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/table-01.png" alt="" width="90%"/>
-</div>
+
+  表 7.1 HelloAgentLLM不同版本特性对比
+  
+
 
 如上表7.1所示，这种演进体现了框架设计的重要原则：**从简单开始，逐步完善**。我们在保持接口简洁的同时，增强了功能的完整性。
 
@@ -1271,10 +1271,10 @@ print(f"数学专用Agent结果: {math_result}")
 
 如表7.2所示，通过这种框架化的重构，我们不仅保持了第四章中各种Agent范式的核心功能，还大幅提升了代码的组织性、可维护性和扩展性。所有Agent现在都共享统一的基础架构，同时保持了各自的特色和优势。
 
-<div align="center">
-  <p>表 7.2 Agent不同章节实现对比</p>
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/table-02.png" alt="" width="90%"/>
-</div>
+
+  表 7.2 Agent不同章节实现对比
+  
+
 
 ### 7.4.5 FunctionCallAgent
 
@@ -1651,10 +1651,10 @@ if __name__ == "__main__":
 
 通过这个简化的数学计算工具案例，我们学会了如何快速开发自定义工具：编写一个简单的计算函数，通过ToolRegistry注册，然后与SimpleAgent集成使用。为了更直观的观察，这里提供了图7.1，可以清晰理解代码的运行逻辑。
 
-<div align="center">
-  <img src="https://raw.githubusercontent.com/datawhalechina/Hello-Agents/main/docs/images/7-figures/01.png" alt="" width="90%"/>
-  <p>图 7.1 基于Helloagents的SimpleAgent运行工作流</p>
-</div>
+
+  
+  图 7.1 基于Helloagents的SimpleAgent运行工作流
+
 
 ### 7.5.3 多源搜索工具
 
@@ -2162,7 +2162,7 @@ async def test_parallel_execution():
 
 2. 在7.2节中，我们扩展了 `HelloAgentsLLM` 以支持多模型供应商和本地模型调用。
 
-   > <strong>提示</strong>：这是一道实践题，建议实际操作
+   > **提示**：这是一道实践题，建议实际操作
 
    - 参考7.2.1节的示例，尝试为 `HelloAgentsLLM` 添加一个新模型供应商的支持（如`Gemini`、`Anthropic`、`Kim`）。要求通过继承方式实现，并能够自动检测该提供商的环境变量。
    - 在7.2.3节中介绍了自动检测机制的三个优先级。请分析：如果同时设置了 `OPENAI_API_KEY` 和 `LLM_BASE_URL="http://localhost:11434/v1"`，框架最后会选择哪个提供商？这种优先级设计是否合理？
@@ -2176,7 +2176,7 @@ async def test_parallel_execution():
 
 4. 在7.4节中，我们动手进行了四种 `Agent` 范式的框架化实现。
 
-   > <strong>提示</strong>：这是一道实践题，建议实际操作
+   > **提示**：这是一道实践题，建议实际操作
 
    - 对比第四章从零实现的 `ReActAgent` 和本章框架化的 `ReActAgent`，列举3个具体的改进点，并说明这些改进如何提升了代码的可维护性和可扩展性。
    - `ReflectionAgent` 实现了"执行-反思-优化"循环。请扩展这个实现，添加一个"质量评分"机制：在每次反思后，让 `LLM` 对当前版本的输出打分，只有分数低于阈值时才继续优化，否则提前终止。
