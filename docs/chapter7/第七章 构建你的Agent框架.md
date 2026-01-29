@@ -1653,7 +1653,7 @@ if __name__ == "__main__":
 
 
   
-  图 7.1 基于Helloagents的SimpleAgent运行工作流
+  ![图 7.1 基于Helloagents的SimpleAgent运行工作流](/images/7-figures/01.png)
 
 
 ### 7.5.3 多源搜索工具

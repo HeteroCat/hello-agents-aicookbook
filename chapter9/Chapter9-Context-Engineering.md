@@ -33,6 +33,10 @@ This section will explore the emerging context engineering and provide a refined
 
 As shown in Figure 9.1, from the perspective of leading model vendors, context engineering is the natural evolution of prompt engineering. Prompt engineering focuses on how to write and organize LLM instructions to obtain better results (such as system prompt writing and structured strategies); while context engineering is **how to plan and maintain the "optimal information set (tokens)" during the inference stage**, which includes not only the prompt itself, but also all other information that will enter the context window.
 
+
+![Prompt engineering vs Context engineering](/images/9-figures/9-1.webp)
+
+
 In the early stages of LLM engineering, prompts were often the main work, because most use cases (except daily chat) required fine-tuned prompt optimization for single-turn classification or text generation. As the name suggests, the core of prompt engineering is "how to write effective prompts", especially system prompts. However, as we begin to engineer stronger agents that work over longer time spans and across multiple inference rounds, we need strategies that can manage the **entire context state**—including system instructions, tools, MCP (Model Context Protocol), external data, message history, etc.
 
 An agent running in a loop will continuously generate data that may be relevant to the next round of inference. This information must be **periodically refined**. Therefore, the "art and technique" of context engineering lies in **identifying which content should enter the limited context window** from the continuously expanding "candidate information universe".
@@ -67,6 +71,10 @@ Under the constraint of "limited attention budget", the goal of excellent contex
 - **Few-shot Examples**: Always recommend providing examples, but don't recommend stuffing "all boundary conditions" into prompts. Please carefully select a set of **diverse and typical** examples that directly portray "expected behavior". For LLMs, **good examples are worth a thousand words**.
 
 The overall guiding principle is: **sufficient but compact information**. As shown in Figure 9.2, this is dynamic retrieval entering runtime.
+
+
+![Calibrating the system prompt](/images/9-figures/9-2.webp)
+
 
 
 ### 9.2.2 Context Retrieval and Agentic Search
@@ -2035,6 +2043,10 @@ This scenario faces several typical long-horizon task challenges. First is the p
 ### 9.6.2 System Architecture Design
 
 Our codebase maintenance assistant adopts a three-layer architecture, as shown in Figure 9.3:
+
+
+![代码库维护助手三层架构](/images/9-figures/9-3.png)
+
 
 
 ### 9.6.3 Core Implementation

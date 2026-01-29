@@ -30,6 +30,10 @@ This is the problem that the deep research assistant needs to solve. It's not ju
 This system still adopts the classic **front-end and back-end separation architecture**, as shown in Figure 14.1.
 
 
+![深度研究助手技术架构](/images/14-figures/14-1.png)
+
+
+
 
 The system is designed with a four-layer architecture:
 
@@ -42,6 +46,10 @@ The system is designed with a four-layer architecture:
 **External Service Layer**: Search engines + LLM providers
 
 Let's see how a complete research request flows through the system, as shown in Figure 14.2:
+
+
+![深度研究助手数据流转过程](/images/14-figures/14-2.png)
+
 
 
 
@@ -166,8 +174,16 @@ If everything is normal, you'll see output similar to:
 Open your browser and visit `http://localhost:5174`. You'll see a centered input card, as shown in Figure 14.3. Enter a research topic, for example `What kind of organization is Datawhale?`, select a search engine (if multiple are configured), and click the "Start Research" button.
 
 
+![深度研究助手搜索页面](/images/14-figures/14-3.png)
+
+
+
 
 As shown in Figure 14.4, the system will automatically expand to full screen, with research information displayed on the left and research progress and results displayed in real-time on the right. The entire research process takes about 1-3 minutes, depending on the complexity of the topic and the response speed of the search engine.
+
+
+![深度研究助手展开研究](/images/14-figures/14-4.png)
+
 
 
 
@@ -235,6 +251,10 @@ A complete TODO-driven research system contains three core elements:
 **(3) Report Writer**: Responsible for integrating the results of all subtasks. The generator needs to organize content in logical order, merge duplicate information, and add source citations for each viewpoint.
 
 In our case, the TODO-driven research process is shown in Figure 14.5:
+
+
+![TODO 驱动的研究流程](/images/14-figures/14-5.png)
+
 
 
 
@@ -820,6 +840,10 @@ This way, all Agent tool calls are recorded and pushed to the front-end via SSE,
 The three Agents have a **sequential collaboration** relationship, as shown in Figure 14.6.
 
 
+![Agent 协作流程](/images/14-figures/14-6.png)
+
+
+
 
 The characteristics of the sequential collaboration mode are:
 
@@ -1050,6 +1074,10 @@ agent = ToolAwareSimpleAgent(
 ```
 
 When an Agent needs to call a tool, it generates a tool call instruction, as shown in Figure 14.7.
+
+
+![工具调用流程](/images/14-figures/14-7.png)
+
 
 
 
@@ -1588,6 +1616,10 @@ class SearchService:
 Select search engine based on configuration, as shown in Figure 14.8:
 
 
+![搜索引擎调度流程](/images/14-figures/14-8.png)
+
+
+
 
 **Scheduling Logic**:
 
@@ -1663,6 +1695,10 @@ The deep research assistant adopts a full-screen modal dialog UI design, which h
 4. **Responsive design**: Adapts to different screen sizes
 
 As shown in Figure 14.9, the full-screen modal dialog contains the following parts:
+
+
+![全屏模态对话框 UI](/images/14-figures/14-9.png)
+
 
 
 
@@ -1818,6 +1854,10 @@ To adapt to different screen sizes, we add media queries:
 The deep research assistant uses SSE to implement real-time progress display. SSE is a server push technology that allows the server to actively send data to the client, which is also explained in the protocol chapter.
 
 As shown in Figure 14.10, the SSE process includes the following steps:
+
+
+![SSE 流程](/images/14-figures/14-10.png)
+
 
 
 

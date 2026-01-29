@@ -108,6 +108,10 @@ Considering learning curve and practicality, this chapter will focus on the foll
 Through these three evaluation scenarios, we will build a complete evaluation system. Figure 12.1 shows our evaluation system construction approach.
 
 
+![HelloAgents 评估体系架构图](/images/12-figures/12-1.png)
+
+
+
 
 
 
@@ -171,6 +175,10 @@ The BFCL benchmark contains four evaluation categories with increasing difficult
 
 
 The BFCL evaluation process follows standard benchmark testing procedures: first load dataset and select evaluation category, then run agent to obtain prediction results, next parse prediction results into Abstract Syntax Tree (AST), and finally judge whether predictions are correct through AST matching algorithm. The entire process traverses all test samples, ultimately calculating evaluation metrics like accuracy and generating evaluation reports. The complete evaluation process is shown in Figure 12.2:
+
+
+![BFCL 评估流程图](/images/12-figures/12-table-1.png)
+
 
 
 
@@ -607,6 +615,10 @@ Through these three methods, we can choose appropriate evaluation methods based 
 Previously we learned how to use HelloAgents' built-in evaluation functionality. In fact, `BFCLEvaluationTool` has **automatically integrated BFCL official evaluation tool**, allowing you to obtain authoritative, comparable evaluation results.
 
 The entire evaluation process includes four steps: first load test data from BFCL v4 dataset, then use HelloAgents to run evaluation and obtain agent prediction results, next export results to BFCL official format (JSONL), and finally use official evaluation script to calculate final scores. This process ensures evaluation results are completely consistent with BFCL leaderboard, as shown in Figure 12.3:
+
+
+![Helloagents 载入 BFCL 评估过程](/images/12-figures/12-3.png)
+
 
 
 
@@ -1479,6 +1491,10 @@ https://huggingface.co/spaces/gaia-benchmark/leaderboard
 As shown in Figure 12.4, fill in information in submission form:
 
 
+![BFCL 评估流程图](/images/12-figures/12-4.png)
+
+
+
 
 Before submission, you can manually check the generated JSONL file:
 
@@ -1829,6 +1845,10 @@ In data generation quality evaluation, we adopt three complementary evaluation m
 Below we introduce the specific implementation of these three evaluation methods in detail. The implementation flow of the entire case is shown in Figure 12.5:
 
 
+![数据生成质量评估流程图](/images/12-figures/12-5.png)
+
+
+
 
 **(1) LLM Judge Evaluation**
 
@@ -1871,6 +1891,10 @@ These three metrics reflect generation quality from different angles: average sc
 **Design Motivation**: Although LLM Judge can provide multi-dimensional absolute scoring, we also need a relative evaluation metric to measure the quality gap between generated problems and real problems. Win Rate evaluation, through pairwise comparison, lets LLM directly judge which is better between generated problems and real problems. This relative comparison is more in line with human judgment habits than absolute scoring, and can more easily discover the relative advantages and disadvantages of generated problems. Ideally, if the quality of generated problems is close to real problems, Win Rate should be around 50% (i.e., generated problems and real problems each have 50% win rate). This metric is simple and intuitive, allowing quick judgment of the overall quality level of the generation system.
 
 In our implementation, Win Rate evaluation is conducted through the flow shown in Figure 12.6:
+
+
+![数据生成质量评估流程图](/images/12-figures/12-6.png)
+
 
 
 
@@ -2351,6 +2375,10 @@ http://127.0.0.1:7860
 ```
 
 The final effect can be referenced in Figure 12.7. For problem correctness, manual review is best:
+
+
+![AIME 试题人工验证页面](/images/12-figures/12-7.png)
+
 
 
 

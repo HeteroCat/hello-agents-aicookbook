@@ -53,16 +53,36 @@ Coze is a super cool AI agent creation tool! It is also currently the most widel
 Overall layout introduction: Recently, Coze has updated its UI interface again, as shown in Figure 5.1. Now the leftmost sidebar is the development workspace of the Coze platform homepage, including core project development, resource library, effect evaluation, and space configuration. The area below is the supporting material space for Coze development, including official templates for one-click copying, Coze's biggest advantage - a rich and diverse plugin store, the largest agent community with a dazzling array, API management for API testing, as well as detailed tutorial documentation and general management for enterprises. On the right side, there are four templates. At the top is Coze's latest update announcement, telling you about Coze's latest progress so you can learn about the latest tools and features. Below that is the beginner tutorial. Click on it and you'll find the beginner tutorial documentation, and you can start building agents in minutes. Next are your follows and agent recommendations. Here you can also follow your favorite AI developers and bookmark their agents for your own use.
 
 
+![扣子智能智能体平台整体示意图](/images/5-figures/coze-01.png)
+
+
+
 
 (2) Core Function Introduction
 
 First, we click the plus sign on the left sidebar to see the entry point for creating agents. Currently, there are two types of AI applications: one is to create agents, and the other is called applications. Among them, agents are divided into single-agent autonomous planning mode, single-agent dialogue flow mode, and multi-agent mode. AI applications are also divided into two types: not only can you design user interfaces for desktop and web, but you can also easily build interfaces for mini-programs and H5, as shown in Figure 5.2.
 
+
+![扣子智能体创建入口](/images/5-figures/coze-02.png)
+
+
 The project space is your agent repository, where all the agents or applications you have developed or copied are stored. It is also the place you will visit most often when developing agents in Coze, as shown in Figure 5.3.
+
+
+![扣子智能体项目空间](/images/5-figures/coze-03.png)
+
 
 The resource library is your core arsenal for developing Coze agents. The resource library stores your workflows, knowledge bases, cards, prompt libraries, and a series of other tools for developing agents. What kind of agent you can make depends first on the model's capabilities, but most importantly, it depends on how you equip the agent with "equipment and skills." The model determines the lower limit of the agent, but the Coze resource library gives you infinite upper limits for the agent's capabilities, allowing you to develop according to your own ideas, imagination, and creativity, as shown in Figure 5.4.
 
+
+![扣子智能体资源库](/images/5-figures/coze-04.png)
+
+
 Space configuration includes a unified management channel for agents, plugins, workflows, and publishing channels, as well as model management where you can see the various large models you call, as shown in Figure 5.5.
+
+
+![扣子智能体发布渠道](/images/5-figures/coze-05.png)
+
 
 If I were to make a simple summary of Coze's agent development, I would compare it to the various components of a game. The combination of each part to create wonderful agents is very much like playing a "game." Every time you complete an agent, it's like defeating a boss and gaining a lot, whether it's "experience" or "equipment."
 
@@ -99,6 +119,10 @@ The primary task of building a "Daily AI Brief" agent is to connect it to rich a
 1.  **Plugin Integration:** In Coze's plugin library, search for and add the required plugins. For example, subscribe to RSS feeds from media platforms through the **RSS** plugin (as shown in Figure 5.6), track open-source projects through the **GitHub** plugin (as shown in Figure 5.7), and obtain the latest academic research results through the **arXiv** plugin (as shown in Figure 5.8).
 
 
+![媒体平台的RSS源插件](/images/5-figures/coze-06.png)
+
+
+
 
 
 
@@ -132,6 +156,10 @@ Arxiv Plugin Configuration
 :::
 
 3.  **Orchestration and Connection:** In the agent's visual orchestration interface, use these configured information source plugins (such as `rss_24Hbj`, `searchRepository`, `arxiv`, etc.) as data input nodes and connect them to subsequent logical processing modules (such as the **Large Model** module) to build a complete data processing path, as shown in Figure 5.9.
+
+
+![每日AI简报编排流程图](/images/5-figures/coze-09.png)
+
 
 
 
@@ -246,6 +274,10 @@ Carefully check the content accuracy, format completeness, and language style of
 Multi-Channel Publishing: Coze provides the ability to publish agents to multiple mainstream application platforms (such as WeChat, Doubao, Feishu, etc.) with one click, greatly expanding the application scenarios of agents, as shown in Figure 5.10.
 
 
+![扣子平台的多元发布渠道](/images/5-figures/coze-10.png)
+
+
+
 
 After the agent is published, we can see the AI agent we created in the Coze store, and it can also be integrated into AI applications to provide services to users, as shown in Figures 5.11 and 5.12. Here is also the [Daily AI News Agent Experience Link](https://www.coze.cn/store/agent/7506052197071962153?bot_id=true&bid=6hkt3je8o2g16)
 
@@ -281,6 +313,10 @@ Furthermore, we can click this [experience link](https://www.coze.cn/store/proje
 
 Dify is an open-source large language model (LLM) application development platform that integrates the concepts of Backend as a Service (BaaS) and LLMOps, providing full-process support from prototype design to production deployment, as shown in Figure 5.15. It adopts a layered modular architecture, divided into data layer, development layer, orchestration layer, and foundation layer, with each layer decoupled for easy expansion.
 
+
+![Dify官网](/images/5-figures/dify-01.png)
+
+
 Dify is highly model-neutral and compatible: whether open-source or commercial models, users can integrate them through simple configuration and call their inference capabilities through a unified interface. It has built-in support for integration with hundreds of open-source or proprietary LLMs, covering models such as GPT, Deepseek, Llama, as well as any model compatible with the OpenAI API.
 
 At the same time, Dify supports local deployment (official Docker Compose one-click startup) and cloud deployment. Users can choose to self-deploy Dify in local/private environments (ensuring data privacy) or use the official SaaS cloud service (detailed in the business model section below). This deployment flexibility makes it suitable for enterprise intranet environments with security requirements or developer groups with operational convenience requirements.
@@ -288,6 +324,10 @@ At the same time, Dify supports local deployment (official Docker Compose one-cl
 
 
 Marketplace Plugin Ecosystem: Dify Marketplace provides one-stop plugin management and one-click deployment functionality, enabling developers to discover, extend, or submit plugins, bringing more possibilities to the community, as shown in Figure 5.16.
+
+
+![Dify Marketplace插件生态](/images/5-figures/dify-02.png)
+
 
 
 Marketplace includes:
@@ -324,14 +364,26 @@ In the previous Coze case, we built a daily AI brief agent. Although its functio
 Before building the agent, necessary plugin installation and MCP configuration must be completed first. As shown in Figure 5.22, these are the core plugins required for this case.
 
 
+![Dify 插件安装配置](/images/5-figures/dify-19.png)
+
+
+
 
 The plugins marked with red boxes in the figure need to be searched for and installed from the Dify plugin market. Users can click to view details to understand the specific functions of each plugin.
 
 Next, configure MCP (Model Context Protocol). We won't expand on the detailed principles of MCP here; we'll focus on demonstrating how to use cloud-deployed MCP services. This case uses the domestic ModelScope community MCP market for demonstration, as shown in Figure 5.23.
 
 
+![魔搭社区mcp市场](/images/5-figures/dify-20.png)
+
+
+
 
 Open the ModelScope community MCP market and select the hosted type. Taking Amap MCP as an example, after entering its homepage, select SSE mode on the right side and click connection configuration to generate a dedicated MCP configuration JSON, as shown in Figure 5.24. MCP supports multiple communication modes, but using SSE mode communication in Dify is smoother and more stable, so SSE mode is recommended.
+
+
+![高德mcp配置示例](/images/5-figures/dify-21.png)
+
 
 
 
@@ -346,6 +398,10 @@ This case will create a comprehensive personal assistant covering the following 
 - MCP tool integration (Amap, dietary recommendations, news information)
 
 The overall agent orchestration architecture is shown in Figure 5.25.
+
+
+![智能体编排](/images/5-figures/dify-12.png)
+
 
 
 
@@ -425,6 +481,10 @@ As a daily question consultation expert, you must abide by the above Rules and e
 The effect demonstration is shown in Figure 5.26:
 
 
+![日常助手](/images/5-figures/dify-03.png)
+
+
+
 
 **Copywriting Optimization Module**
 
@@ -468,6 +528,10 @@ Now, let us prove everything with action. A truly good product does not need too
 The effect demonstration is shown in Figure 5.27:
 
 
+![文案助手](/images/5-figures/dify-04.png)
+
+
+
 
 **Multimodal Generation Module**
 
@@ -487,6 +551,10 @@ Image generation configuration and effects are shown in Figures 5.28 and 5.29.
 The video generation effect is shown in Figure 5.30.
 
 
+![视频助手](/images/5-figures/dify-06.png)
+
+
+
 
 **Data Query and Analysis Module**
 
@@ -498,6 +566,10 @@ First, install the data query tool plugin; this case uses the `rookie-text2data`
 - Providing a description of the correspondence between table names and field names
 
 Configure database connection information (IP address, database name, port, account, password, etc.), as shown in Figure 5.31. Query results need to be organized through a large model node and converted into easy-to-understand natural language output.
+
+
+![数据库配置](/images/5-figures/dify-22.png)
+
 
 
 
@@ -534,6 +606,10 @@ The user has provided raw data queried from the database. This data may have iss
 :::
 
 The effect display is shown in Figure 5.32:
+
+
+![数据查询助手](/images/5-figures/dify-07.png)
+
 
 
 
@@ -587,6 +663,10 @@ Finally, the integration application of MCP tools. We have already completed the
 4. Fill in the corresponding prompts
 
 The configuration interface is shown in Figure 5.34.
+
+
+![智能体的mcp配置](/images/5-figures/dify-23.png)
+
 
 
 
@@ -651,6 +731,10 @@ Regarding n8n's environment configuration and most basic usage, documentation ha
 The entire process simulates a more advanced decision logic: `Receive -> AI Agent (Think -> Decide -> Tool Call) -> Reply`, as shown in Figure 5.38.
 
 
+![一体化智能邮件 Agent 架构示意图](/images/5-figures/n8n-01.png)
+
+
+
 
 Unlike the traditional method of splitting tools into multiple sub-workflows, n8n's `AI Agent` node allows us to integrate components such as large language models (LLM), memory, and tools in a unified interface, greatly simplifying the construction process.
 
@@ -708,6 +792,10 @@ Computers cannot directly understand text and need to convert it into vectors. W
 
 Finally, we store the vectorized knowledge in an in-memory database, as shown in Figure 5.41.
 
+
+![对 Code 中数据存入向量存储](/images/5-figures/n8n-04.png)
+
+
 - **Node**: `Simple Vector Store
 :::
 - **Configuration**:
@@ -717,6 +805,10 @@ Finally, we store the vectorized knowledge in an in-memory database, as shown in
 
 
 After completing the configuration, **manually execute this process once**. After success, your private knowledge is loaded into n8n's memory, as shown in Figure 5.42.
+
+
+![完整的知识库加载工作流](/images/5-figures/n8n-05.png)
+
 
 
 
@@ -729,12 +821,24 @@ With the tools ready, we now start building the Agent's main process. It will be
 Create a new workflow named `Agent: Customer Support`. Use the `Gmail` node as a trigger, set its **Event** to `Message Received`, and configure your email account. This way, whenever a new email enters the inbox, the workflow will be automatically triggered, as shown in Figure 5.43.
 
 
+![新建Gmail节点图](/images/5-figures/n8n-06.png)
+
+
+
 
 The configuration process can refer to [n8n official documentation](https://docs.n8n.io/integrations/builtin/credentials/google/oauth-single-service/?utm_source=n8n_app&utm_medium=credential_settings&utm_campaign=create_new_credentials_modal#enable-apis). Gmail's API is configured [here](https://console.cloud.google.com/apis/library/gmail.googleapis.com?project=apt-entropy-471905-b9). You need to create credentials, select Web application type, and finally get the required client ID and client secret. You also need to add the OAuth Redirect URL given by n8n to the authorized redirect URIs. At the same time, you also need to add your own email address in Add users in [Audience](https://console.cloud.google.com/auth/audience?project=apt-entropy-471905-b9). The final configured page is shown in Figure 5.44.
 
 
+![Gmail账号加载成功图](/images/5-figures/n8n-07.png)
+
+
+
 
 Now we can click `Fetch Test Event` to get emails, as shown in Figure 5.45!
+
+
+![获取实时邮件图](/images/5-figures/n8n-08.png)
+
 
 
 
@@ -753,6 +857,10 @@ This is the brain of the entire workflow. Drag an `AI Agent` node from the node 
 This is the first step of Agent "thinking." Add a `Gemini` node (or other LLM node), set the mode to `Chat`. Our goal is to have it analyze email content and judge user intent. Prompt design is crucial; a clear instruction can make the LLM complete the task more accurately. We pass the email body and subject 作为变量传入 Prompt 中 as variables into the Prompt. If you don't have an API, you can go to [Google AI Studio](https://aistudio.google.com/prompts/new_chat) and click Get API key to create an available one.
 
 For the AI Agent node, we mainly need to fill in the `User Message` and `System Message` sections, as shown in Figure 5.47.
+
+
+![AI Agent 节点详解图](/images/5-figures/n8n-10.png)
+
 
 
 
@@ -825,6 +933,10 @@ For the `Simple Vector Store` tool, we need to perform key configurations to ens
 Only when the `Memory Key` and `Embeddings` model are completely consistent can the Agent use the correct "key" and "language" to access the knowledge base, as shown in Figure 5.48.
 
 
+![Simple Vector Store工具配置](/images/5-figures/n8n-11.png)
+
+
+
 
 The Description parameter is the description definition of the tool when the AI Agent calls it. Here is the corresponding Prompt:
 
@@ -846,6 +958,10 @@ For Memory, the only thing to note is that here we use the thread name of each m
 
 The last step is execution. Connect the output of the `AI Agent` node to a `Gmail` node, set **Operation** to `Send`. Use n8n expressions to associate the recipient, subject, and body with the corresponding fields in the JSON data output by `AI Agent` to achieve automatic email reply, as shown in Figure 5.49.
 
+
+![最终回复工具图示](/images/5-figures/n8n-12.png)
+
+
 ::: v-pre
 - **To**: `{{ $('Gmail').item.json.From }}` (or sender field in other triggers)
 - **Subject**: `Re:  {{ $('Gmail').item.json.Subject }}
@@ -858,6 +974,10 @@ The last step is execution. Connect the output of the `AI Agent` node to a `Gmai
 
 
 And when the sending is successful, you can also receive real return email information in your personal mailbox, as shown in Figure 5.50.
+
+
+![个人邮箱返回邮件格式](/images/5-figures/n8n-13.png)
+
 
 
 

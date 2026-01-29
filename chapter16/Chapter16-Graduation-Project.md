@@ -141,6 +141,10 @@ jupyter lab
 
 1. Visit the Hello-Agents repository: https://github.com/datawhalechina/Hello-Agents
 2. Click the "Fork" button in the upper right corner, as shown in the red box in Figure 16.1
+
+
+![Fork 仓库步骤](/images/16-figures/16-1.png)
+
 3. Select your GitHub account and create the Fork
 
 
@@ -149,6 +153,10 @@ jupyter lab
 
 ```bash
 # As shown in Figure 16.2, clone your forked repository
+
+
+![克隆仓库到本地](/images/16-figures/16-2.png)
+
 git clone git@github.com:your-username/Hello-Agents.git
 
 # Enter project directory
@@ -615,6 +623,10 @@ git push origin feature/your-project-name
 
 1. Visit your forked repository: `https://github.com/your-username/Hello-Agents`
 2. Click the "Pull requests" tab, as shown in Figure 16.3
+
+
+![创建 Pull Request](/images/16-figures/16-3.png)
+
 3. Click the "New pull request" button
 
 
@@ -686,6 +698,10 @@ Brief description of your project (2-3 sentences)
 **Step 4: Submit PR**
 
 As shown in Figure 16.4, click the "Create pull request" button to submit.
+
+
+![提交 Pull Request](/images/16-figures/16-4.png)
+
 
 
 

@@ -29,10 +29,18 @@ This is the new possibility that AI technology brings to games. By combining lar
 Cyber Town adopts a **game engine + back-end service** separation architecture, divided into four layers, as shown in Figure 15.1.
 
 
+![赛博小镇技术架构](/images/15-figures/15-1.png)
+
+
+
 
 The front-end layer uses the Godot 4.5 game engine, responsible for game rendering, player control, NPC display, and dialogue UI. Godot is an open-source 2D/3D game engine, very suitable for quickly developing pixel-style games. The back-end layer uses the FastAPI framework, responsible for API routing, NPC state management, dialogue processing, and logging. FastAPI is a modern Python web framework with excellent performance and easy development. The agent layer uses our own HelloAgents framework, responsible for NPC intelligence, memory management, and affection calculation. Each NPC is a SimpleAgent instance with independent memory and state. The external service layer provides LLM capabilities, vector storage, and data persistence, including LLM API, Qdrant vector database, and SQLite relational database.
 
 The data flow process is shown in Figure 15.2:
+
+
+![数据流转过程](/images/15-figures/15-2.png)
+
 
 
 
@@ -130,8 +138,16 @@ Open the Godot engine, click the "Import" button, browse to `Helloagents-AI-Town
 After the game starts, you will see a pixel-style Datawhale office scene, as shown in Figure 15.3.
 
 
+![赛博小镇游戏场景](/images/15-figures/15-3.png)
+
+
+
 
 Use WASD keys to move the player character. When you walk near an NPC, the screen will display a "Press E to interact" prompt. After pressing the E key, a dialogue box will pop up, and you can enter anything you want to say, as shown in Figure 15.4.
+
+
+![与 NPC 对话界面](/images/15-figures/15-4.png)
+
 
 
 
@@ -201,6 +217,10 @@ This code demonstrates how to create an NPC Agent. The system prompt defines the
 The workflow of NPC Agent is shown in Figure 15.5:
 
 
+![NPC Agent 工作流程](/images/15-figures/15-5.png)
+
+
+
 
 ### 15.2.2 NPC Role Settings and Prompt Design
 
@@ -258,6 +278,10 @@ Long-term memory stores all conversation history, using vector databases for sem
 The architecture of the memory system is shown in Figure 15.6:
 
 
+![记忆系统架构](/images/15-figures/15-6.png)
+
+
+
 
 In actual use, the Agent first obtains recent conversations from short-term memory, then retrieves relevant historical conversations from long-term memory, sends this information together to the LLM, and generates more accurate and personalized replies.
 
@@ -297,6 +321,10 @@ In actual operation, a problem was quickly discovered: when multiple players sim
 To solve this problem, we designed a **batch dialogue generation system**. The core idea is: merge multiple NPC dialogue requests into one LLM call, letting the LLM generate all NPC replies at once. This is like a restaurant's "pre-made dishes" - prepared in batches in advance, used directly when needed, greatly reducing costs and latency.
 
 The workflow of batch generation is shown in Figure 15.7:
+
+
+![批量生成 vs 传统模式](/images/15-figures/15-7.png)
+
 
 
 
@@ -462,6 +490,10 @@ The core idea of the affection system is: by quantifying the relationship betwee
 We divide affection into five levels, each corresponding to a score range, as shown in Figure 15.8:
 
 
+![好感度等级划分](/images/15-figures/15-8.png)
+
+
+
 
 - **Stranger (0-20 points)**: NPC just met the player, attitude is polite but maintains distance. Replies are brief, won't actively share personal information.
 
@@ -482,6 +514,10 @@ Affection calculation needs to consider multiple factors. We can't simply add a 
 In Cyber Town, we use LLM to analyze conversation content, judging whether the player's attitude is friendly, neutral, or unfriendly. Then we adjust the affection score based on the judgment result. This process is automatic, players don't need to deliberately choose options, making interactions more natural.
 
 The affection calculation process is shown in Figure 15.9:
+
+
+![好感度计算流程](/images/15-figures/15-9.png)
+
 
 
 
@@ -611,6 +647,10 @@ This design makes NPC behavior change dynamically with affection. Players can cl
 The back-end of Cyber Town is built using the FastAPI framework, responsible for handling requests from the Godot front-end, calling HelloAgents' NPC Agents, managing NPC state and affection, and recording logs. A clear application structure makes code easier to maintain and extend.
 
 Our FastAPI application adopts a modular design, separating different functions into different files, as shown in Figure 15.10:
+
+
+![后端应用结构](/images/15-figures/15-10.png)
+
 
 
 
@@ -796,6 +836,10 @@ async def get_affinity(npc_id: str, player_name: str):
 ```
 
 The API route call flow is shown in Figure 15.11:
+
+
+![API 调用流程](/images/15-figures/15-11.png)
+
 
 
 
@@ -1002,6 +1046,10 @@ After understanding Godot's scene system, let's look at Cyber Town's scene desig
 Cyber Town's scene organization adopts a modular design. We first create three basic scenes: Player (player), NPC (non-player character), and DialogueUI (dialogue interface). Then in Main (main scene), we instantiate and combine these scenes. It's particularly worth noting that the three NPCs (Zhang San, Li Si, Wang Wu) are all instances of the same NPC scene, just with different role information set through script parameters.
 
 Let's first look at the structure of the four core scenes, as shown in Figure 15.12:
+
+
+![赛博小镇的四个核心场景](/images/15-figures/15-12.png)
+
 
 
 
@@ -1552,6 +1600,10 @@ The dialogue UI is the interface for player-NPC interaction. We need to design a
 The dialogue UI structure is shown in Figure 15.13:
 
 
+![对话 UI 结构](/images/15-figures/15-13.png)
+
+
+
 
 The dialogue UI design is very simple. DialogueUI is a CanvasLayer node, meaning it will always display on top of the game screen and won't be obscured by other game objects. Panel is the dialogue box background, anchored at the bottom of the screen. Under Panel are 6 UI elements placed directly: NPCName displays the NPC's name, NPCTitle displays the title, DialogueText uses RichTextLabel to display dialogue content (supports rich text format), PlayerInput is a LineEdit for player input, and SendButton and CloseButton are used to send messages and close the dialogue box respectively.
 
@@ -1760,6 +1812,10 @@ The core function of the main scene script is to periodically obtain NPC status 
 The complete front-end and back-end communication process is shown in Figure 15.14:
 
 
+![前后端通信完整流程](/images/15-figures/15-14.png)
+
+
+
 
 At this point, all front-end and back-end communication functions have been implemented. Players can move freely in the game, interact with NPCs, and have natural language conversations. Meanwhile, the main scene periodically obtains NPC status from the back-end, updates NPC dialogue bubbles, and displays autonomous dialogue between NPCs. The entire system uses a signal mechanism for communication, with loose coupling between components, making it easy to maintain and extend.
 
@@ -1790,6 +1846,10 @@ We used Godot to create a pixel-style office scene, implementing player control,
 We used HTTP REST API to implement communication between the Godot front-end and FastAPI back-end. Through asynchronous requests and signal systems, we ensured game fluidity - even with high network latency, player experience is not affected. The API client encapsulation allows other scripts to conveniently call back-end services, and the dialogue UI implementation allows players to naturally communicate with NPCs.
 
 The project's technology stack is shown in Figure 15.15:
+
+
+![赛博小镇技术栈](/images/15-figures/15-15.png)
+
 
 
 

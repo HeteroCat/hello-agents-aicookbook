@@ -1278,12 +1278,13 @@ print(f"数学专用Agent结果: {math_result}")
 
 ### 7.4.5 FunctionCallAgent
 
-FunctionCallAgent是hello-agents在0.2.8之后引入的Agent，它基于OpenAI原生函数调用机制的Agent，展示了如何使用OpenAI的函数调用机制来构建Agent。
+
+![FunctionCallAgent是hello-agents在0.2.8之后引入的Agent，它基于OpenAI原生函数调用机制的Agent，展示了如何使用OpenAI的函数调用机制来构建Agent。
 它支持以下功能：
 _build_tool_schemas:通过工具的description构建OpenAI的function calling schema
 _extract_message_content:从OpenAI的响应中提取文本
 _parse_function_call_arguments:解析模型返回的JSON字符串参数
-_convert_parameter_types:转换参数类型
+_convert_parameter_types:转换参数类型](/images/7-figures/table-02.png)
 
 这些功能可以使其具备原生的OpenAI Functioncall的能力，对比使用prompt约束的方式，具备更强的鲁棒性。
 ```python
@@ -1652,9 +1653,7 @@ if __name__ == "__main__":
 通过这个简化的数学计算工具案例，我们学会了如何快速开发自定义工具：编写一个简单的计算函数，通过ToolRegistry注册，然后与SimpleAgent集成使用。为了更直观的观察，这里提供了图7.1，可以清晰理解代码的运行逻辑。
 
 
-  
-  图 7.1 基于Helloagents的SimpleAgent运行工作流
-
+![基于Helloagents的SimpleAgent运行工作流](/images/7-figures/01.png)
 
 ### 7.5.3 多源搜索工具
 
