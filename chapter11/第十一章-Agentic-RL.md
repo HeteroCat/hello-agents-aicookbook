@@ -1748,7 +1748,7 @@ for group_name, results in step_groups.items():
 一个完整的 Agentic RL 训练流程包括以下阶段:数据准备、SFT 训练、SFT 评估、GRPO 训练、GRPO 评估、模型部署。如图 11.9 所示。
 
 
-![端到端训练流程](/images/11-figures/11-9.png)
+> 图 11.9 端到端训练流程（图片文件暂缺）
 
 让我们通过一个完整的脚本来实现这个流程:
 

@@ -1768,7 +1768,7 @@ for group_name, results in step_groups.items():
 
 
   
-  ![图 11.9 端到端训练流程](/images/11-figures/11-9.png)
+  > 图 11.9 端到端训练流程（图片文件暂缺）
 
 
 让我们通过一个完整的脚本来实现这个流程:

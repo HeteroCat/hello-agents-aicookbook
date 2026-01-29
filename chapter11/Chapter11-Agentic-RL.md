@@ -1758,7 +1758,7 @@ In previous sections, we learned about data preparation, SFT training, GRPO trai
 A complete Agentic RL training pipeline includes the following stages: data preparation, SFT training, SFT evaluation, GRPO training, GRPO evaluation, and model deployment. As shown in Figure 11.9.
 
 
-![端到端训练流程](/images/11-figures/11-9.png)
+> Figure 11.9 End-to-End Training Pipeline (Image file not available)
 
 
 
