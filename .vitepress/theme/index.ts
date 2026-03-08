@@ -3,6 +3,7 @@ import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import { h } from 'vue'
 import './styles/custom.css'
+import { inject } from '@vercel/analytics'
 
 // Giscus 组件
 const GiscusComment = () => {
@@ -37,5 +38,7 @@ export default {
   },
   enhanceApp({ app, router, siteData }) {
     // 可以在这里添加全局组件或其他增强
+    // Inject Vercel Analytics
+    inject()
   }
 } satisfies Theme

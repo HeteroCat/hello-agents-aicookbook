@@ -45,7 +45,8 @@ export default defineConfig({
         text: '入门',
         items: [
           { text: 'Hello-Agents', link: '/' },
-          { text: '前言', link: '/前言' }
+          { text: '前言', link: '/前言' },
+          { text: 'Vercel Web Analytics', link: '/vercel-analytics' }
         ]
       },
       {
@@ -206,7 +207,8 @@ export default defineConfig({
             text: 'Getting Started',
             items: [
               { text: 'Hello-Agents', link: '/en/' },
-              { text: 'Preface', link: '/en/Preface' }
+              { text: 'Preface', link: '/en/Preface' },
+              { text: 'Vercel Web Analytics', link: '/en/vercel-analytics' }
             ]
           },
           {
