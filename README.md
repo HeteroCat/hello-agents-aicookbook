@@ -136,6 +136,7 @@ hello-agents-aicookbook/
 - **动态内容加载**: 使用 Fetch API 动态加载章节内容
 - **章节导航**: 侧边栏导航，支持章节状态显示
 - **交互式界面**: 悬停效果、动画过渡
+- **Web Analytics**: 集成 Vercel Web Analytics，跟踪访问者和页面浏览量
 
 ### 浏览器兼容性
 - Chrome 60+
